@@ -59,10 +59,11 @@ class NewsForm
                         
                         TextInput::make('slug')
                             ->label('Slug URL')
-                            ->required()
                             ->maxLength(255)
                             ->unique(ignoreRecord: true)
-                            ->helperText('URL-friendly versi dari judul')
+                            ->helperText('URL otomatis dibuat dari judul')
+                            ->disabled()
+                            ->dehydrated()
                             ->columnSpanFull(),
                         
                         Textarea::make('excerpt')

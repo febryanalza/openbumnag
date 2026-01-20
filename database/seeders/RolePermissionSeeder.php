@@ -100,6 +100,15 @@ class RolePermissionSeeder extends Seeder
             'setting.update',
         ];
 
+        // Catalog Permissions
+        $catalogPermissions = [
+            'catalog.view-any',
+            'catalog.view',
+            'catalog.create',
+            'catalog.update',
+            'catalog.delete',
+        ];
+
         // User Management Permissions
         $userPermissions = [
             'user.view-any',
@@ -120,6 +129,7 @@ class RolePermissionSeeder extends Seeder
             $teamPermissions,
             $contactPermissions,
             $settingPermissions,
+            $catalogPermissions,
             $userPermissions
         );
 
@@ -145,22 +155,24 @@ class RolePermissionSeeder extends Seeder
             $profilePermissions,
             $teamPermissions,
             $contactPermissions,
-            $settingPermissions
+            $settingPermissions,
+            $catalogPermissions
         );
         $admin->syncPermissions($adminPermissions);
 
-        // 3. Content Manager - Manage News, Promotions, Reports
+        // 3. Content Manager - Manage News, Promotions, Reports, Catalogs
         $contentManager = Role::firstOrCreate(['name' => 'content_manager']);
         $contentManagerPermissions = array_merge(
             $newsPermissions,
             $promotionPermissions,
             $reportPermissions,
+            $catalogPermissions,
             ['gallery.view-any', 'gallery.view', 'gallery.create'],
             ['category.view-any', 'category.view']
         );
         $contentManager->syncPermissions($contentManagerPermissions);
 
-        // 4. Editor - Create & Edit News, Promotions, Reports (no delete/publish)
+        // 4. Editor - Create & Edit News, Promotions, Reports, Catalogs (no delete/publish)
         $editor = Role::firstOrCreate(['name' => 'editor']);
         $editorPermissions = [
             // News
@@ -180,6 +192,12 @@ class RolePermissionSeeder extends Seeder
             'report.view',
             'report.create',
             'report.update',
+            
+            // Catalog
+            'catalog.view-any',
+            'catalog.view',
+            'catalog.create',
+            'catalog.update',
             
             // Gallery (limited)
             'gallery.view-any',
@@ -211,6 +229,8 @@ class RolePermissionSeeder extends Seeder
             'team.view',
             'contact.view-any',
             'contact.view',
+            'catalog.view-any',
+            'catalog.view',
         ];
         $viewer->syncPermissions($viewerPermissions);
 
@@ -219,8 +239,8 @@ class RolePermissionSeeder extends Seeder
         $this->command->info('Available Roles:');
         $this->command->info('1. super_admin - Full access to everything');
         $this->command->info('2. admin - Manage all content and settings (no user management)');
-        $this->command->info('3. content_manager - Manage News, Promotions, Reports with publish rights');
-        $this->command->info('4. editor - Create and edit News, Promotions, Reports (no delete/publish)');
+        $this->command->info('3. content_manager - Manage News, Promotions, Reports, Catalogs with publish rights');
+        $this->command->info('4. editor - Create and edit News, Promotions, Reports, Catalogs (no delete/publish)');
         $this->command->info('5. viewer - Read-only access to all content');
     }
 }

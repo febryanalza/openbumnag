@@ -45,7 +45,7 @@ class News extends Model
 
         static::creating(function ($news) {
             if (empty($news->slug)) {
-                $news->slug = Str::slug($news->title);
+                $news->slug = static::generateUniqueSlug($news->title);
             }
             if (empty($news->user_id) && auth()->check()) {
                 $news->user_id = auth()->id();
@@ -54,9 +54,25 @@ class News extends Model
 
         static::updating(function ($news) {
             if ($news->isDirty('title') && empty($news->slug)) {
-                $news->slug = Str::slug($news->title);
+                $news->slug = static::generateUniqueSlug($news->title, $news->id);
             }
         });
+    }
+
+    // Helper method to generate unique slug
+    protected static function generateUniqueSlug($title, $ignoreId = null)
+    {
+        $slug = Str::slug($title);
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (static::where('slug', $slug)
+            ->when($ignoreId, fn($query) => $query->where('id', '!=', $ignoreId))
+            ->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
+
+        return $slug;
     }
 
     // Relationships

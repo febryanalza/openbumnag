@@ -35,9 +35,11 @@ class BumnagProfileForm
                         
                         TextInput::make('slug')
                             ->label('Slug URL')
-                            ->required()
                             ->maxLength(255)
                             ->unique(ignoreRecord: true)
+                            ->helperText('URL otomatis dibuat dari nama BUMNag')
+                            ->disabled()
+                            ->dehydrated()
                             ->columnSpanFull(),
                         
                         Textarea::make('tagline')

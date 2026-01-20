@@ -50,7 +50,7 @@ class Report extends Model
 
         static::creating(function ($report) {
             if (empty($report->slug)) {
-                $report->slug = Str::slug($report->title);
+                $report->slug = static::generateUniqueSlug($report->title);
             }
             if (empty($report->user_id) && auth()->check()) {
                 $report->user_id = auth()->id();
@@ -59,9 +59,25 @@ class Report extends Model
 
         static::updating(function ($report) {
             if ($report->isDirty('title') && empty($report->slug)) {
-                $report->slug = Str::slug($report->title);
+                $report->slug = static::generateUniqueSlug($report->title, $report->id);
             }
         });
+    }
+
+    // Helper method to generate unique slug
+    protected static function generateUniqueSlug($title, $ignoreId = null)
+    {
+        $slug = Str::slug($title);
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (static::where('slug', $slug)
+            ->when($ignoreId, fn($query) => $query->where('id', '!=', $ignoreId))
+            ->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
+
+        return $slug;
     }
 
     // Relationships

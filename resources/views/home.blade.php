@@ -1,27 +1,32 @@
 @extends('layouts.app')
 
-@section('title', 'Beranda')
-@section('description', 'BUMNag Lubas Mandiri - Badan Usaha Milik Nagari yang berkomitmen untuk kesejahteraan masyarakat Desa Lubas')
+@section('title', $settings['site_name'] ?? 'Beranda')
+@section('description', $settings['site_description'] ?? 'BUMNag Lubas Mandiri')
 
 @section('content')
 <!-- Hero Slider Section -->
-<section class="relative h-screen" x-data="heroSlider()">
+<section class="relative h-screen overflow-hidden" x-data="heroSlider()">
+    <!-- Slider Container -->
     <div class="absolute inset-0">
-        @foreach($heroImages as $index => $image)
-        <div x-show="currentSlide === {{ $index }}"
-             x-transition:enter="transition ease-out duration-1000"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-500"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="absolute inset-0">
-            <img src="{{ Storage::url($image->file_path) }}" 
-                 alt="{{ $image->title }}" 
-                 class="w-full h-full object-cover">
+        @if($heroImages && count($heroImages) > 0)
+        <div class="relative h-full w-full flex" 
+             :style="`transform: translateX(-${currentSlide * 100}%); transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);`">
+            @foreach($heroImages as $index => $image)
+            <div class="relative min-w-full h-full">
+                <img src="{{ Storage::url($image->file_path) }}" 
+                     alt="{{ $image->title }}" 
+                     class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
+            </div>
+            @endforeach
+        </div>
+        @else
+        <!-- Fallback jika tidak ada gambar -->
+        <div class="relative h-full w-full">
+            <div class="w-full h-full bg-gradient-to-br from-primary via-sage to-mint"></div>
             <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
         </div>
-        @endforeach
+        @endif
     </div>
     
     <!-- Hero Content -->
@@ -30,12 +35,12 @@
             <div class="max-w-3xl">
                 <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight"
                     data-aos="fade-up">
-                    Selamat Datang di<br>
-                    <span class="text-secondary">Lubas Mandiri</span>
+                    {{ $settings['hero_title'] ?? 'Selamat Datang di' }}<br>
+                    <span class="text-secondary">{{ $settings['hero_subtitle'] ?? 'Lubas Mandiri' }}</span>
                 </h1>
                 <p class="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed"
                    data-aos="fade-up" data-aos-delay="100">
-                    Badan Usaha Milik Nagari yang berkomitmen untuk meningkatkan kesejahteraan masyarakat Desa Lubas melalui berbagai unit usaha yang berkelanjutan
+                    {{ $settings['hero_description'] ?? 'Badan Usaha Milik Nagari yang berkomitmen untuk kesejahteraan masyarakat' }}
                 </p>
                 <div class="flex flex-wrap gap-4" data-aos="fade-up" data-aos-delay="200">
                     <a href="{{ route('about') }}" 
@@ -55,6 +60,7 @@
     </div>
     
     <!-- Slider Controls -->
+    @if($heroImages && count($heroImages) > 1)
     <div class="absolute bottom-10 left-0 right-0 z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between">
@@ -86,6 +92,7 @@
             </div>
         </div>
     </div>
+    @endif
 </section>
 
 <!-- Unit Usaha Section -->
@@ -93,10 +100,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                Unit Usaha Kami
+                {{ $settings['about_title'] ?? 'Unit Usaha Kami' }}
             </h2>
             <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                Berbagai unit usaha yang kami kelola untuk meningkatkan perekonomian masyarakat
+                {{ $settings['about_description'] ?? 'Berbagai unit usaha yang kami kelola' }}
             </p>
         </div>
         
@@ -167,10 +174,10 @@
         <div class="flex justify-between items-end mb-12">
             <div>
                 <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                    Berita Terbaru
+                    {{ $settings['news_title'] ?? 'Berita Terbaru' }}
                 </h2>
                 <p class="text-xl text-gray-600">
-                    Informasi dan update terkini dari Lubas Mandiri
+                    {{ $settings['news_description'] ?? 'Informasi dan update terkini' }}
                 </p>
             </div>
             <a href="{{ route('news.index') }}" 
@@ -215,9 +222,12 @@
                         {{ $news->title }}
                     </h3>
                     
+                    <!-- Excerpt -->
+                    @if($news->excerpt)
                     <p class="text-gray-600 mb-4 line-clamp-3">
-                        {{ strip_tags($news->excerpt ?? $news->content) }}
+                        {{ $news->excerpt }}
                     </p>
+                    @endif
                     
                     <div class="flex items-center justify-between pt-4 border-t border-gray-100">
                         <a href="{{ route('news.show', $news->slug) }}" 
@@ -259,10 +269,10 @@
         <div class="flex justify-between items-end mb-12">
             <div>
                 <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                    Laporan & Transparansi
+                    {{ $settings['reports_title'] ?? 'Laporan & Transparansi' }}
                 </h2>
                 <p class="text-xl text-gray-600">
-                    Laporan keuangan dan kegiatan untuk transparansi dan akuntabilitas
+                    {{ $settings['reports_description'] ?? 'Laporan keuangan dan kegiatan' }}
                 </p>
             </div>
             <a href="{{ route('reports.index') }}" 
@@ -337,14 +347,137 @@
     </div>
 </section>
 
+<!-- Kodai (Katalog Produk) Section -->
+@if($featuredCatalogs->count() > 0)
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-end mb-12">
+            <div>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                    {{ $settings['catalog_title'] ?? 'Kodai Kami' }}
+                </h2>
+                <p class="text-xl text-gray-600">
+                    {{ $settings['catalog_description'] ?? 'Produk-produk berkualitas dari unit usaha kami' }}
+                </p>
+            </div>
+            <a href="{{ route('catalogs.index') }}" 
+               class="hidden md:inline-flex items-center text-primary font-semibold hover:text-primary-600 transition-colors duration-200">
+                Lihat Semua
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @foreach($featuredCatalogs as $catalog)
+            <article class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group hover:-translate-y-2">
+                <a href="{{ route('catalogs.show', $catalog->slug) }}" class="block relative">
+                    @if($catalog->featured_image)
+                    <div class="h-56 overflow-hidden">
+                        <img src="{{ Storage::url($catalog->featured_image) }}" 
+                             alt="{{ $catalog->name }}" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    @else
+                    <div class="h-56 bg-gradient-to-br from-mint-100 to-sage-100 flex items-center justify-center">
+                        <svg class="w-20 h-20 text-sage-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                    </div>
+                    @endif
+                    
+                    <!-- Featured Badge -->
+                    @if($catalog->is_featured)
+                    <div class="absolute top-4 right-4 bg-secondary text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        Unggulan
+                    </div>
+                    @endif
+                    
+                    <!-- Stock Badge -->
+                    @if($catalog->stock === 0)
+                    <div class="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                        Stok Habis
+                    </div>
+                    @elseif($catalog->stock < 10)
+                    <div class="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                        Stok Terbatas
+                    </div>
+                    @endif
+                </a>
+                
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
+                            {{ $catalog->bumnagProfile->name }}
+                        </span>
+                        @if($catalog->category)
+                        <span class="text-xs text-gray-500">
+                            {{ $catalog->category }}
+                        </span>
+                        @endif
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-primary transition-colors duration-200">
+                        <a href="{{ route('catalogs.show', $catalog->slug) }}">
+                            {{ $catalog->name }}
+                        </a>
+                    </h3>
+                    
+                    @if($catalog->description)
+                    <p class="text-gray-600 mb-4 line-clamp-3">
+                        {{ Str::limit(strip_tags($catalog->description), 150) }}
+                    </p>
+                    @endif
+                    
+                    <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <div>
+                            <div class="text-2xl font-bold text-primary">
+                                {{ $catalog->formatted_price }}
+                            </div>
+                            @if($catalog->unit && $catalog->price)
+                            <div class="text-xs text-gray-500">
+                                per {{ $catalog->unit }}
+                            </div>
+                            @endif
+                        </div>
+                        <a href="{{ route('catalogs.show', $catalog->slug) }}" 
+                           class="inline-flex items-center px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-600 transition-colors duration-200">
+                            Lihat Detail
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+            @endforeach
+        </div>
+        
+        <div class="text-center mt-12 md:hidden">
+            <a href="{{ route('catalogs.index') }}" 
+               class="inline-flex items-center px-8 py-4 bg-primary text-white font-semibold rounded-full hover:bg-primary-600 transition-all duration-200 shadow-lg hover:shadow-xl">
+                Lihat Semua Produk
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+@endif
+
 <!-- CTA Section -->
 <section class="py-20 bg-gradient-to-r from-primary to-sage-600 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-4xl md:text-5xl font-bold mb-6">
-            Mari Berkembang Bersama
+            {{ $settings['cta_title'] ?? 'Mari Berkembang Bersama' }}
         </h2>
         <p class="text-xl text-white/90 max-w-2xl mx-auto mb-10">
-            Bergabunglah dengan kami dalam membangun ekonomi nagari yang lebih kuat dan berkelanjutan
+            {{ $settings['cta_description'] ?? 'Bergabunglah dengan kami dalam membangun ekonomi nagari' }}
         </p>
         <div class="flex flex-wrap justify-center gap-4">
             <a href="{{ route('home') }}#kontak" 
@@ -393,7 +526,7 @@
             startAutoplay() {
                 this.autoplayInterval = setInterval(() => {
                     this.nextSlide();
-                }, 5000);
+                }, {{ $settings['hero_autoplay_duration'] ?? 5000 }});
             },
             
             resetAutoplay() {

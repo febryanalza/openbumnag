@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 /**
@@ -64,20 +65,44 @@ class BumnagProfile extends Model
 
         static::creating(function ($profile) {
             if (empty($profile->slug)) {
-                $profile->slug = Str::slug($profile->name);
+                $profile->slug = static::generateUniqueSlug($profile->name);
             }
         });
 
         static::updating(function ($profile) {
             if ($profile->isDirty('name') && empty($profile->slug)) {
-                $profile->slug = Str::slug($profile->name);
+                $profile->slug = static::generateUniqueSlug($profile->name, $profile->id);
             }
         });
+    }
+
+    // Helper method to generate unique slug
+    protected static function generateUniqueSlug($name, $ignoreId = null)
+    {
+        $slug = Str::slug($name);
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (static::where('slug', $slug)
+            ->when($ignoreId, fn($query) => $query->where('id', '!=', $ignoreId))
+            ->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
+
+        return $slug;
     }
 
     // Scopes
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Get the catalogs for the BUMNag profile.
+     */
+    public function catalogs(): HasMany
+    {
+        return $this->hasMany(Catalog::class);
     }
 }

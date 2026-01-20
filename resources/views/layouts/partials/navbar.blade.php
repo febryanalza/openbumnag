@@ -9,16 +9,16 @@
             <div class="flex-shrink-0 flex items-center">
                 <a href="{{ route('home') }}" class="flex items-center space-x-3">
                     <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-                        <span class="text-white font-bold text-xl">LM</span>
+                        <span class="text-white font-bold text-xl">{{ strtoupper(substr($globalSettings['site_name'] ?? 'LM', 0, 2)) }}</span>
                     </div>
                     <div class="hidden md:block">
                         <h1 class="text-xl font-bold" 
                             :class="scrolled ? 'text-primary' : 'text-white'">
-                            Lubas Mandiri
+                            {{ $globalSettings['site_name'] ?? 'Lubas Mandiri' }}
                         </h1>
                         <p class="text-xs" 
                            :class="scrolled ? 'text-sage-600' : 'text-white/80'">
-                            BUMNag Desa Lubas
+                            {{ $globalSettings['site_tagline'] ?? 'BUMNag Nagari Lubuk Basung' }}
                         </p>
                     </div>
                 </a>
@@ -35,6 +35,11 @@
                    class="font-medium transition-colors duration-200 hover:text-primary"
                    :class="scrolled ? 'text-gray-700' : 'text-white'">
                     Tentang Kami
+                </a>
+                <a href="{{ route('catalogs.index') }}" 
+                   class="font-medium transition-colors duration-200 hover:text-primary"
+                   :class="scrolled ? 'text-gray-700' : 'text-white'">
+                    Kodai
                 </a>
                 <a href="{{ route('news.index') }}" 
                    class="font-medium transition-colors duration-200 hover:text-primary"
@@ -90,6 +95,10 @@
             <a href="{{ route('about') }}" 
                class="block px-4 py-3 rounded-lg text-gray-700 font-medium hover:bg-primary-50 hover:text-primary transition-colors duration-200">
                 Tentang Kami
+            </a>
+            <a href="{{ route('catalogs.index') }}" 
+               class="block px-4 py-3 rounded-lg text-gray-700 font-medium hover:bg-primary-50 hover:text-primary transition-colors duration-200">
+                Kodai
             </a>
             <a href="{{ route('news.index') }}" 
                class="block px-4 py-3 rounded-lg text-gray-700 font-medium hover:bg-primary-50 hover:text-primary transition-colors duration-200">
