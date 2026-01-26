@@ -4,7 +4,7 @@ namespace App\Filament\Pages\Auth;
 
 use Filament\Notifications\Notification;
 use Filament\Auth\Pages\Login as BaseLogin;
-use Filament\Http\Responses\Auth\Contracts\LoginResponse;
+use Filament\Auth\Http\Responses\Contracts\LoginResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
