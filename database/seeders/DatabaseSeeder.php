@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CategorySeeder::class,
             BumnagProfileSeeder::class,
+            RolePermissionSeeder::class,
+            AssignRolesToUsersSeeder::class,
+            SettingSeeder::class,
         ]);
     }
 }
