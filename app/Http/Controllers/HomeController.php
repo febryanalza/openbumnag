@@ -156,6 +156,37 @@ class HomeController extends Controller
     }
 
     /**
+     * Display single BUMNag profile detail with products.
+     */
+    public function bumnagDetail(string $slug): View
+    {
+        // Get BUMNag profile
+        $bumnag = BumnagProfile::where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        // Get all products/catalogs related to this BUMNag
+        $products = Catalog::where('bumnag_profile_id', $bumnag->id)
+            ->where('is_available', true)
+            ->orderBy('is_featured', 'desc')
+            ->orderBy('name', 'asc')
+            ->paginate(12);
+
+        // Get statistics
+        $stats = [
+            'total_products' => Catalog::where('bumnag_profile_id', $bumnag->id)->count(),
+            'available_products' => Catalog::where('bumnag_profile_id', $bumnag->id)
+                ->where('is_available', true)
+                ->count(),
+            'featured_products' => Catalog::where('bumnag_profile_id', $bumnag->id)
+                ->where('is_featured', true)
+                ->count(),
+        ];
+
+        return view('bumnag.show', compact('bumnag', 'products', 'stats'));
+    }
+
+    /**
      * Display news list page.
      */
     public function news(Request $request): View
@@ -345,29 +376,5 @@ class HomeController extends Controller
 
         return view('reports.show', compact('report'))
             ->with('isPreview', true);
-    }
-
-    /**
-     * Display gallery page.
-     */
-    public function gallery(Request $request): View
-    {
-        $query = Gallery::query();
-
-        // Filter by type
-        if ($request->has('type')) {
-            $query->where('type', $request->input('type'));
-        }
-
-        // Filter by album
-        if ($request->has('album')) {
-            $query->where('album', $request->input('album'));
-        }
-
-        $galleries = $query->orderBy('taken_date', 'desc')
-            ->orderBy('order', 'asc')
-            ->paginate(24);
-
-        return view('gallery', compact('galleries'));
     }
 }

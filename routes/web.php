@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\GalleryController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -29,7 +30,13 @@ Route::get('/debug-hero', function() {
     return view('debug-hero', compact('heroImages'));
 });
 Route::get('/tentang', [HomeController::class, 'about'])->name('about');
-Route::get('/galeri', [HomeController::class, 'gallery'])->name('gallery');
+
+// Gallery Routes
+Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery');
+Route::get('/galeri/{id}', [GalleryController::class, 'show'])->name('gallery.show');
+
+// BUMNag Profile Routes
+Route::get('/bumnag/{slug}', [HomeController::class, 'bumnagDetail'])->name('bumnag.show');
 
 // News Routes
 Route::get('/berita', [HomeController::class, 'news'])->name('news.index');

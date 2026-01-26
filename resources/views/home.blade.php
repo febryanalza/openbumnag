@@ -144,7 +144,7 @@
                         {{ Str::limit(strip_tags($profile->about), 150) }}
                     </p>
                     @endif
-                    <a href="{{ route('about') }}#{{ $profile->slug }}" 
+                    <a href="{{ route('bumnag.show', $profile->slug) }}" 
                        class="inline-flex items-center text-primary font-semibold hover:text-primary-600 transition-colors duration-200">
                         Selengkapnya
                         <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
