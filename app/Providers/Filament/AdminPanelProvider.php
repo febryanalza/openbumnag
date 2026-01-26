@@ -54,9 +54,10 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            ->plugins([
-                FilamentShieldPlugin::make(),
-            ])
+            // Temporarily disable Shield plugin for testing
+            // ->plugins([
+            //     FilamentShieldPlugin::make(),
+            // ])
             ->authMiddleware([
                 Authenticate::class,
             ]);
