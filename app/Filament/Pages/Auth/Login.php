@@ -10,19 +10,12 @@ use Illuminate\Validation\ValidationException;
 class Login extends BaseLogin
 {
     /**
-     * Override the authenticate method to provide better error messages
+     * Override to provide better error messages ONLY when authentication fails
      */
     protected function throwFailureValidationException(): never
     {
-        // Check if data exists
-        if (!isset($this->data['email']) || !isset($this->data['password'])) {
-            Notification::make()
-                ->danger()
-                ->title('Login Gagal')
-                ->body('Mohon isi email dan password dengan benar.')
-                ->persistent()
-                ->send();
-
+        // Only check if data is set
+        if (!isset($this->data['email'])) {
             throw ValidationException::withMessages([
                 'data.email' => 'Email dan password wajib diisi.',
             ]);
@@ -45,21 +38,7 @@ class Login extends BaseLogin
             ]);
         }
 
-        // User exists but password is wrong
-        if (!Hash::check($this->data['password'], $user->password)) {
-            Notification::make()
-                ->danger()
-                ->title('Login Gagal')
-                ->body('Password yang Anda masukkan salah.')
-                ->persistent()
-                ->send();
-
-            throw ValidationException::withMessages([
-                'data.password' => 'Password tidak sesuai.',
-            ]);
-        }
-
-        // Check if user has any roles
+        // Check if user has any roles (only if user exists)
         if (!$user->roles()->exists()) {
             Notification::make()
                 ->danger()
@@ -73,30 +52,16 @@ class Login extends BaseLogin
             ]);
         }
 
-        // Check if user can access panel
-        if (!$user->canAccessPanel(\Filament\Facades\Filament::getCurrentPanel())) {
-            Notification::make()
-                ->danger()
-                ->title('Akses Ditolak')
-                ->body('Anda tidak memiliki izin untuk mengakses panel admin.')
-                ->persistent()
-                ->send();
-
-            throw ValidationException::withMessages([
-                'data.email' => 'Anda tidak memiliki izin untuk mengakses panel ini.',
-            ]);
-        }
-
-        // If we reach here, something else went wrong
+        // Default error message for wrong password
         Notification::make()
             ->danger()
             ->title('Login Gagal')
-            ->body('Terjadi kesalahan saat login. Silakan coba lagi.')
+            ->body('Email atau password yang Anda masukkan salah.')
             ->persistent()
             ->send();
 
         throw ValidationException::withMessages([
-            'data.email' => 'Login gagal. Silakan coba lagi.',
+            'data.email' => 'Email atau password tidak sesuai.',
         ]);
     }
 
