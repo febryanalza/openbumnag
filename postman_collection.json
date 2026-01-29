@@ -1,0 +1,121 @@
+{
+  "info": {
+    "name": "BUMNag Filament Login Test",
+    "description": "Collection untuk testing login Filament admin panel",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Get Login Page (CSRF Token)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://bumnag.fazcreateve.app/admin/login",
+          "protocol": "https",
+          "host": ["bumnag", "fazcreateve", "app"],
+          "path": ["admin", "login"]
+        },
+        "description": "Ambil halaman login untuk mendapatkan CSRF token dan session cookie"
+      },
+      "response": []
+    },
+    {
+      "name": "2. Submit Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf_token}}",
+            "description": "Copy dari response sebelumnya atau dari cookie"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@bumnag.com\",\n  \"password\": \"password123\",\n  \"remember\": false\n}"
+        },
+        "url": {
+          "raw": "https://bumnag.fazcreateve.app/admin/login",
+          "protocol": "https",
+          "host": ["bumnag", "fazcreateve", "app"],
+          "path": ["admin", "login"]
+        },
+        "description": "Submit credentials untuk login"
+      },
+      "response": []
+    },
+    {
+      "name": "3. Get Admin Dashboard",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "https://bumnag.fazcreateve.app/admin",
+          "protocol": "https",
+          "host": ["bumnag", "fazcreateve", "app"],
+          "path": ["admin"]
+        },
+        "description": "Cek apakah sudah login dan bisa akses dashboard"
+      },
+      "response": []
+    },
+    {
+      "name": "4. Livewire Login (Alternative)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Livewire",
+            "value": "true"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fingerprint\": {\n    \"id\": \"test-fingerprint\",\n    \"name\": \"filament.auth.pages.login\",\n    \"locale\": \"id\",\n    \"path\": \"admin/login\",\n    \"method\": \"GET\"\n  },\n  \"serverMemo\": {\n    \"children\": [],\n    \"errors\": [],\n    \"htmlHash\": \"test\",\n    \"data\": {\n      \"data\": {\n        \"email\": \"admin@bumnag.com\",\n        \"password\": \"password123\",\n        \"remember\": false\n      }\n    },\n    \"dataMeta\": [],\n    \"checksum\": \"test\"\n  },\n  \"updates\": [\n    {\n      \"type\": \"callMethod\",\n      \"payload\": {\n        \"id\": \"test\",\n        \"method\": \"authenticate\",\n        \"params\": []\n      }\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "https://bumnag.fazcreateve.app/livewire/update",
+          "protocol": "https",
+          "host": ["bumnag", "fazcreateve", "app"],
+          "path": ["livewire", "update"]
+        },
+        "description": "Test login menggunakan Livewire endpoint"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://bumnag.fazcreateve.app",
+      "type": "string"
+    },
+    {
+      "key": "csrf_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
