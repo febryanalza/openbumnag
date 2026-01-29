@@ -14,61 +14,57 @@ class CatalogPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('catalog.view-any');
+        return $authUser->can('ViewAny:Catalog');
     }
 
     public function view(AuthUser $authUser, Catalog $catalog): bool
     {
-        return $authUser->can('catalog.view');
+        return $authUser->can('View:Catalog');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('catalog.create');
+        return $authUser->can('Create:Catalog');
     }
 
     public function update(AuthUser $authUser, Catalog $catalog): bool
     {
-        return $authUser->can('catalog.update');
+        return $authUser->can('Update:Catalog');
     }
 
     public function delete(AuthUser $authUser, Catalog $catalog): bool
     {
-        return $authUser->can('catalog.delete');
+        return $authUser->can('Delete:Catalog');
     }
 
     public function restore(AuthUser $authUser, Catalog $catalog): bool
     {
-        return $authUser->can('catalog.delete');
+        return $authUser->can('Restore:Catalog');
     }
 
     public function forceDelete(AuthUser $authUser, Catalog $catalog): bool
     {
-        return $authUser->can('catalog.delete');
+        return $authUser->can('ForceDelete:Catalog');
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('catalog.delete');
+        return $authUser->can('ForceDeleteAny:Catalog');
     }
 
     public function restoreAny(AuthUser $authUser): bool
     {
-        return $authUser->can('catalog.delete');
-    }
-
-    public function deleteAny(AuthUser $authUser): bool
-    {
-        return $authUser->can('catalog.delete');
+        return $authUser->can('RestoreAny:Catalog');
     }
 
     public function replicate(AuthUser $authUser, Catalog $catalog): bool
     {
-        return $authUser->can('catalog.create');
+        return $authUser->can('Replicate:Catalog');
     }
 
     public function reorder(AuthUser $authUser): bool
     {
-        return $authUser->can('catalog.update');
+        return $authUser->can('Reorder:Catalog');
     }
+
 }
