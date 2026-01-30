@@ -59,6 +59,31 @@ Route::middleware('web')->group(function() {
         
         return response()->json(['success' => false, 'error' => 'Invalid credentials'], 401);
     });
+    
+    // EMERGENCY ADMIN ACCESS - Auto login as admin (REMOVE AFTER FIXING!)
+    Route::get('/debug/force-login/{email?}', function($email = 'admin@bumnag.com') {
+        $user = \App\Models\User::where('email', $email)->first();
+        
+        if (!$user) {
+            return response()->json([
+                'error' => 'User not found',
+                'email' => $email,
+                'available_users' => \App\Models\User::pluck('email'),
+            ], 404);
+        }
+        
+        // Force login
+        \Illuminate\Support\Facades\Auth::login($user, true);
+        
+        // Regenerate session (security)
+        request()->session()->regenerate();
+        
+        if (\Illuminate\Support\Facades\Auth::check()) {
+            return redirect('/admin')->with('success', 'Emergency login successful!');
+        }
+        
+        return response()->json(['error' => 'Login failed'], 500);
+    });
 });
 
 // Public Routes

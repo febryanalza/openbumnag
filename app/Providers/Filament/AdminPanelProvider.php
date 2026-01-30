@@ -36,7 +36,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login(Login::class)
+            // ->login(Login::class) // TEMPORARY DISABLED - Using default Filament login
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -62,7 +62,7 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->plugins([
-                FilamentShieldPlugin::make(),
+                // FilamentShieldPlugin::make(), // TEMPORARY DISABLED for debugging
             ])
             ->authMiddleware([
                 Authenticate::class,
