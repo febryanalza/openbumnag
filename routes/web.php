@@ -1,9 +1,38 @@
 <?php
 
+use App\Http\Controllers\DebugController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\GalleryController;
 use Illuminate\Support\Facades\Route;
+
+// Debug Routes (HANYA UNTUK DEBUGGING - HAPUS SETELAH PRODUCTION STABIL)
+Route::get('/debug', [DebugController::class, 'index']);
+Route::post('/debug/test-login', [DebugController::class, 'testLogin']);
+Route::get('/debug/test-session', [DebugController::class, 'testSession']);
+
+// Alternative Login Test Route
+Route::get('/debug/login-test', function() {
+    return view('debug-login-test');
+});
+
+// Manual Admin Login Route (EMERGENCY ONLY)
+Route::post('/debug/emergency-login', function(\Illuminate\Http\Request $request) {
+    $email = $request->input('email');
+    $password = $request->input('password');
+    
+    $user = \App\Models\User::where('email', $email)->first();
+    
+    if ($user && \Illuminate\Support\Facades\Hash::check($password, $user->password)) {
+        \Illuminate\Support\Facades\Auth::login($user, true);
+        
+        if (\Illuminate\Support\Facades\Auth::check()) {
+            return redirect('/admin');
+        }
+    }
+    
+    return response()->json(['error' => 'Login failed'], 401);
+});
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
