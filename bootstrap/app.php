@@ -12,6 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
+        
+        // Global debug middleware for all web requests (TEMPORARY - REMOVE AFTER DEBUGGING)
+        $middleware->web(append: [
+            \App\Http\Middleware\DebugFilamentLogin::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

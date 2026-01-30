@@ -24,6 +24,21 @@ Route::middleware('web')->group(function() {
     Route::get('/debug/session/check', [SessionDebugController::class, 'checkAuth']);
     Route::get('/debug/session/cookies', [SessionDebugController::class, 'testCookies']);
     
+    // Verify Filament configuration
+    Route::get('/debug/filament/config', function() {
+        $panel = \Filament\Facades\Filament::getCurrentPanel() ?? \Filament\Facades\Filament::getPanel('admin');
+        
+        return response()->json([
+            'panel_id' => $panel->getId(),
+            'panel_path' => $panel->getPath(),
+            'login_page' => $panel->getLoginRouteSlug(),
+            'login_class' => get_class($panel->getLogin()),
+            'middleware' => array_map(fn($m) => is_string($m) ? $m : get_class($m), $panel->getMiddleware()),
+            'auth_middleware' => array_map(fn($m) => is_string($m) ? $m : get_class($m), $panel->getAuthMiddleware()),
+            'custom_login_registered' => $panel->getLogin() instanceof \App\Filament\Pages\Auth\Login,
+        ]);
+    });
+    
     // Emergency Login (dengan CSRF protection)
     Route::post('/debug/emergency-login', function(\Illuminate\Http\Request $request) {
         $email = $request->input('email');

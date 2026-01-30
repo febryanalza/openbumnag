@@ -19,9 +19,21 @@ class Login extends BaseLogin
      */
     public function authenticate(): ?LoginResponse
     {
+        $debugFile = storage_path('logs/filament-login-direct.log');
+        $timestamp = date('Y-m-d H:i:s');
+        
+        // Direct file write (bypass Laravel log)
+        file_put_contents($debugFile, "\n=== LOGIN ATTEMPT ===\n", FILE_APPEND);
+        file_put_contents($debugFile, "[$timestamp] authenticate() method CALLED\n", FILE_APPEND);
+        
         try {
+            $formData = $this->form->getState();
+            
+            file_put_contents($debugFile, "[$timestamp] Email: {$formData['email']}\n", FILE_APPEND);
+            file_put_contents($debugFile, "[$timestamp] Session Before: " . session()->getId() . "\n", FILE_APPEND);
+            
             Log::info('🔐 [FILAMENT LOGIN] Attempting authentication', [
-                'email' => $this->form->getState()['email'] ?? 'not provided',
+                'email' => $formData['email'] ?? 'not provided',
                 'session_id' => session()->getId(),
                 'user_ip' => request()->ip(),
                 'user_agent' => request()->userAgent(),
@@ -32,6 +44,9 @@ class Login extends BaseLogin
             // Call parent authenticate
             $response = parent::authenticate();
             
+            file_put_contents($debugFile, "[$timestamp] AUTH SUCCESS - User ID: " . auth()->id() . "\n", FILE_APPEND);
+            file_put_contents($debugFile, "[$timestamp] Session After: " . session()->getId() . "\n", FILE_APPEND);
+            
             Log::info('✅ [FILAMENT LOGIN] Authentication successful', [
                 'user_id' => auth()->id(),
                 'user_email' => auth()->user()?->email,
@@ -41,6 +56,9 @@ class Login extends BaseLogin
 
             return $response;
         } catch (\Exception $e) {
+            file_put_contents($debugFile, "[$timestamp] ERROR: {$e->getMessage()}\n", FILE_APPEND);
+            file_put_contents($debugFile, "[$timestamp] File: {$e->getFile()}:{$e->getLine()}\n", FILE_APPEND);
+            
             Log::error('❌ [FILAMENT LOGIN] Authentication failed', [
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
