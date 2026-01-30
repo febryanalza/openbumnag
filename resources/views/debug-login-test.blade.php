@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Debug Login Test - BUMNag</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
@@ -85,13 +86,42 @@
     </div>
 
     <script>
+        // Get CSRF token
+        function getCsrfToken() {
+            return document.querySelector('meta[name="csrf-token"]')?.content || '';
+        }
+
         async function getSystemInfo() {
             const resultDiv = document.getElementById('systemInfo');
             resultDiv.style.display = 'block';
             resultDiv.innerHTML = '<div class="loading">Loading system information...</div>';
             
             try {
-                const response = await fetch('/debug');
+                const response = await fetch('/debug', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                });
+                
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${text.substring(0, 200)}`);
+                }
+                , {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                });
+                
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${text.substring(0, 200)}`);
+                }
+                
                 const data = await response.json();
                 
                 resultDiv.className = 'result success';
@@ -127,10 +157,18 @@
         }
 
         async function testLogin() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const resultDiv = document.getElementById('loginTest');
-            
+            const email =Accept': 'application/json',
+                        'X-CSRF-TOKEN': getCsrfToken(),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ email, password })
+                });
+                
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${text.substring(0, 200)}`);
+                }
             resultDiv.style.display = 'block';
             resultDiv.innerHTML = '<div class="loading">Testing login credentials...</div>';
             
@@ -172,8 +210,11 @@
             const password = document.getElementById('emergencyPassword').value;
             const resultDiv = document.getElementById('emergencyResult');
             
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<div class="loading">Attempting emergency login...</div>';
+            resultDiv.styAccept': 'application/json',
+                        'X-CSRF-TOKEN': getCsrfToken(),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'.innerHTML = '<div class="loading">Attempting emergency login...</div>';
             
             try {
                 const response = await fetch('/debug/emergency-login', {

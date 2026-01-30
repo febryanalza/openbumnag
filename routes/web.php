@@ -7,31 +7,34 @@ use App\Http\Controllers\GalleryController;
 use Illuminate\Support\Facades\Route;
 
 // Debug Routes (HANYA UNTUK DEBUGGING - HAPUS SETELAH PRODUCTION STABIL)
-Route::get('/debug', [DebugController::class, 'index']);
-Route::post('/debug/test-login', [DebugController::class, 'testLogin']);
-Route::get('/debug/test-session', [DebugController::class, 'testSession']);
-
-// Alternative Login Test Route
-Route::get('/debug/login-test', function() {
-    return view('debug-login-test');
-});
-
-// Manual Admin Login Route (EMERGENCY ONLY)
-Route::post('/debug/emergency-login', function(\Illuminate\Http\Request $request) {
-    $email = $request->input('email');
-    $password = $request->input('password');
+Route::middleware('web')->group(function() {
+    Route::get('/debug', [DebugController::class, 'index']);
+    Route::post('/debug/test-login', [DebugController::class, 'testLogin']);
+    Route::get('/debug/test-session', [DebugController::class, 'testSession']);
+    Route::get('/debug/login-test', function() {
+        return view('debug-login-test');
+    });
     
-    $user = \App\Models\User::where('email', $email)->first();
-    
-    if ($user && \Illuminate\Support\Facades\Hash::check($password, $user->password)) {
-        \Illuminate\Support\Facades\Auth::login($user, true);
+    // Emergency Login (dengan CSRF protection)
+    Route::post('/debug/emergency-login', function(\Illuminate\Http\Request $request) {
+        $email = $request->input('email');
+        $password = $request->input('password');
         
-        if (\Illuminate\Support\Facades\Auth::check()) {
-            return redirect('/admin');
+        $user = \App\Models\User::where('email', $email)->first();
+        
+        if ($user && \Illuminate\Support\Facades\Hash::check($password, $user->password)) {
+            \Illuminate\Support\Facades\Auth::login($user, true);
+            
+            if (\Illuminate\Support\Facades\Auth::check()) {
+                return response()->json([
+                    'success' => true,
+                    'redirect' => url('/admin'),
+                ]);
+            }
         }
-    }
-    
-    return response()->json(['error' => 'Login failed'], 401);
+        
+        return response()->json(['success' => false, 'error' => 'Invalid credentials'], 401);
+    });
 });
 
 // Public Routes
