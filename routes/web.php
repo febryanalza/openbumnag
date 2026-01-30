@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DebugController;
+use App\Http\Controllers\SessionDebugController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\GalleryController;
@@ -8,12 +9,19 @@ use Illuminate\Support\Facades\Route;
 
 // Debug Routes (HANYA UNTUK DEBUGGING - HAPUS SETELAH PRODUCTION STABIL)
 Route::middleware('web')->group(function() {
+    // Original debug routes
     Route::get('/debug', [DebugController::class, 'index']);
     Route::post('/debug/test-login', [DebugController::class, 'testLogin']);
     Route::get('/debug/test-session', [DebugController::class, 'testSession']);
     Route::get('/debug/login-test', function() {
         return view('debug-login-test');
     });
+    
+    // NEW: Session debugging routes
+    Route::get('/debug/session/persistence', [SessionDebugController::class, 'testPersistence']);
+    Route::post('/debug/session/auth', [SessionDebugController::class, 'testAuth']);
+    Route::get('/debug/session/middleware', [SessionDebugController::class, 'testMiddleware']);
+    Route::get('/debug/session/check', [SessionDebugController::class, 'checkAuth']);
     
     // Emergency Login (dengan CSRF protection)
     Route::post('/debug/emergency-login', function(\Illuminate\Http\Request $request) {
