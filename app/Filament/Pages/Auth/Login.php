@@ -15,19 +15,6 @@ use Illuminate\Support\Facades\Log;
 class Login extends BaseLogin
 {
     /**
-     * Static boot - Called when class is first loaded
-     */
-    public static function boot()
-    {
-        parent::boot();
-        
-        Log::info('🟢 [LOGIN CLASS] Static boot called', [
-            'class' => static::class,
-            'timestamp' => now()->format('Y-m-d H:i:s'),
-        ]);
-    }
-
-    /**
      * Mount - Called when Livewire component is initialized
      */
     public function mount(): void
@@ -44,26 +31,7 @@ class Login extends BaseLogin
         if (is_writable(dirname($debugFile))) {
             file_put_contents($debugFile, "\n=== LOGIN PAGE MOUNTED ===\n", FILE_APPEND);
             file_put_contents($debugFile, "[" . date('Y-m-d H:i:s') . "] Page rendered\n", FILE_APPEND);
-        }
-    }
-
-    /**
-     * Constructor - Log when class is instantiated
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        
-        Log::info('🔵 [LOGIN CLASS] Constructor called', [
-            'class' => static::class,
-            'timestamp' => now()->format('Y-m-d H:i:s'),
-        ]);
-        
-        $debugFile = storage_path('logs/filament-login-direct.log');
-        if (is_writable(dirname($debugFile))) {
-            file_put_contents($debugFile, "\n=== LOGIN CLASS LOADED ===\n", FILE_APPEND);
-            file_put_contents($debugFile, "[" . date('Y-m-d H:i:s') . "] Custom Login class instantiated\n", FILE_APPEND);
-            file_put_contents($debugFile, "[" . date('Y-m-d H:i:s') . "] Class: " . static::class . "\n", FILE_APPEND);
+            file_put_contents($debugFile, "[" . date('Y-m-d H:i:s') . "] Session: " . session()->getId() . "\n", FILE_APPEND);
         }
     }
 
