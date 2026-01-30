@@ -12,7 +12,13 @@ git pull origin main
 echo "[2/5] Clearing caches..."
 php artisan config:clear
 php artisan route:clear
+php artisan view:clear
 php artisan optimize:clear
+
+# Check if our middleware is registered
+echo ""
+echo "Checking middleware registration..."
+php artisan route:list | grep -i "admin/login" || echo "⚠️  No admin routes found"
 
 # Ensure log files exist and are writable
 echo "[3/5] Preparing log files..."
@@ -27,7 +33,12 @@ ls -lh storage/logs/*.log
 # Check Filament configuration
 echo ""
 echo "[4/5] Checking Filament configuration..."
-curl -s https://bumnag.fazcreateve.app/debug/filament/config | jq '.'
+echo "Raw response:"
+FILAMENT_CONFIG=$(curl -s https://bumnag.fazcreateve.app/debug/filament/config)
+echo "$FILAMENT_CONFIG"
+echo ""
+echo "Parsed (if JSON):"
+echo "$FILAMENT_CONFIG" | jq '.' 2>/dev/null || echo "⚠️  Not valid JSON - might be an error page"
 
 echo ""
 echo "[5/5] Test Instructions"

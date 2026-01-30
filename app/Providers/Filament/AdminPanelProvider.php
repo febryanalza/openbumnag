@@ -25,6 +25,12 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        // Log that AdminPanelProvider is being configured
+        $logFile = storage_path('logs/filament-provider.log');
+        $timestamp = date('Y-m-d H:i:s');
+        file_put_contents($logFile, "\n=== ADMIN PANEL PROVIDER CONFIGURED ===\n", FILE_APPEND);
+        file_put_contents($logFile, "[$timestamp] Login class: " . Login::class . "\n", FILE_APPEND);
+        
         return $panel
             ->default()
             ->id('admin')

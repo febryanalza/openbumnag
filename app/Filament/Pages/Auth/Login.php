@@ -15,6 +15,20 @@ use Illuminate\Support\Facades\Log;
 class Login extends BaseLogin
 {
     /**
+     * Constructor - Log when class is instantiated
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        
+        $debugFile = storage_path('logs/filament-login-direct.log');
+        $timestamp = date('Y-m-d H:i:s');
+        file_put_contents($debugFile, "\n=== LOGIN CLASS LOADED ===\n", FILE_APPEND);
+        file_put_contents($debugFile, "[$timestamp] Custom Login class instantiated\n", FILE_APPEND);
+        file_put_contents($debugFile, "[$timestamp] Class: " . static::class . "\n", FILE_APPEND);
+    }
+
+    /**
      * Override authenticate untuk debugging
      */
     public function authenticate(): ?LoginResponse
