@@ -22,6 +22,7 @@ Route::middleware('web')->group(function() {
     Route::post('/debug/session/auth', [SessionDebugController::class, 'testAuth']);
     Route::get('/debug/session/middleware', [SessionDebugController::class, 'testMiddleware']);
     Route::get('/debug/session/check', [SessionDebugController::class, 'checkAuth']);
+    Route::get('/debug/session/cookies', [SessionDebugController::class, 'testCookies']);
     
     // Emergency Login (dengan CSRF protection)
     Route::post('/debug/emergency-login', function(\Illuminate\Http\Request $request) {

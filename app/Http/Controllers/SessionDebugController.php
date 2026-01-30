@@ -171,4 +171,62 @@ class SessionDebugController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Test cookie setting - returns response with explicit cookie
+     */
+    public function testCookies(Request $request)
+    {
+        $sessionId = session()->getId();
+        
+        // Set test counter
+        $counter = session('test_counter', 0) + 1;
+        session(['test_counter' => $counter]);
+        
+        // Get session config
+        $sessionConfig = [
+            'driver' => config('session.driver'),
+            'cookie' => config('session.cookie'),
+            'domain' => config('session.domain'),
+            'secure' => config('session.secure'),
+            'same_site' => config('session.same_site'),
+            'http_only' => config('session.http_only'),
+            'lifetime' => config('session.lifetime'),
+        ];
+        
+        // Check proxy headers
+        $proxyHeaders = [
+            'HTTP_X_FORWARDED_FOR' => $request->header('X-Forwarded-For'),
+            'HTTP_X_FORWARDED_PROTO' => $request->header('X-Forwarded-Proto'),
+            'HTTP_X_FORWARDED_HOST' => $request->header('X-Forwarded-Host'),
+            'HTTP_X_FORWARDED_PORT' => $request->header('X-Forwarded-Port'),
+            'REMOTE_ADDR' => $request->ip(),
+            'SERVER_NAME' => $request->server('SERVER_NAME'),
+            'HTTPS' => $request->secure() ? 'on' : 'off',
+        ];
+        
+        return response()->json([
+            'test' => 'Cookie Setting Test',
+            'session_id' => $sessionId,
+            'counter' => $counter,
+            'session_config' => $sessionConfig,
+            'proxy_headers' => $proxyHeaders,
+            'request_info' => [
+                'scheme' => $request->getScheme(),
+                'host' => $request->getHost(),
+                'is_secure' => $request->isSecure(),
+                'url' => $request->url(),
+            ],
+            'instructions' => 'Check Set-Cookie header in response. Call multiple times to test counter increment.',
+        ])->cookie(
+            'test_manual_cookie',
+            'test_value_' . time(),
+            60,
+            '/',
+            config('session.domain'),
+            config('session.secure'),
+            true
+        );
+    }
 }
+
