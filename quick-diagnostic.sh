@@ -53,9 +53,30 @@ fi
 
 echo ""
 echo ""
-echo "6. Manual cache clear and test..."
-php artisan optimize:clear
+echo "6. Fixing log file permissions..."
+touch storage/logs/filament-provider.log
+touch storage/logs/filament-login-direct.log
+touch storage/logs/filament-debug.log
+chmod 666 storage/logs/filament-*.log
+echo "✅ Log files created and writable"
+ls -lh storage/logs/filament-*.log
+
+echo ""
+echo "7. Manual cache clear and test..."
+php artisan optimize:clear 2>&1 | head -5
 echo ""
 
-echo "Now test login at: https://bumnag.fazcreateve.app/admin/login"
-echo "Then check: cat storage/logs/filament-*.log"
+echo "8. Check Laravel log for provider boot..."
+tail -10 storage/logs/laravel.log | grep -i "ADMIN PANEL PROVIDER\|LOGIN CLASS" || echo "⚠️  No provider/login logs yet"
+
+echo ""
+echo "============================================"
+echo "NOW TEST:"
+echo "1. Open: https://bumnag.fazcreateve.app/admin/login"
+echo "2. Login with admin@bumnag.com / bumagbersatu24"
+echo "3. Then run:"
+echo ""
+echo "   tail -50 storage/logs/laravel.log | grep -i 'LOGIN\|AUTH\|ADMIN'"
+echo "   cat storage/logs/filament-login-direct.log"
+echo "   tail -20 storage/logs/filament-debug.log"
+echo "============================================"

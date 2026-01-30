@@ -19,17 +19,18 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Support\Facades\Log;
 use App\Filament\Pages\Auth\Login;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        // Log that AdminPanelProvider is being configured
-        $logFile = storage_path('logs/filament-provider.log');
-        $timestamp = date('Y-m-d H:i:s');
-        file_put_contents($logFile, "\n=== ADMIN PANEL PROVIDER CONFIGURED ===\n", FILE_APPEND);
-        file_put_contents($logFile, "[$timestamp] Login class: " . Login::class . "\n", FILE_APPEND);
+        // Log that AdminPanelProvider is being configured (use Laravel Log to avoid permission issues)
+        Log::info('🔵 [ADMIN PANEL PROVIDER] Configuring panel', [
+            'login_class' => Login::class,
+            'timestamp' => now()->format('Y-m-d H:i:s'),
+        ]);
         
         return $panel
             ->default()
