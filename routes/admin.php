@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\TeamMemberController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -160,6 +161,21 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
         Route::patch('/{id}/restore', [ContactController::class, 'restore'])->name('restore');
         Route::delete('/{id}/force', [ContactController::class, 'forceDelete'])->name('force-delete');
         Route::post('/bulk-action', [ContactController::class, 'bulkAction'])->name('bulk-action');
+    });
+    
+    // Team Members Management
+    Route::middleware(['check.permission:manage_team_members'])->prefix('team-members')->name('team-members.')->group(function () {
+        Route::get('/', [TeamMemberController::class, 'index'])->name('index');
+        Route::get('/create', [TeamMemberController::class, 'create'])->name('create');
+        Route::post('/', [TeamMemberController::class, 'store'])->name('store');
+        Route::get('/{teamMember}', [TeamMemberController::class, 'show'])->name('show')->withTrashed();
+        Route::get('/{teamMember}/edit', [TeamMemberController::class, 'edit'])->name('edit');
+        Route::put('/{teamMember}', [TeamMemberController::class, 'update'])->name('update');
+        Route::delete('/{teamMember}', [TeamMemberController::class, 'destroy'])->name('destroy');
+        Route::patch('/{id}/restore', [TeamMemberController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/force', [TeamMemberController::class, 'forceDelete'])->name('force-delete');
+        Route::post('/bulk-action', [TeamMemberController::class, 'bulkAction'])->name('bulk-action');
+        Route::post('/update-order', [TeamMemberController::class, 'updateOrder'])->name('update-order');
     });
     
     // Settings (super admin only)
