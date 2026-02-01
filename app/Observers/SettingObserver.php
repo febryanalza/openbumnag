@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Helpers\SettingHelper;
 use App\Models\Setting;
+use App\Services\CacheService;
 use Illuminate\Support\Facades\Cache;
 
 class SettingObserver
@@ -37,7 +38,10 @@ class SettingObserver
      */
     protected function clearCache(Setting $setting): void
     {
-        Cache::forget("setting_{$setting->key}");
+        // Clear the centralized settings cache
+        CacheService::clearSettingsCache();
+        
+        // Also clear group cache
         if ($setting->group) {
             Cache::forget("settings_group_{$setting->group}");
         }

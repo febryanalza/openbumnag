@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\CacheService;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -70,10 +71,8 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::all()->groupBy(function ($permission) {
-            $parts = explode('.', $permission->name);
-            return $parts[0] ?? 'other';
-        });
+        // Use cached grouped permissions
+        $permissions = CacheService::getGroupedPermissions();
 
         return view('admin.roles.create', compact('permissions'))
             ->with('permissionGroups', $this->permissionGroups);
@@ -108,6 +107,8 @@ class RoleController extends Controller
 
         // Clear permission cache
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        CacheService::clearRolesCache();
+        CacheService::clearPermissionsCache();
 
         return redirect()
             ->route('admin.roles.index')
@@ -135,10 +136,8 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        $permissions = Permission::all()->groupBy(function ($permission) {
-            $parts = explode('.', $permission->name);
-            return $parts[0] ?? 'other';
-        });
+        // Use cached grouped permissions
+        $permissions = CacheService::getGroupedPermissions();
 
         $rolePermissionIds = $role->permissions->pluck('id')->toArray();
 
@@ -186,6 +185,8 @@ class RoleController extends Controller
 
         // Clear permission cache
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        CacheService::clearRolesCache();
+        CacheService::clearPermissionsCache();
 
         return redirect()
             ->route('admin.roles.index')
@@ -213,6 +214,8 @@ class RoleController extends Controller
 
         // Clear permission cache
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        CacheService::clearRolesCache();
+        CacheService::clearPermissionsCache();
 
         return redirect()
             ->route('admin.roles.index')
@@ -259,6 +262,8 @@ class RoleController extends Controller
 
         // Clear permission cache
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        CacheService::clearRolesCache();
+        CacheService::clearPermissionsCache();
 
         if (!empty($errors)) {
             return back()
@@ -296,6 +301,7 @@ class RoleController extends Controller
 
         // Clear permission cache
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        CacheService::clearRolesCache();
 
         return redirect()
             ->route('admin.roles.show', $role)
@@ -324,6 +330,8 @@ class RoleController extends Controller
 
         // Clear permission cache
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        CacheService::clearRolesCache();
+        CacheService::clearPermissionsCache();
 
         return redirect()
             ->route('admin.roles.edit', $newRole)

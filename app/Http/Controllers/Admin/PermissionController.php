@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\CacheService;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -51,18 +52,11 @@ class PermissionController extends Controller
 
         $permissions = $query->paginate(20)->withQueryString();
 
-        // Get grouped permissions for overview
-        $groupedPermissions = Permission::all()->groupBy(function ($permission) {
-            $parts = explode('.', $permission->name);
-            return $parts[0] ?? 'other';
-        });
+        // Get grouped permissions for overview (cached)
+        $groupedPermissions = CacheService::getGroupedPermissions();
 
-        // Stats
-        $stats = [
-            'total' => Permission::count(),
-            'groups' => count($groupedPermissions),
-            'roles_count' => Role::count(),
-        ];
+        // Stats (cached)
+        $stats = CacheService::getPermissionStats();
 
         return view('admin.permissions.index', compact('permissions', 'groupedPermissions', 'stats'))
             ->with('permissionGroups', $this->permissionGroups);
@@ -98,6 +92,7 @@ class PermissionController extends Controller
 
         // Clear permission cache
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        CacheService::clearPermissionsCache();
 
         return redirect()
             ->route('admin.permissions.index')
@@ -142,6 +137,7 @@ class PermissionController extends Controller
 
         // Clear permission cache
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        CacheService::clearPermissionsCache();
 
         return redirect()
             ->route('admin.permissions.index')
@@ -161,6 +157,7 @@ class PermissionController extends Controller
 
         // Clear permission cache
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        CacheService::clearPermissionsCache();
 
         return redirect()
             ->route('admin.permissions.index')
@@ -198,6 +195,7 @@ class PermissionController extends Controller
 
         // Clear permission cache
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        CacheService::clearPermissionsCache();
 
         return back()->with('success', $message);
     }
@@ -226,6 +224,8 @@ class PermissionController extends Controller
 
         // Clear permission cache
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        CacheService::clearPermissionsCache();
+        CacheService::clearRolesCache();
 
         return redirect()
             ->route('admin.permissions.show', $permission)

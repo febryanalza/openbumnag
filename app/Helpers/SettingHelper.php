@@ -3,18 +3,18 @@
 namespace App\Helpers;
 
 use App\Models\Setting;
+use App\Services\CacheService;
 use Illuminate\Support\Facades\Cache;
 
 class SettingHelper
 {
     /**
      * Get setting value by key with caching
+     * Uses CacheService for better performance by loading all settings at once
      */
     public static function get(string $key, mixed $default = null): mixed
     {
-        return Cache::remember("setting_{$key}", 3600, function () use ($key, $default) {
-            return Setting::get($key, $default);
-        });
+        return CacheService::getSetting($key, $default);
     }
 
     /**
@@ -36,6 +36,7 @@ class SettingHelper
     public static function set(string $key, mixed $value, string $type = 'text'): bool
     {
         Cache::forget("setting_{$key}");
+        CacheService::clearSettingsCache();
         Setting::set($key, $value, $type);
         return true;
     }
@@ -45,11 +46,7 @@ class SettingHelper
      */
     public static function clearCache(): void
     {
-        // Get all settings keys and forget each cache individually
-        $settings = Setting::all();
-        foreach ($settings as $setting) {
-            Cache::forget("setting_{$setting->key}");
-        }
+        CacheService::clearSettingsCache();
         
         // Also clear group caches
         $groups = Setting::distinct('group')->pluck('group');
