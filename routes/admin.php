@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\BumnagProfileController;
 use App\Http\Controllers\Admin\CatalogController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\NewsController;
@@ -133,10 +135,31 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
     
     // Categories Management
     Route::middleware(['check.permission:manage_categories'])->prefix('categories')->name('categories.')->group(function () {
-        Route::get('/', function() {
-            return view('admin.coming-soon', ['title' => 'Category Management']);
-        })->name('index');
-        // Add more category routes here
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
+        Route::get('/create', [CategoryController::class, 'create'])->name('create');
+        Route::post('/', [CategoryController::class, 'store'])->name('store');
+        Route::get('/{category}', [CategoryController::class, 'show'])->name('show')->withTrashed();
+        Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('edit');
+        Route::put('/{category}', [CategoryController::class, 'update'])->name('update');
+        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
+        Route::patch('/{id}/restore', [CategoryController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/force', [CategoryController::class, 'forceDelete'])->name('force-delete');
+        Route::post('/bulk-action', [CategoryController::class, 'bulkAction'])->name('bulk-action');
+        Route::post('/update-order', [CategoryController::class, 'updateOrder'])->name('update-order');
+    });
+    
+    // Contacts Management
+    Route::middleware(['check.permission:manage_contacts'])->prefix('contacts')->name('contacts.')->group(function () {
+        Route::get('/', [ContactController::class, 'index'])->name('index');
+        Route::get('/export', [ContactController::class, 'export'])->name('export');
+        Route::get('/{contact}', [ContactController::class, 'show'])->name('show')->withTrashed();
+        Route::get('/{contact}/reply', [ContactController::class, 'replyForm'])->name('reply-form');
+        Route::post('/{contact}/reply', [ContactController::class, 'reply'])->name('reply');
+        Route::patch('/{contact}/status', [ContactController::class, 'updateStatus'])->name('update-status');
+        Route::delete('/{contact}', [ContactController::class, 'destroy'])->name('destroy');
+        Route::patch('/{id}/restore', [ContactController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/force', [ContactController::class, 'forceDelete'])->name('force-delete');
+        Route::post('/bulk-action', [ContactController::class, 'bulkAction'])->name('bulk-action');
     });
     
     // Settings (super admin only)
