@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\BumnagProfileController;
 use App\Http\Controllers\Admin\CatalogController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\NewsController;
+use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -30,10 +32,30 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
     
     // News Management (requires permission)
     Route::middleware(['check.permission:manage_news'])->prefix('news')->name('news.')->group(function () {
-        Route::get('/', function() {
-            return view('admin.coming-soon', ['title' => 'News Management']);
-        })->name('index');
-        // Add more news routes here (create, edit, delete, etc.)
+        Route::get('/', [NewsController::class, 'index'])->name('index');
+        Route::get('/create', [NewsController::class, 'create'])->name('create');
+        Route::post('/', [NewsController::class, 'store'])->name('store');
+        Route::get('/{news}', [NewsController::class, 'show'])->name('show')->withTrashed();
+        Route::get('/{news}/edit', [NewsController::class, 'edit'])->name('edit');
+        Route::put('/{news}', [NewsController::class, 'update'])->name('update');
+        Route::delete('/{news}', [NewsController::class, 'destroy'])->name('destroy');
+        Route::patch('/{id}/restore', [NewsController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/force', [NewsController::class, 'forceDelete'])->name('force-delete');
+        Route::post('/bulk-action', [NewsController::class, 'bulkAction'])->name('bulk-action');
+    });
+
+    // Promotions Management (requires permission)
+    Route::middleware(['check.permission:manage_news'])->prefix('promotions')->name('promotions.')->group(function () {
+        Route::get('/', [PromotionController::class, 'index'])->name('index');
+        Route::get('/create', [PromotionController::class, 'create'])->name('create');
+        Route::post('/', [PromotionController::class, 'store'])->name('store');
+        Route::get('/{promotion}', [PromotionController::class, 'show'])->name('show')->withTrashed();
+        Route::get('/{promotion}/edit', [PromotionController::class, 'edit'])->name('edit');
+        Route::put('/{promotion}', [PromotionController::class, 'update'])->name('update');
+        Route::delete('/{promotion}', [PromotionController::class, 'destroy'])->name('destroy');
+        Route::patch('/{id}/restore', [PromotionController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/force', [PromotionController::class, 'forceDelete'])->name('force-delete');
+        Route::post('/bulk-action', [PromotionController::class, 'bulkAction'])->name('bulk-action');
     });
     
     // Catalogs Management (requires permission)

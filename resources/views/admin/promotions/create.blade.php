@@ -1,0 +1,291 @@
+@extends('admin.layouts.app')
+
+@section('title', 'Tambah Promosi')
+@section('page-title', 'Tambah Promosi')
+
+@section('content')
+<div class="max-w-5xl mx-auto">
+    <!-- Breadcrumb -->
+    <nav class="mb-6">
+        <ol class="flex items-center space-x-2 text-sm text-gray-500">
+            <li><a href="{{ route('admin.dashboard') }}" class="hover:text-primary-600">Dashboard</a></li>
+            <li><span class="mx-2">/</span></li>
+            <li><a href="{{ route('admin.promotions.index') }}" class="hover:text-primary-600">Promosi</a></li>
+            <li><span class="mx-2">/</span></li>
+            <li class="text-gray-900 font-medium">Tambah</li>
+        </ol>
+    </nav>
+
+    <form method="POST" action="{{ route('admin.promotions.store') }}" enctype="multipart/form-data" class="space-y-6">
+        @csrf
+
+        <!-- Basic Info Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Informasi Dasar</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Title -->
+                <div class="md:col-span-2">
+                    <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Judul Promosi <span class="text-red-500">*</span></label>
+                    <input type="text" name="title" id="title" value="{{ old('title') }}" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('title') border-red-500 @enderror"
+                        placeholder="Masukkan judul promosi">
+                    @error('title')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Slug -->
+                <div class="md:col-span-2">
+                    <label for="slug" class="block text-sm font-medium text-gray-700 mb-1">Slug</label>
+                    <input type="text" name="slug" id="slug" value="{{ old('slug') }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        placeholder="auto-generated-from-title">
+                    <p class="mt-1 text-sm text-gray-500">Biarkan kosong untuk generate otomatis</p>
+                </div>
+
+                <!-- Category -->
+                <div>
+                    <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                    <select name="category_id" id="category_id"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        <option value="">Pilih Kategori</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Promotion Type -->
+                <div>
+                    <label for="promotion_type" class="block text-sm font-medium text-gray-700 mb-1">Tipe Promosi <span class="text-red-500">*</span></label>
+                    <select name="promotion_type" id="promotion_type" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        @foreach($promotionTypes as $key => $label)
+                            <option value="{{ $key }}" {{ old('promotion_type', 'product') === $key ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Excerpt -->
+                <div class="md:col-span-2">
+                    <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-1">Ringkasan</label>
+                    <textarea name="excerpt" id="excerpt" rows="2"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        placeholder="Ringkasan singkat promosi">{{ old('excerpt') }}</textarea>
+                </div>
+
+                <!-- Description -->
+                <div class="md:col-span-2">
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi <span class="text-red-500">*</span></label>
+                    <textarea name="description" id="description" rows="6" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('description') border-red-500 @enderror"
+                        placeholder="Deskripsi lengkap promosi...">{{ old('description') }}</textarea>
+                    @error('description')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Harga & Diskon</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Original Price -->
+                <div>
+                    <label for="original_price" class="block text-sm font-medium text-gray-700 mb-1">Harga Asli</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-2 text-gray-500">Rp</span>
+                        <input type="number" name="original_price" id="original_price" value="{{ old('original_price') }}" step="0.01" min="0"
+                            class="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                            placeholder="0">
+                    </div>
+                </div>
+
+                <!-- Discount Price -->
+                <div>
+                    <label for="discount_price" class="block text-sm font-medium text-gray-700 mb-1">Harga Diskon</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-2 text-gray-500">Rp</span>
+                        <input type="number" name="discount_price" id="discount_price" value="{{ old('discount_price') }}" step="0.01" min="0"
+                            class="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                            placeholder="0">
+                    </div>
+                </div>
+
+                <!-- Discount Percentage -->
+                <div>
+                    <label for="discount_percentage" class="block text-sm font-medium text-gray-700 mb-1">Persentase Diskon</label>
+                    <div class="relative">
+                        <input type="number" name="discount_percentage" id="discount_percentage" value="{{ old('discount_percentage') }}" min="0" max="100"
+                            class="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                            placeholder="0">
+                        <span class="absolute right-4 top-2 text-gray-500">%</span>
+                    </div>
+                    <p class="mt-1 text-sm text-gray-500">Akan dihitung otomatis jika kosong</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Media Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Media</h2>
+            
+            <div>
+                <label for="featured_image" class="block text-sm font-medium text-gray-700 mb-1">Gambar Utama</label>
+                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-primary-500 transition-colors">
+                    <div class="space-y-1 text-center">
+                        <div id="imagePreview" class="hidden mb-4">
+                            <img id="previewImg" src="" alt="Preview" class="mx-auto h-48 object-cover rounded-lg">
+                        </div>
+                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <div class="flex text-sm text-gray-600 justify-center">
+                            <label for="featured_image" class="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500">
+                                <span>Upload gambar</span>
+                                <input id="featured_image" name="featured_image" type="file" class="sr-only" accept="image/*" onchange="previewImage(this)">
+                            </label>
+                        </div>
+                        <p class="text-xs text-gray-500">PNG, JPG, GIF, WebP maks. 2MB</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schedule Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Jadwal Promosi</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Start Date -->
+                <div>
+                    <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
+                    <input type="datetime-local" name="start_date" id="start_date" value="{{ old('start_date') }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <p class="mt-1 text-sm text-gray-500">Kosongkan jika mulai sekarang</p>
+                </div>
+
+                <!-- End Date -->
+                <div>
+                    <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Berakhir</label>
+                    <input type="datetime-local" name="end_date" id="end_date" value="{{ old('end_date') }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <p class="mt-1 text-sm text-gray-500">Kosongkan jika tidak ada batas</p>
+                    @error('end_date')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Informasi Kontak</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Contact Person -->
+                <div>
+                    <label for="contact_person" class="block text-sm font-medium text-gray-700 mb-1">Nama Kontak</label>
+                    <input type="text" name="contact_person" id="contact_person" value="{{ old('contact_person') }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        placeholder="Nama penanggung jawab">
+                </div>
+
+                <!-- Contact Phone -->
+                <div>
+                    <label for="contact_phone" class="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon</label>
+                    <input type="text" name="contact_phone" id="contact_phone" value="{{ old('contact_phone') }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        placeholder="08xxxxxxxxxx">
+                </div>
+
+                <!-- Contact Email -->
+                <div>
+                    <label for="contact_email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" name="contact_email" id="contact_email" value="{{ old('contact_email') }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        placeholder="email@example.com">
+                </div>
+
+                <!-- Location -->
+                <div class="md:col-span-3">
+                    <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Lokasi</label>
+                    <input type="text" name="location" id="location" value="{{ old('location') }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        placeholder="Alamat atau lokasi promosi">
+                </div>
+            </div>
+        </div>
+
+        <!-- Terms & Status Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Syarat & Status</h2>
+            
+            <div class="space-y-4">
+                <!-- Terms -->
+                <div>
+                    <label for="terms_conditions" class="block text-sm font-medium text-gray-700 mb-1">Syarat & Ketentuan</label>
+                    <textarea name="terms_conditions" id="terms_conditions" rows="4"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        placeholder="Syarat dan ketentuan promosi...">{{ old('terms_conditions') }}</textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Status -->
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
+                        <select name="status" id="status" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            @foreach($statuses as $key => $label)
+                                <option value="{{ $key }}" {{ old('status', 'draft') === $key ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Featured -->
+                    <div class="flex items-center">
+                        <label class="flex items-center gap-3 mt-6">
+                            <input type="checkbox" name="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }}
+                                class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                            <div>
+                                <span class="text-sm font-medium text-gray-700">Promosi Unggulan</span>
+                                <p class="text-sm text-gray-500">Tampilkan di bagian utama</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end gap-3">
+            <a href="{{ route('admin.promotions.index') }}" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                Batal
+            </a>
+            <button type="submit" class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                Simpan Promosi
+            </button>
+        </div>
+    </form>
+</div>
+
+@push('scripts')
+<script>
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('imagePreview').classList.remove('hidden');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+@endpush
+@endsection
