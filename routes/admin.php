@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\Auth\LoginController;
+use App\Http\Controllers\Admin\BumnagProfileController;
+use App\Http\Controllers\Admin\CatalogController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
@@ -36,10 +38,29 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
     
     // Catalogs Management (requires permission)
     Route::middleware(['check.permission:manage_catalogs'])->prefix('catalogs')->name('catalogs.')->group(function () {
-        Route::get('/', function() {
-            return view('admin.coming-soon', ['title' => 'Catalog Management']);
-        })->name('index');
-        // Add more catalog routes here
+        Route::get('/', [CatalogController::class, 'index'])->name('index');
+        Route::get('/create', [CatalogController::class, 'create'])->name('create');
+        Route::post('/', [CatalogController::class, 'store'])->name('store');
+        Route::get('/{catalog}', [CatalogController::class, 'show'])->name('show');
+        Route::get('/{catalog}/edit', [CatalogController::class, 'edit'])->name('edit');
+        Route::put('/{catalog}', [CatalogController::class, 'update'])->name('update');
+        Route::delete('/{catalog}', [CatalogController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-action', [CatalogController::class, 'bulkAction'])->name('bulk-action');
+        Route::post('/{catalog}/update-stock', [CatalogController::class, 'updateStock'])->name('update-stock');
+    });
+    
+    // BUMNag Profiles Management (requires permission)
+    Route::middleware(['check.permission:manage_catalogs'])->prefix('bumnag-profiles')->name('bumnag-profiles.')->group(function () {
+        Route::get('/', [BumnagProfileController::class, 'index'])->name('index');
+        Route::get('/create', [BumnagProfileController::class, 'create'])->name('create');
+        Route::post('/', [BumnagProfileController::class, 'store'])->name('store');
+        Route::get('/{bumnagProfile}', [BumnagProfileController::class, 'show'])->name('show')->withTrashed();
+        Route::get('/{bumnagProfile}/edit', [BumnagProfileController::class, 'edit'])->name('edit');
+        Route::put('/{bumnagProfile}', [BumnagProfileController::class, 'update'])->name('update');
+        Route::delete('/{bumnagProfile}', [BumnagProfileController::class, 'destroy'])->name('destroy');
+        Route::patch('/{id}/restore', [BumnagProfileController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/force', [BumnagProfileController::class, 'forceDelete'])->name('force-delete');
+        Route::post('/bulk-action', [BumnagProfileController::class, 'bulkAction'])->name('bulk-action');
     });
     
     // Galleries Management (requires permission)
