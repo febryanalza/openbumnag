@@ -111,20 +111,23 @@
                 <div>
                     <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Judul <span class="text-red-500">*</span></label>
                     <input type="text" name="title" id="title" value="{{ old('title', $news->title) }}" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('title') border-red-500 @enderror">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('title') border-red-500 @enderror"
+                        oninput="generateSlug(this.value)">
                     @error('title')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <!-- Slug -->
+                <!-- Slug (Auto-generated, display only) -->
                 <div>
-                    <label for="slug" class="block text-sm font-medium text-gray-700 mb-1">Slug</label>
-                    <input type="text" name="slug" id="slug" value="{{ old('slug', $news->slug) }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('slug') border-red-500 @enderror">
-                    @error('slug')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Slug URL</label>
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500 text-sm">/berita/</span>
+                        <div id="slugDisplay" class="flex-1 px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-600 text-sm">
+                            <span id="slugText">{{ $news->slug }}</span>
+                        </div>
+                    </div>
+                    <p class="mt-1 text-sm text-gray-500">Slug akan diperbarui otomatis jika judul berubah</p>
                 </div>
 
                 <!-- Category -->
@@ -543,6 +546,26 @@
             };
             reader.readAsDataURL(input.files[0]);
         }
+    }
+
+    // Generate slug from title
+    function generateSlug(title) {
+        const slug = title
+            .toLowerCase()
+            .trim()
+            .replace(/[àáâãäå]/g, 'a')
+            .replace(/[èéêë]/g, 'e')
+            .replace(/[ìíîï]/g, 'i')
+            .replace(/[òóôõö]/g, 'o')
+            .replace(/[ùúûü]/g, 'u')
+            .replace(/[ñ]/g, 'n')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+        
+        document.getElementById('slugText').textContent = slug || '{{ $news->slug }}';
     }
 
     // Preview Modal Functions

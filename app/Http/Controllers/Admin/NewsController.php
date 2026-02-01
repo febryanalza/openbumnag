@@ -128,7 +128,6 @@ class NewsController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:news,slug',
             'category_id' => 'nullable|exists:categories,id',
             'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
@@ -155,9 +154,15 @@ class NewsController extends Controller
             $validated['published_at'] = now();
         }
 
-        // Generate slug if empty
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['title']);
+        // Generate slug from title (always auto-generate)
+        $validated['slug'] = Str::slug($validated['title']);
+        
+        // Ensure slug uniqueness (append number if exists)
+        $originalSlug = $validated['slug'];
+        $count = 1;
+        while (News::where('slug', $validated['slug'])->exists()) {
+            $validated['slug'] = $originalSlug . '-' . $count;
+            $count++;
         }
 
         News::create($validated);
@@ -192,7 +197,6 @@ class NewsController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:news,slug,' . $news->id,
             'category_id' => 'nullable|exists:categories,id',
             'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
@@ -220,6 +224,17 @@ class NewsController extends Controller
         }
 
         $validated['is_featured'] = $request->boolean('is_featured');
+
+        // Generate slug from title (always regenerate on title change)
+        $validated['slug'] = Str::slug($validated['title']);
+        
+        // Ensure slug uniqueness (append number if exists)
+        $originalSlug = $validated['slug'];
+        $count = 1;
+        while (News::where('slug', $validated['slug'])->where('id', '!=', $news->id)->exists()) {
+            $validated['slug'] = $originalSlug . '-' . $count;
+            $count++;
+        }
 
         // Auto-set published_at if publishing for first time
         if ($validated['status'] === 'published' && $news->status !== 'published' && empty($validated['published_at'])) {
