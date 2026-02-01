@@ -8,8 +8,10 @@ use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\NewsController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TeamMemberController;
 use App\Http\Controllers\Admin\UserController;
@@ -190,6 +192,33 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
         Route::put('/{setting}', [SettingController::class, 'update'])->name('update');
         Route::delete('/{setting}', [SettingController::class, 'destroy'])->name('destroy');
         Route::post('/bulk-action', [SettingController::class, 'bulkAction'])->name('bulk-action');
+    });
+    
+    // Permissions Management (super admin only)
+    Route::middleware(['check.role:super_admin'])->prefix('permissions')->name('permissions.')->group(function () {
+        Route::get('/', [PermissionController::class, 'index'])->name('index');
+        Route::get('/create', [PermissionController::class, 'create'])->name('create');
+        Route::post('/', [PermissionController::class, 'store'])->name('store');
+        Route::get('/{permission}', [PermissionController::class, 'show'])->name('show');
+        Route::get('/{permission}/edit', [PermissionController::class, 'edit'])->name('edit');
+        Route::put('/{permission}', [PermissionController::class, 'update'])->name('update');
+        Route::delete('/{permission}', [PermissionController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-action', [PermissionController::class, 'bulkAction'])->name('bulk-action');
+        Route::post('/{permission}/sync-to-role', [PermissionController::class, 'syncToRole'])->name('sync-to-role');
+    });
+    
+    // Roles Management (super admin only)
+    Route::middleware(['check.role:super_admin'])->prefix('roles')->name('roles.')->group(function () {
+        Route::get('/', [RoleController::class, 'index'])->name('index');
+        Route::get('/create', [RoleController::class, 'create'])->name('create');
+        Route::post('/', [RoleController::class, 'store'])->name('store');
+        Route::get('/{role}', [RoleController::class, 'show'])->name('show');
+        Route::get('/{role}/edit', [RoleController::class, 'edit'])->name('edit');
+        Route::put('/{role}', [RoleController::class, 'update'])->name('update');
+        Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-action', [RoleController::class, 'bulkAction'])->name('bulk-action');
+        Route::post('/{role}/assign-users', [RoleController::class, 'assignUsers'])->name('assign-users');
+        Route::get('/{role}/clone', [RoleController::class, 'clone'])->name('clone');
     });
 });
 
