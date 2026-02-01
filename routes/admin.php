@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -58,10 +59,16 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
     
     // User Management (super admin or manage_users permission)
     Route::middleware(['check.permission:manage_users'])->prefix('users')->name('users.')->group(function () {
-        Route::get('/', function() {
-            return view('admin.coming-soon', ['title' => 'User Management']);
-        })->name('index');
-        // Add more user routes here
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::get('/create', [UserController::class, 'create'])->name('create');
+        Route::post('/', [UserController::class, 'store'])->name('store');
+        Route::get('/{user}', [UserController::class, 'show'])->name('show')->withTrashed();
+        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
+        Route::put('/{user}', [UserController::class, 'update'])->name('update');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+        Route::patch('/{user}/restore', [UserController::class, 'restore'])->name('restore');
+        Route::delete('/{user}/force', [UserController::class, 'forceDelete'])->name('force-delete');
+        Route::post('/bulk-action', [UserController::class, 'bulkAction'])->name('bulk-action');
     });
     
     // Categories Management
