@@ -38,7 +38,7 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     
     // News Management (requires permission)
-    Route::middleware(['check.permission:manage_news'])->prefix('news')->name('news.')->group(function () {
+    Route::middleware(['check.permission:news.view-any'])->prefix('news')->name('news.')->group(function () {
         Route::get('/', [NewsController::class, 'index'])->name('index');
         Route::get('/create', [NewsController::class, 'create'])->name('create');
         Route::post('/', [NewsController::class, 'store'])->name('store');
@@ -52,7 +52,7 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
     });
 
     // Promotions Management (requires permission)
-    Route::middleware(['check.permission:manage_news'])->prefix('promotions')->name('promotions.')->group(function () {
+    Route::middleware(['check.permission:promotion.view-any'])->prefix('promotions')->name('promotions.')->group(function () {
         Route::get('/', [PromotionController::class, 'index'])->name('index');
         Route::get('/create', [PromotionController::class, 'create'])->name('create');
         Route::post('/', [PromotionController::class, 'store'])->name('store');
@@ -66,7 +66,7 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
     });
     
     // Catalogs Management (requires permission)
-    Route::middleware(['check.permission:manage_catalogs'])->prefix('catalogs')->name('catalogs.')->group(function () {
+    Route::middleware(['check.permission:catalog.view-any'])->prefix('catalogs')->name('catalogs.')->group(function () {
         Route::get('/', [CatalogController::class, 'index'])->name('index');
         Route::get('/create', [CatalogController::class, 'create'])->name('create');
         Route::post('/', [CatalogController::class, 'store'])->name('store');
@@ -79,7 +79,7 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
     });
     
     // BUMNag Profiles Management (requires permission)
-    Route::middleware(['check.permission:manage_catalogs'])->prefix('bumnag-profiles')->name('bumnag-profiles.')->group(function () {
+    Route::middleware(['check.permission:profile.view-any'])->prefix('bumnag-profiles')->name('bumnag-profiles.')->group(function () {
         Route::get('/', [BumnagProfileController::class, 'index'])->name('index');
         Route::get('/create', [BumnagProfileController::class, 'create'])->name('create');
         Route::post('/', [BumnagProfileController::class, 'store'])->name('store');
@@ -93,7 +93,7 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
     });
     
     // Galleries Management (requires permission)
-    Route::middleware(['check.permission:manage_galleries'])->prefix('galleries')->name('galleries.')->group(function () {
+    Route::middleware(['check.permission:gallery.view-any'])->prefix('galleries')->name('galleries.')->group(function () {
         Route::get('/', [GalleryController::class, 'index'])->name('index');
         Route::get('/create', [GalleryController::class, 'create'])->name('create');
         Route::post('/', [GalleryController::class, 'store'])->name('store');
@@ -108,7 +108,7 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
     });
     
     // Reports Management (requires permission)
-    Route::middleware(['check.permission:manage_reports'])->prefix('reports')->name('reports.')->group(function () {
+    Route::middleware(['check.permission:report.view-any'])->prefix('reports')->name('reports.')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->name('index');
         Route::get('/create', [ReportController::class, 'create'])->name('create');
         Route::post('/', [ReportController::class, 'store'])->name('store');
@@ -122,8 +122,8 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
         Route::post('/bulk-action', [ReportController::class, 'bulkAction'])->name('bulk-action');
     });
     
-    // User Management (super admin or manage_users permission)
-    Route::middleware(['check.permission:manage_users'])->prefix('users')->name('users.')->group(function () {
+    // User Management (requires permission)
+    Route::middleware(['check.permission:user.view-any'])->prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
         Route::get('/create', [UserController::class, 'create'])->name('create');
         Route::post('/', [UserController::class, 'store'])->name('store');
@@ -136,8 +136,8 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
         Route::post('/bulk-action', [UserController::class, 'bulkAction'])->name('bulk-action');
     });
     
-    // Categories Management
-    Route::middleware(['check.permission:manage_categories'])->prefix('categories')->name('categories.')->group(function () {
+    // Categories Management (requires permission)
+    Route::middleware(['check.permission:category.view-any'])->prefix('categories')->name('categories.')->group(function () {
         Route::get('/', [CategoryController::class, 'index'])->name('index');
         Route::get('/create', [CategoryController::class, 'create'])->name('create');
         Route::post('/', [CategoryController::class, 'store'])->name('store');
@@ -151,8 +151,8 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
         Route::post('/update-order', [CategoryController::class, 'updateOrder'])->name('update-order');
     });
     
-    // Contacts Management
-    Route::middleware(['check.permission:manage_contacts'])->prefix('contacts')->name('contacts.')->group(function () {
+    // Contacts Management (requires permission)
+    Route::middleware(['check.permission:contact.view-any'])->prefix('contacts')->name('contacts.')->group(function () {
         Route::get('/', [ContactController::class, 'index'])->name('index');
         Route::get('/export', [ContactController::class, 'export'])->name('export');
         Route::get('/{contact}', [ContactController::class, 'show'])->name('show')->withTrashed();
@@ -165,8 +165,8 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
         Route::post('/bulk-action', [ContactController::class, 'bulkAction'])->name('bulk-action');
     });
     
-    // Team Members Management
-    Route::middleware(['check.permission:manage_team_members'])->prefix('team-members')->name('team-members.')->group(function () {
+    // Team Members Management (requires permission)
+    Route::middleware(['check.permission:team.view-any'])->prefix('team-members')->name('team-members.')->group(function () {
         Route::get('/', [TeamMemberController::class, 'index'])->name('index');
         Route::get('/create', [TeamMemberController::class, 'create'])->name('create');
         Route::post('/', [TeamMemberController::class, 'store'])->name('store');
