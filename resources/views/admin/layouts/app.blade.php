@@ -24,6 +24,7 @@
             </div>
             
             <nav class="flex-1 overflow-y-auto mt-4 pb-4">
+                {{-- Dashboard - Available to all authenticated admin users --}}
                 <a href="{{ route('admin.dashboard') }}" class="block px-4 py-3 hover:bg-gray-700 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-700 border-l-4 border-amber-400' : '' }}">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,6 +34,7 @@
                     </span>
                 </a>
                 
+                @can('manage_news')
                 <a href="{{ route('admin.news.index') }}" class="block px-4 py-3 hover:bg-gray-700 {{ request()->routeIs('admin.news.*') ? 'bg-gray-700 border-l-4 border-amber-400' : '' }}">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,7 +43,9 @@
                         Berita
                     </span>
                 </a>
+                @endcan
                 
+                @can('manage_catalogs')
                 <a href="{{ route('admin.catalogs.index') }}" class="block px-4 py-3 hover:bg-gray-700 {{ request()->routeIs('admin.catalogs.*') ? 'bg-gray-700 border-l-4 border-amber-400' : '' }}">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,7 +63,9 @@
                         Profil BUMNag
                     </span>
                 </a>
+                @endcan
                 
+                @can('manage_galleries')
                 <a href="{{ route('admin.galleries.index') }}" class="block px-4 py-3 hover:bg-gray-700 {{ request()->routeIs('admin.galleries.*') ? 'bg-gray-700 border-l-4 border-amber-400' : '' }}">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,7 +74,9 @@
                         Galeri
                     </span>
                 </a>
+                @endcan
                 
+                @can('manage_news')
                 <a href="{{ route('admin.promotions.index') }}" class="block px-4 py-3 hover:bg-gray-700 {{ request()->routeIs('admin.promotions.*') ? 'bg-gray-700 border-l-4 border-amber-400' : '' }}">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,7 +85,9 @@
                         Promosi
                     </span>
                 </a>
+                @endcan
                 
+                @can('manage_reports')
                 <a href="{{ route('admin.reports.index') }}" class="block px-4 py-3 hover:bg-gray-700 {{ request()->routeIs('admin.reports.*') ? 'bg-gray-700 border-l-4 border-amber-400' : '' }}">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,7 +96,9 @@
                         Laporan
                     </span>
                 </a>
+                @endcan
                 
+                @can('manage_contacts')
                 <a href="{{ route('admin.contacts.index') }}" class="block px-4 py-3 hover:bg-gray-700 {{ request()->routeIs('admin.contacts.*') ? 'bg-gray-700 border-l-4 border-amber-400' : '' }}">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,7 +107,9 @@
                         Kontak
                     </span>
                 </a>
+                @endcan
                 
+                @can('manage_team_members')
                 <a href="{{ route('admin.team-members.index') }}" class="block px-4 py-3 hover:bg-gray-700 {{ request()->routeIs('admin.team-members.*') ? 'bg-gray-700 border-l-4 border-amber-400' : '' }}">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,7 +118,9 @@
                         Tim
                     </span>
                 </a>
+                @endcan
                 
+                @can('manage_categories')
                 <a href="{{ route('admin.categories.index') }}" class="block px-4 py-3 hover:bg-gray-700 {{ request()->routeIs('admin.categories.*') ? 'bg-gray-700 border-l-4 border-amber-400' : '' }}">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,7 +129,9 @@
                         Kategori
                     </span>
                 </a>
+                @endcan
                 
+                @can('manage_users')
                 <a href="{{ route('admin.users.index') }}" class="block px-4 py-3 hover:bg-gray-700 {{ request()->routeIs('admin.users.*') ? 'bg-gray-700 border-l-4 border-amber-400' : '' }}">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,6 +140,7 @@
                         Users
                     </span>
                 </a>
+                @endcan
                 
                 @if(auth()->user()->hasRole('super_admin'))
                 <div class="border-t border-gray-700 my-2"></div>
@@ -143,9 +162,10 @@
                         </svg>
                         Permissions
                     </span>
-                </a>
+                @endcan
                 @endif
                 
+                @role('super_admin')
                 <a href="{{ route('admin.settings.index') }}" class="block px-4 py-3 hover:bg-gray-700 {{ request()->routeIs('admin.settings.*') ? 'bg-gray-700 border-l-4 border-amber-400' : '' }}">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,6 +175,7 @@
                         Pengaturan
                     </span>
                 </a>
+                @endrole
             </nav>
             
             <div class="flex-shrink-0 p-4 bg-gray-900 border-t border-gray-700">
