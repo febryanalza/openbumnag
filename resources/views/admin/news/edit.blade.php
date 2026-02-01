@@ -3,6 +3,37 @@
 @section('title', 'Edit Berita')
 @section('page-title', 'Edit Berita')
 
+@push('styles')
+<style>
+    /* Prose styling for preview content */
+    .prose { color: #374151; line-height: 1.75; }
+    .prose p { margin-bottom: 1.25em; }
+    .prose h1 { font-size: 2.25em; margin-top: 0; margin-bottom: 0.8888889em; font-weight: 800; }
+    .prose h2 { font-size: 1.5em; margin-top: 2em; margin-bottom: 1em; font-weight: 700; }
+    .prose h3 { font-size: 1.25em; margin-top: 1.6em; margin-bottom: 0.6em; font-weight: 600; }
+    .prose h4 { margin-top: 1.5em; margin-bottom: 0.5em; font-weight: 600; }
+    .prose img { margin-top: 2em; margin-bottom: 2em; border-radius: 0.5rem; max-width: 100%; height: auto; }
+    .prose a { color: #2563eb; text-decoration: underline; }
+    .prose strong { font-weight: 600; }
+    .prose ul, .prose ol { margin-top: 1.25em; margin-bottom: 1.25em; padding-left: 1.625em; }
+    .prose li { margin-top: 0.5em; margin-bottom: 0.5em; }
+    .prose ul > li { padding-left: 0.375em; }
+    .prose ul > li::marker { color: #6b7280; }
+    .prose ol > li::marker { color: #6b7280; font-weight: 400; }
+    .prose blockquote { margin-top: 1.6em; margin-bottom: 1.6em; padding-left: 1em; font-style: italic; border-left: 4px solid #e5e7eb; }
+    .prose table { width: 100%; table-layout: auto; text-align: left; margin-top: 2em; margin-bottom: 2em; border-collapse: collapse; }
+    .prose thead { border-bottom: 2px solid #e5e7eb; }
+    .prose thead th { padding: 0.5714286em; font-weight: 600; vertical-align: bottom; }
+    .prose tbody tr { border-bottom: 1px solid #e5e7eb; }
+    .prose tbody td { padding: 0.5714286em; vertical-align: top; }
+    .prose pre { background-color: #1f2937; color: #f9fafb; padding: 1em; border-radius: 0.5rem; overflow-x: auto; margin: 1.5em 0; }
+    .prose code { font-size: 0.875em; }
+    .prose hr { border-top: 1px solid #e5e7eb; margin: 3em 0; }
+    .prose figure { margin: 2em 0; }
+    .prose figcaption { font-size: 0.875em; color: #6b7280; margin-top: 0.5em; text-align: center; }
+</style>
+@endpush
+
 @section('content')
 <div class="max-w-5xl mx-auto">
     <!-- Breadcrumb -->
@@ -250,12 +281,79 @@
                 <a href="{{ route('admin.news.index') }}" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
                     Batal
                 </a>
+                <button type="button" onclick="openPreviewModal()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    Preview
+                </button>
                 <button type="submit" class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
                     Simpan Perubahan
                 </button>
             </div>
         </div>
     </form>
+</div>
+
+<!-- Preview Modal -->
+<div id="previewModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Preview Berita</h3>
+            <button type="button" onclick="closePreviewModal()" class="text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <!-- Modal Body -->
+        <div class="flex-1 overflow-y-auto p-6">
+            <article class="max-w-3xl mx-auto">
+                <!-- Category Badge -->
+                <div id="previewCategory" class="inline-block px-3 py-1 bg-primary-100 text-primary-700 text-sm font-medium rounded-full mb-4"></div>
+                
+                <!-- Title -->
+                <h1 id="previewTitle" class="text-3xl font-bold text-gray-900 mb-4"></h1>
+                
+                <!-- Meta Info -->
+                <div class="flex items-center gap-4 text-sm text-gray-500 mb-6">
+                    <span class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        {{ auth()->user()->name }}
+                    </span>
+                    <span class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <span id="previewDate"></span>
+                    </span>
+                </div>
+                
+                <!-- Featured Image -->
+                <div id="previewImageContainer" class="mb-6 hidden">
+                    <img id="previewFeaturedImage" src="" alt="" class="w-full h-auto rounded-xl shadow-lg">
+                </div>
+                
+                <!-- Excerpt -->
+                <div id="previewExcerptContainer" class="mb-6 hidden">
+                    <p id="previewExcerpt" class="text-lg text-gray-600 italic border-l-4 border-primary-500 pl-4"></p>
+                </div>
+                
+                <!-- Content -->
+                <div id="previewContent" class="prose prose-lg max-w-none"></div>
+            </article>
+        </div>
+        <!-- Modal Footer -->
+        <div class="p-4 border-t border-gray-200 bg-gray-50 flex justify-end">
+            <button type="button" onclick="closePreviewModal()" class="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                Tutup Preview
+            </button>
+        </div>
+    </div>
 </div>
 
 <!-- Delete Modal -->
@@ -291,7 +389,7 @@
 
 @push('scripts')
 <!-- TinyMCE 6 CDN -->
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.tiny.cloud/1/ylbsulndv6mfl8xnudiga1ug958igkugns2l4s4vann3ivam/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
     // Initialize TinyMCE
     tinymce.init({
@@ -446,6 +544,85 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    // Preview Modal Functions
+    function openPreviewModal() {
+        // Get form values
+        const title = document.getElementById('title').value || 'Judul Berita';
+        const categorySelect = document.getElementById('category_id');
+        const categoryText = categorySelect.options[categorySelect.selectedIndex]?.text || 'Kategori';
+        const excerpt = document.getElementById('excerpt').value || '';
+        
+        // Get TinyMCE content
+        const content = tinymce.get('content') ? tinymce.get('content').getContent() : '';
+        
+        // Get featured image - check for existing or new upload
+        const previewImgElement = document.getElementById('previewImg');
+        const existingImage = document.querySelector('.current-image img');
+        
+        // Set preview values
+        document.getElementById('previewTitle').textContent = title;
+        document.getElementById('previewCategory').textContent = categoryText;
+        document.getElementById('previewDate').textContent = new Date().toLocaleDateString('id-ID', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        
+        // Handle excerpt
+        const excerptContainer = document.getElementById('previewExcerptContainer');
+        if (excerpt) {
+            document.getElementById('previewExcerpt').textContent = excerpt;
+            excerptContainer.classList.remove('hidden');
+        } else {
+            excerptContainer.classList.add('hidden');
+        }
+        
+        // Handle featured image
+        const imageContainer = document.getElementById('previewImageContainer');
+        let imageSrc = null;
+        
+        // Check for new uploaded image first
+        if (previewImgElement && previewImgElement.src && !previewImgElement.closest('.hidden')) {
+            imageSrc = previewImgElement.src;
+        } else if (existingImage && existingImage.src) {
+            imageSrc = existingImage.src;
+        }
+        
+        if (imageSrc) {
+            document.getElementById('previewFeaturedImage').src = imageSrc;
+            imageContainer.classList.remove('hidden');
+        } else {
+            imageContainer.classList.add('hidden');
+        }
+        
+        // Set content with styling
+        document.getElementById('previewContent').innerHTML = content || '<p class="text-gray-400 italic">Konten berita akan ditampilkan di sini...</p>';
+        
+        // Show modal
+        document.getElementById('previewModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closePreviewModal() {
+        document.getElementById('previewModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+    
+    // Close modal on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closePreviewModal();
+        }
+    });
+    
+    // Close modal on backdrop click
+    document.getElementById('previewModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePreviewModal();
+        }
+    });
 </script>
 @endpush
 @endsection
