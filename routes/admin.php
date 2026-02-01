@@ -4,8 +4,10 @@ use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\BumnagProfileController;
 use App\Http\Controllers\Admin\CatalogController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -87,18 +89,32 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
     
     // Galleries Management (requires permission)
     Route::middleware(['check.permission:manage_galleries'])->prefix('galleries')->name('galleries.')->group(function () {
-        Route::get('/', function() {
-            return view('admin.coming-soon', ['title' => 'Gallery Management']);
-        })->name('index');
-        // Add more gallery routes here
+        Route::get('/', [GalleryController::class, 'index'])->name('index');
+        Route::get('/create', [GalleryController::class, 'create'])->name('create');
+        Route::post('/', [GalleryController::class, 'store'])->name('store');
+        Route::get('/{gallery}', [GalleryController::class, 'show'])->name('show')->withTrashed();
+        Route::get('/{gallery}/edit', [GalleryController::class, 'edit'])->name('edit');
+        Route::put('/{gallery}', [GalleryController::class, 'update'])->name('update');
+        Route::delete('/{gallery}', [GalleryController::class, 'destroy'])->name('destroy');
+        Route::patch('/{id}/restore', [GalleryController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/force', [GalleryController::class, 'forceDelete'])->name('force-delete');
+        Route::post('/bulk-action', [GalleryController::class, 'bulkAction'])->name('bulk-action');
+        Route::post('/update-order', [GalleryController::class, 'updateOrder'])->name('update-order');
     });
     
     // Reports Management (requires permission)
     Route::middleware(['check.permission:manage_reports'])->prefix('reports')->name('reports.')->group(function () {
-        Route::get('/', function() {
-            return view('admin.coming-soon', ['title' => 'Report Management']);
-        })->name('index');
-        // Add more report routes here
+        Route::get('/', [ReportController::class, 'index'])->name('index');
+        Route::get('/create', [ReportController::class, 'create'])->name('create');
+        Route::post('/', [ReportController::class, 'store'])->name('store');
+        Route::get('/{report}', [ReportController::class, 'show'])->name('show')->withTrashed();
+        Route::get('/{report}/edit', [ReportController::class, 'edit'])->name('edit');
+        Route::get('/{report}/download', [ReportController::class, 'download'])->name('download');
+        Route::put('/{report}', [ReportController::class, 'update'])->name('update');
+        Route::delete('/{report}', [ReportController::class, 'destroy'])->name('destroy');
+        Route::patch('/{id}/restore', [ReportController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/force', [ReportController::class, 'forceDelete'])->name('force-delete');
+        Route::post('/bulk-action', [ReportController::class, 'bulkAction'])->name('bulk-action');
     });
     
     // User Management (super admin or manage_users permission)
