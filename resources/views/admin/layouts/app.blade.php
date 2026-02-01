@@ -18,12 +18,12 @@
 <body class="bg-gray-100">
     <div class="min-h-screen flex">
         <!-- Sidebar -->
-        <aside class="w-64 bg-gray-800 text-white">
-            <div class="p-4">
+        <aside class="w-64 bg-gray-800 text-white flex flex-col h-screen fixed">
+            <div class="p-4 flex-shrink-0">
                 <h1 class="text-2xl font-bold text-amber-400">BUMNag Admin</h1>
             </div>
             
-            <nav class="mt-8">
+            <nav class="flex-1 overflow-y-auto mt-4 pb-4">
                 <a href="{{ route('admin.dashboard') }}" class="block px-4 py-3 hover:bg-gray-700 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-700 border-l-4 border-amber-400' : '' }}">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -157,20 +157,20 @@
                 </a>
             </nav>
             
-            <div class="absolute bottom-0 w-64 p-4 bg-gray-900">
+            <div class="flex-shrink-0 p-4 bg-gray-900 border-t border-gray-700">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center">
                             <span class="text-white font-bold">{{ substr(Auth::user()->name ?? Auth::user()->email, 0, 1) }}</span>
                         </div>
                     </div>
-                    <div class="ml-3 flex-1">
+                    <div class="ml-3 flex-1 min-w-0">
                         <p class="text-sm font-medium truncate">{{ Auth::user()->name ?? Auth::user()->email }}</p>
                         <p class="text-xs text-gray-400 truncate">{{ Auth::user()->getRoleNames()->first() ?? 'User' }}</p>
                     </div>
                     <form method="POST" action="{{ route('admin.logout') }}" id="logoutForm">
                         @csrf
-                        <button type="submit" class="text-gray-400 hover:text-white" title="Logout">
+                        <button type="submit" class="text-gray-400 hover:text-white flex-shrink-0" title="Logout">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                             </svg>
@@ -181,7 +181,7 @@
         </aside>
         
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col">
+        <div class="flex-1 flex flex-col ml-64">
             <!-- Header -->
             <header class="bg-white shadow">
                 <div class="px-6 py-4">
