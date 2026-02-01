@@ -42,6 +42,7 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
         Route::get('/', [NewsController::class, 'index'])->name('index');
         Route::get('/create', [NewsController::class, 'create'])->name('create');
         Route::post('/', [NewsController::class, 'store'])->name('store');
+        Route::post('/upload-image', [NewsController::class, 'uploadImage'])->name('upload-image');
         Route::get('/{news}', [NewsController::class, 'show'])->name('show')->withTrashed();
         Route::get('/{news}/edit', [NewsController::class, 'edit'])->name('edit');
         Route::put('/{news}', [NewsController::class, 'update'])->name('update');

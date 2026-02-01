@@ -93,6 +93,35 @@ class NewsController extends Controller
     }
 
     /**
+     * Upload image from TinyMCE editor.
+     */
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
+        ]);
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            
+            // Generate unique filename
+            $filename = 'content_' . time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+            
+            // Store in news/content folder
+            $path = $file->storeAs('news/content', $filename, 'public');
+            
+            // Return URL for TinyMCE
+            return response()->json([
+                'location' => Storage::url($path)
+            ]);
+        }
+
+        return response()->json([
+            'error' => 'No file uploaded'
+        ], 400);
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)

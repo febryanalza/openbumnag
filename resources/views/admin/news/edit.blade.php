@@ -121,7 +121,10 @@
                 <div>
                     <label for="content" class="block text-sm font-medium text-gray-700 mb-1">Konten <span class="text-red-500">*</span></label>
                     <textarea name="content" id="content" rows="12" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('content') border-red-500 @enderror">{{ old('content', $news->content) }}</textarea>
+                        class="tinymce-editor w-full @error('content') border-red-500 @enderror">{{ old('content', $news->content) }}</textarea>
+                    <p class="mt-2 text-sm text-gray-500">
+                        <span class="font-medium">Tips:</span> Gunakan toolbar untuk format teks, sisipkan gambar, tabel, dan media lainnya.
+                    </p>
                     @error('content')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -287,7 +290,152 @@
 </div>
 
 @push('scripts')
+<!-- TinyMCE 6 CDN -->
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
+    // Initialize TinyMCE
+    tinymce.init({
+        selector: '.tinymce-editor',
+        height: 500,
+        menubar: true,
+        language: 'id',
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+            'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons',
+            'codesample', 'quickbars', 'pagebreak', 'nonbreaking', 'visualchars'
+        ],
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | ' +
+                 'forecolor backcolor | alignleft aligncenter alignright alignjustify | ' +
+                 'bullist numlist outdent indent | link image media table | ' +
+                 'emoticons charmap | removeformat | code fullscreen preview | help',
+        toolbar_mode: 'sliding',
+        quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote',
+        quickbars_insert_toolbar: 'quickimage quicktable',
+        contextmenu: 'link image table',
+        content_style: `
+            body { 
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
+                font-size: 16px; 
+                line-height: 1.6;
+                color: #374151;
+                max-width: 100%;
+                padding: 1rem;
+            }
+            img { 
+                max-width: 100%; 
+                height: auto; 
+                border-radius: 8px;
+                margin: 1rem 0;
+            }
+            p { margin: 0 0 1rem 0; }
+            h1, h2, h3, h4, h5, h6 { 
+                margin: 1.5rem 0 0.75rem 0; 
+                font-weight: 600;
+                line-height: 1.3;
+            }
+            blockquote {
+                border-left: 4px solid #f59e0b;
+                margin: 1rem 0;
+                padding: 0.5rem 1rem;
+                background: #fef3c7;
+                border-radius: 0 8px 8px 0;
+            }
+            table {
+                border-collapse: collapse;
+                width: 100%;
+                margin: 1rem 0;
+            }
+            table th, table td {
+                border: 1px solid #e5e7eb;
+                padding: 0.75rem;
+                text-align: left;
+            }
+            table th {
+                background: #f9fafb;
+                font-weight: 600;
+            }
+            pre {
+                background: #1f2937;
+                color: #f9fafb;
+                padding: 1rem;
+                border-radius: 8px;
+                overflow-x: auto;
+            }
+            a { color: #2563eb; }
+            hr { border: none; border-top: 2px solid #e5e7eb; margin: 2rem 0; }
+        `,
+        images_upload_url: '{{ route("admin.news.upload-image") }}',
+        images_upload_handler: function (blobInfo, progress) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', '{{ route("admin.news.upload-image") }}');
+                xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+                
+                xhr.upload.onprogress = function (e) {
+                    progress(e.loaded / e.total * 100);
+                };
+                
+                xhr.onload = function() {
+                    if (xhr.status < 200 || xhr.status >= 300) {
+                        reject('HTTP Error: ' + xhr.status);
+                        return;
+                    }
+                    const json = JSON.parse(xhr.responseText);
+                    if (!json || typeof json.location != 'string') {
+                        reject('Invalid JSON: ' + xhr.responseText);
+                        return;
+                    }
+                    resolve(json.location);
+                };
+                
+                xhr.onerror = function () {
+                    reject('Image upload failed');
+                };
+                
+                const formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+                xhr.send(formData);
+            });
+        },
+        file_picker_types: 'image media',
+        file_picker_callback: function(callback, value, meta) {
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            if (meta.filetype === 'image') {
+                input.setAttribute('accept', 'image/*');
+            }
+            
+            input.onchange = function() {
+                const file = this.files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                fetch('{{ route("admin.news.upload-image") }}', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    callback(data.location, { title: file.name });
+                })
+                .catch(error => {
+                    console.error('Upload error:', error);
+                    alert('Gagal mengupload file');
+                });
+            };
+            input.click();
+        },
+        promotion: false,
+        branding: false,
+        resize: true,
+        paste_data_images: true,
+        automatic_uploads: true,
+        relative_urls: false
+    });
+
     function previewImage(input) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
