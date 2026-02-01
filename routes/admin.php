@@ -205,6 +205,7 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
         Route::delete('/{permission}', [PermissionController::class, 'destroy'])->name('destroy');
         Route::post('/bulk-action', [PermissionController::class, 'bulkAction'])->name('bulk-action');
         Route::post('/{permission}/sync-to-role', [PermissionController::class, 'syncToRole'])->name('sync-to-role');
+        Route::post('/toggle', [PermissionController::class, 'togglePermission'])->name('toggle');
     });
     
     // Roles Management (super admin only)

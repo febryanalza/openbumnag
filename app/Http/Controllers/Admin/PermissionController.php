@@ -29,9 +29,35 @@ class PermissionController extends Controller
     ];
 
     /**
+     * Permission actions for matrix display
+     */
+    protected array $permissionActions = [
+        'create' => 'Buat',
+        'read' => 'Lihat',
+        'update' => 'Edit',
+        'delete' => 'Hapus',
+        'publish' => 'Publikasi',
+        'manage' => 'Kelola',
+    ];
+
+    /**
      * Display a listing of permissions.
      */
     public function index(Request $request)
+    {
+        $view = $request->get('view', 'list'); // Default to list view
+        
+        if ($view === 'matrix') {
+            return $this->matrixView($request);
+        }
+        
+        return $this->listView($request);
+    }
+
+    /**
+     * List view (original)
+     */
+    protected function listView(Request $request)
     {
         $query = Permission::query();
 
@@ -60,6 +86,94 @@ class PermissionController extends Controller
 
         return view('admin.permissions.index', compact('permissions', 'groupedPermissions', 'stats'))
             ->with('permissionGroups', $this->permissionGroups);
+    }
+
+    /**
+     * Matrix view for permissions
+     */
+    protected function matrixView(Request $request)
+    {
+        // Get all roles
+        $roles = Role::orderBy('name')->get();
+        
+        // Get grouped permissions
+        $groupedPermissions = CacheService::getGroupedPermissions();
+        
+        // Build matrix structure
+        $matrix = [];
+        foreach ($this->permissionGroups as $groupKey => $groupLabel) {
+            if (!isset($groupedPermissions[$groupKey])) {
+                continue;
+            }
+            
+            $permissions = $groupedPermissions[$groupKey];
+            
+            // Group by actions
+            $actionGroups = [];
+            foreach ($permissions as $permission) {
+                $parts = explode('.', $permission->name);
+                $action = $parts[1] ?? 'manage';
+                
+                if (!isset($actionGroups[$action])) {
+                    $actionGroups[$action] = [];
+                }
+                $actionGroups[$action][] = $permission;
+            }
+            
+            $matrix[$groupKey] = [
+                'label' => $groupLabel,
+                'actions' => $actionGroups,
+            ];
+        }
+
+        // Get role permissions mapping for quick lookup
+        $rolePermissions = [];
+        foreach ($roles as $role) {
+            $rolePermissions[$role->id] = $role->permissions->pluck('id')->toArray();
+        }
+
+        // Stats (cached)
+        $stats = CacheService::getPermissionStats();
+
+        return view('admin.permissions.matrix', compact('roles', 'matrix', 'rolePermissions', 'stats'))
+            ->with('permissionGroups', $this->permissionGroups)
+            ->with('permissionActions', $this->permissionActions);
+    }
+
+    /**
+     * Toggle permission for a role via AJAX
+     */
+    public function togglePermission(Request $request)
+    {
+        $validated = $request->validate([
+            'role_id' => ['required', 'exists:roles,id'],
+            'permission_id' => ['required', 'exists:permissions,id'],
+        ]);
+
+        $role = Role::findOrFail($validated['role_id']);
+        $permission = Permission::findOrFail($validated['permission_id']);
+
+        // Toggle permission
+        if ($role->hasPermissionTo($permission)) {
+            $role->revokePermissionTo($permission);
+            $hasPermission = false;
+        } else {
+            $role->givePermissionTo($permission);
+            $hasPermission = true;
+        }
+
+        // Clear cache
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        CacheService::clearPermissionsCache();
+        CacheService::clearRolesCache();
+
+        return response()->json([
+            'success' => true,
+            'hasPermission' => $hasPermission,
+            'message' => $hasPermission 
+                ? "Permission '{$permission->name}' berhasil diberikan ke role '{$role->name}'"
+                : "Permission '{$permission->name}' berhasil dicabut dari role '{$role->name}'"
+        ]);
     }
 
     /**
