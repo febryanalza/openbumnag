@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -81,10 +82,16 @@ Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin
     
     // Settings (super admin only)
     Route::middleware(['check.role:super_admin'])->prefix('settings')->name('settings.')->group(function () {
-        Route::get('/', function() {
-            return view('admin.coming-soon', ['title' => 'Settings']);
-        })->name('index');
-        // Add more settings routes here
+        Route::get('/', [SettingController::class, 'index'])->name('index');
+        Route::get('/create', [SettingController::class, 'create'])->name('create');
+        Route::post('/', [SettingController::class, 'store'])->name('store');
+        Route::get('/grouped', [SettingController::class, 'grouped'])->name('grouped');
+        Route::post('/grouped', [SettingController::class, 'updateGrouped'])->name('update-grouped');
+        Route::get('/{setting}', [SettingController::class, 'show'])->name('show');
+        Route::get('/{setting}/edit', [SettingController::class, 'edit'])->name('edit');
+        Route::put('/{setting}', [SettingController::class, 'update'])->name('update');
+        Route::delete('/{setting}', [SettingController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-action', [SettingController::class, 'bulkAction'])->name('bulk-action');
     });
 });
 
