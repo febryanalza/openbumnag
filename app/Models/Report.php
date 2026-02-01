@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 /**
@@ -52,8 +53,8 @@ class Report extends Model
             if (empty($report->slug)) {
                 $report->slug = static::generateUniqueSlug($report->title);
             }
-            if (empty($report->user_id) && auth()->check()) {
-                $report->user_id = auth()->id();
+            if (empty($report->user_id) && Auth::check()) {
+                $report->user_id = Auth::id();
             }
         });
 

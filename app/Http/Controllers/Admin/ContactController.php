@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
@@ -110,7 +111,7 @@ class ContactController extends Controller
         $contact->update([
             'reply' => $validated['reply'],
             'replied_at' => now(),
-            'replied_by' => auth()->id(),
+            'replied_by' => Auth::id(),
             'status' => 'replied',
         ]);
 

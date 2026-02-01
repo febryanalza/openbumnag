@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Promotion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -144,7 +145,7 @@ class PromotionController extends Controller
 
         // Set defaults
         $validated['is_featured'] = $request->boolean('is_featured');
-        $validated['user_id'] = auth()->id();
+        $validated['user_id'] = Auth::id();
 
         // Generate slug if empty
         if (empty($validated['slug'])) {

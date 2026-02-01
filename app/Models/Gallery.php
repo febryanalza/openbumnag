@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @mixin IdeHelperGallery
@@ -44,8 +45,8 @@ class Gallery extends Model
         parent::boot();
 
         static::creating(function ($gallery) {
-            if (empty($gallery->user_id) && auth()->check()) {
-                $gallery->user_id = auth()->id();
+            if (empty($gallery->user_id) && Auth::check()) {
+                $gallery->user_id = Auth::id();
             }
         });
     }

@@ -11,6 +11,8 @@ use App\Models\Promotion;
 use App\Models\Report;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -38,7 +40,7 @@ class HomeController extends Controller
         }
         
         // Debug: Log the paths
-        \Log::info('Hero Images Paths:', ['paths' => $heroImagesPaths]);
+        Log::info('Hero Images Paths:', ['paths' => $heroImagesPaths]);
         
         // Limit hero images based on setting
         $heroImagesPaths = array_slice($heroImagesPaths, 0, $heroMaxSlides);
@@ -53,7 +55,7 @@ class HomeController extends Controller
         } else {
             // Convert paths to collection for consistency
             $heroImages = collect($heroImagesPaths)->map(function($path, $index) {
-                \Log::info('Processing hero image:', ['index' => $index, 'path' => $path]);
+                Log::info('Processing hero image:', ['index' => $index, 'path' => $path]);
                 return (object)[
                     'id' => $index,
                     'title' => 'Hero Slide ' . ($index + 1),
@@ -272,7 +274,7 @@ class HomeController extends Controller
             if (!empty($data['user_id'])) {
                 $news->setRelation('user', \App\Models\User::find($data['user_id']));
             } else {
-                $news->setRelation('user', auth()->user());
+                $news->setRelation('user', Auth::user());
             }
             
             // Set published_at if not set
@@ -362,7 +364,7 @@ class HomeController extends Controller
             if (!empty($data['user_id'])) {
                 $report->setRelation('user', \App\Models\User::find($data['user_id']));
             } else {
-                $report->setRelation('user', auth()->user());
+                $report->setRelation('user', Auth::user());
             }
             
             // Set published_at if not set

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 /**
@@ -58,8 +59,8 @@ class Promotion extends Model
             if (empty($promotion->slug)) {
                 $promotion->slug = Str::slug($promotion->title);
             }
-            if (empty($promotion->user_id) && auth()->check()) {
-                $promotion->user_id = auth()->id();
+            if (empty($promotion->user_id) && Auth::check()) {
+                $promotion->user_id = Auth::id();
             }
         });
 

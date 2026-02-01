@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\News;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -118,7 +119,7 @@ class NewsController extends Controller
 
         // Set defaults
         $validated['is_featured'] = $request->boolean('is_featured');
-        $validated['user_id'] = auth()->id();
+        $validated['user_id'] = Auth::id();
 
         // Auto-set published_at if publishing
         if ($validated['status'] === 'published' && empty($validated['published_at'])) {

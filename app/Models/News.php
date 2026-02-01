@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 /**
@@ -47,8 +48,8 @@ class News extends Model
             if (empty($news->slug)) {
                 $news->slug = static::generateUniqueSlug($news->title);
             }
-            if (empty($news->user_id) && auth()->check()) {
-                $news->user_id = auth()->id();
+            if (empty($news->user_id) && Auth::check()) {
+                $news->user_id = Auth::id();
             }
         });
 

@@ -81,11 +81,6 @@ class AuthController extends Controller
         $roles = $user->getRoleNames();
         $permissions = $user->getAllPermissions()->pluck('name');
 
-        // Log activity
-        activity()
-            ->causedBy($user)
-            ->log('User logged in via API');
-
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
@@ -205,11 +200,6 @@ class AuthController extends Controller
         $user = $request->user();
 
         if ($user) {
-            // Log activity
-            activity()
-                ->causedBy($user)
-                ->log('User logged out via API');
-
             // Revoke all tokens
             $user->tokens()->delete();
         }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -172,12 +173,14 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         // Prevent self-deletion
-        if ($user->id === auth()->id()) {
+        if ($user->id === Auth::id()) {
             return back()->with('error', 'Anda tidak dapat menghapus akun sendiri.');
         }
 
         // Prevent deleting super_admin if user is not super_admin
-        if ($user->hasRole('super_admin') && !auth()->user()->hasRole('super_admin')) {
+        /** @var \App\Models\User $currentUser */
+        $currentUser = Auth::user();
+        if ($user->hasRole('super_admin') && !$currentUser->hasRole('super_admin')) {
             return back()->with('error', 'Anda tidak memiliki izin untuk menghapus Super Admin.');
         }
 
@@ -232,7 +235,7 @@ class UserController extends Controller
         $ids = $validated['ids'];
         
         // Remove current user from selection
-        $ids = array_diff($ids, [auth()->id()]);
+        $ids = array_diff($ids, [Auth::id()]);
 
         switch ($action) {
             case 'delete':

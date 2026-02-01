@@ -45,6 +45,7 @@ class LoginController extends Controller
         }
 
         // Authentication successful
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         // Check if user can access admin panel
@@ -59,11 +60,6 @@ class LoginController extends Controller
             ]);
         }
 
-        // Log the login activity
-        activity()
-            ->causedBy($user)
-            ->log('User logged into admin panel');
-
         RateLimiter::clear($this->throttleKey($request));
 
         $request->session()->regenerate();
@@ -77,15 +73,6 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        $user = Auth::user();
-
-        // Log the logout activity
-        if ($user) {
-            activity()
-                ->causedBy($user)
-                ->log('User logged out from admin panel');
-        }
-
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Report;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -174,7 +175,7 @@ class ReportController extends Controller
         }
 
         // Set defaults
-        $validated['user_id'] = auth()->id();
+        $validated['user_id'] = Auth::id();
 
         // Auto-set published_at if publishing
         if ($validated['status'] === 'published' && empty($validated['published_at'])) {
@@ -335,6 +336,9 @@ class ReportController extends Controller
 
     /**
      * Download report file.
+     * 
+     * @param  \App\Models\Report  $report
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
      */
     public function download(Report $report)
     {
@@ -346,7 +350,10 @@ class ReportController extends Controller
         $report->increment('downloads');
 
         $fileName = Str::slug($report->title) . '.' . $report->file_type;
-        return Storage::disk('public')->download($report->file_path, $fileName);
+        
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('public');
+        return $disk->download($report->file_path, $fileName);
     }
 
     /**

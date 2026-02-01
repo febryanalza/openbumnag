@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Gallery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class GalleryController extends Controller
@@ -139,7 +140,7 @@ class GalleryController extends Controller
 
         // Set defaults
         $validated['is_featured'] = $request->boolean('is_featured');
-        $validated['user_id'] = auth()->id();
+        $validated['user_id'] = Auth::id();
         $validated['order'] = $validated['order'] ?? 0;
 
         Gallery::create($validated);
