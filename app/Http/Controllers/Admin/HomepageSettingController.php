@@ -335,8 +335,14 @@ class HomepageSettingController extends Controller
      */
     protected function getHeroImages(): array
     {
-        $heroImagesJson = Setting::get('hero_images', '[]');
-        $heroImages = json_decode($heroImagesJson, true) ?? [];
+        $heroImagesData = Setting::get('hero_images', []);
+        
+        // Handle both array (already decoded) and string (JSON) formats
+        if (is_string($heroImagesData)) {
+            $heroImages = json_decode($heroImagesData, true) ?? [];
+        } else {
+            $heroImages = is_array($heroImagesData) ? $heroImagesData : [];
+        }
         
         // Ensure all images have proper structure
         return array_map(function ($image, $index) {

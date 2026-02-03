@@ -25,10 +25,11 @@ class SettingController extends Controller
 
     /**
      * Available setting groups
+     * 
+     * NOTE: Homepage settings dikelola terpisah oleh HomepageSettingController
      */
     protected array $groups = [
         'general' => 'General',
-        'homepage' => 'Homepage',
         'seo' => 'SEO',
         'social' => 'Social Media',
         'contact' => 'Contact',
