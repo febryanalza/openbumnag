@@ -39,7 +39,7 @@
                 <a href="{{ route('catalogs.index') }}" 
                    class="font-medium transition-colors duration-200 hover:text-primary"
                    :class="scrolled ? 'text-gray-700' : 'text-white'">
-                    Kodai
+                    Kadai
                 </a>
                 <a href="{{ route('news.index') }}" 
                    class="font-medium transition-colors duration-200 hover:text-primary"
@@ -98,7 +98,7 @@
             </a>
             <a href="{{ route('catalogs.index') }}" 
                class="block px-4 py-3 rounded-lg text-gray-700 font-medium hover:bg-primary-50 hover:text-primary transition-colors duration-200">
-                Kodai
+                Kadai
             </a>
             <a href="{{ route('news.index') }}" 
                class="block px-4 py-3 rounded-lg text-gray-700 font-medium hover:bg-primary-50 hover:text-primary transition-colors duration-200">
