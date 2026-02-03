@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GalleryController;
+use App\Http\Controllers\Admin\HomepageSettingController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PromotionController;
@@ -193,6 +194,17 @@ Route::middleware(['web', 'admin.access'])->prefix('admin')->name('admin.')->gro
         Route::put('/{setting}', [SettingController::class, 'update'])->name('update');
         Route::delete('/{setting}', [SettingController::class, 'destroy'])->name('destroy');
         Route::post('/bulk-action', [SettingController::class, 'bulkAction'])->name('bulk-action');
+    });
+    
+    // Homepage Settings (super admin only)
+    Route::middleware(['check.role:super_admin'])->prefix('homepage-settings')->name('homepage-settings.')->group(function () {
+        Route::get('/', [HomepageSettingController::class, 'index'])->name('index');
+        Route::put('/', [HomepageSettingController::class, 'update'])->name('update');
+        Route::get('/hero-images', [HomepageSettingController::class, 'heroImages'])->name('hero-images');
+        Route::post('/hero-images', [HomepageSettingController::class, 'uploadHeroImage'])->name('hero-images.upload');
+        Route::post('/hero-images/order', [HomepageSettingController::class, 'updateHeroImageOrder'])->name('hero-images.order');
+        Route::put('/hero-images/{index}/title', [HomepageSettingController::class, 'updateHeroImageTitle'])->name('hero-images.update-title');
+        Route::delete('/hero-images/{index}', [HomepageSettingController::class, 'deleteHeroImage'])->name('hero-images.delete');
     });
     
     // Permissions Management (super admin only)

@@ -201,32 +201,50 @@ class CacheService
             'site_name' => $settings['site_name'] ?? 'Lubas Mandiri',
             'site_tagline' => $settings['site_tagline'] ?? 'Badan Usaha Milik Nagari',
             'site_description' => $settings['site_description'] ?? 'BUMNag Lubas Mandiri',
+            'site_keywords' => $settings['site_keywords'] ?? 'bumnag, lubas mandiri, nagari',
+            'footer_copyright' => $settings['footer_copyright'] ?? '© 2026 Lubas Mandiri. All rights reserved.',
             
             // Hero Section
             'hero_title' => $settings['hero_title'] ?? 'Selamat Datang di',
             'hero_subtitle' => $settings['hero_subtitle'] ?? 'Lubas Mandiri',
             'hero_description' => $settings['hero_description'] ?? 'Badan Usaha Milik Nagari yang berkomitmen untuk kesejahteraan masyarakat',
+            'hero_cta_primary_text' => $settings['hero_cta_primary_text'] ?? 'Jelajahi Produk',
+            'hero_cta_primary_link' => $settings['hero_cta_primary_link'] ?? '/katalog',
+            'hero_cta_secondary_text' => $settings['hero_cta_secondary_text'] ?? 'Tentang Kami',
+            'hero_cta_secondary_link' => $settings['hero_cta_secondary_link'] ?? '/tentang',
             'hero_autoplay_duration' => (int) ($settings['hero_autoplay_duration'] ?? 5000),
+            'hero_max_slides' => (int) ($settings['hero_max_slides'] ?? 5),
             
             // About Section
             'about_title' => $settings['about_title'] ?? 'Unit Usaha Kami',
             'about_description' => $settings['about_description'] ?? 'Berbagai unit usaha yang kami kelola',
+            'about_cta_text' => $settings['about_cta_text'] ?? 'Lihat Semua Unit Usaha',
             
             // News Section
             'news_title' => $settings['news_title'] ?? 'Berita Terbaru',
             'news_description' => $settings['news_description'] ?? 'Informasi dan update terkini',
+            'news_homepage_limit' => (int) ($settings['news_homepage_limit'] ?? 6),
+            'news_cta_text' => $settings['news_cta_text'] ?? 'Lihat Semua Berita',
             
             // Reports Section
             'reports_title' => $settings['reports_title'] ?? 'Laporan & Transparansi',
             'reports_description' => $settings['reports_description'] ?? 'Laporan keuangan dan kegiatan',
+            'reports_homepage_limit' => (int) ($settings['reports_homepage_limit'] ?? 6),
+            'reports_cta_text' => $settings['reports_cta_text'] ?? 'Lihat Semua Laporan',
             
             // Catalog Section
             'catalog_title' => $settings['catalog_title'] ?? 'Kodai Kami',
             'catalog_description' => $settings['catalog_description'] ?? 'Produk-produk berkualitas dari unit usaha kami',
+            'catalog_homepage_limit' => (int) ($settings['catalog_homepage_limit'] ?? 6),
+            'catalog_cta_text' => $settings['catalog_cta_text'] ?? 'Lihat Semua Produk',
             
             // CTA Section
             'cta_title' => $settings['cta_title'] ?? 'Mari Berkembang Bersama',
             'cta_description' => $settings['cta_description'] ?? 'Bergabunglah dengan kami dalam membangun ekonomi nagari',
+            'cta_primary_text' => $settings['cta_primary_text'] ?? 'Hubungi Kami',
+            'cta_primary_link' => $settings['cta_primary_link'] ?? '#kontak',
+            'cta_secondary_text' => $settings['cta_secondary_text'] ?? 'Pelajari Lebih Lanjut',
+            'cta_secondary_link' => $settings['cta_secondary_link'] ?? '/tentang',
         ];
     }
 

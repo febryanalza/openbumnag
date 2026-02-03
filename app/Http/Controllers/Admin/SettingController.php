@@ -28,6 +28,7 @@ class SettingController extends Controller
      */
     protected array $groups = [
         'general' => 'General',
+        'homepage' => 'Homepage',
         'seo' => 'SEO',
         'social' => 'Social Media',
         'contact' => 'Contact',

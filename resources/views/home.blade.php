@@ -12,9 +12,14 @@
         <div class="relative h-full w-full flex" 
              :style="`transform: translateX(-${currentSlide * 100}%); transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);`">
             @foreach($heroImages as $index => $image)
+            @php
+                // Support both object and array format
+                $imagePath = is_object($image) ? $image->file_path : ($image['path'] ?? $image);
+                $imageTitle = is_object($image) ? $image->title : ($image['title'] ?? 'Hero Slide ' . ($index + 1));
+            @endphp
             <div class="relative min-w-full h-full">
-                <img src="{{ Storage::url($image->file_path) }}" 
-                     alt="{{ $image->title }}" 
+                <img src="{{ Storage::url($imagePath) }}" 
+                     alt="{{ $imageTitle }}" 
                      class="w-full h-full object-cover"
                      loading="{{ $index === 0 ? 'eager' : 'lazy' }}">
                 <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
@@ -44,16 +49,16 @@
                     {{ $settings['hero_description'] ?? 'Badan Usaha Milik Nagari yang berkomitmen untuk kesejahteraan masyarakat' }}
                 </p>
                 <div class="flex flex-col xs:flex-row flex-wrap gap-3 sm:gap-4" data-aos="fade-up" data-aos-delay="200">
-                    <a href="{{ route('about') }}" 
+                    <a href="{{ $settings['hero_cta_primary_link'] ?? route('catalogs.index') }}" 
                        class="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 bg-primary text-white font-semibold rounded-full hover:bg-primary-600 transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-1 text-sm sm:text-base">
-                        Tentang Kami
+                        {{ $settings['hero_cta_primary_text'] ?? 'Jelajahi Produk' }}
                         <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                         </svg>
                     </a>
-                    <a href="#unit-usaha" 
+                    <a href="{{ $settings['hero_cta_secondary_link'] ?? route('about') }}" 
                        class="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 bg-white text-primary font-semibold rounded-full hover:bg-gray-50 transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-1 text-sm sm:text-base">
-                        Unit Usaha
+                        {{ $settings['hero_cta_secondary_text'] ?? 'Tentang Kami' }}
                     </a>
                 </div>
             </div>
@@ -162,7 +167,7 @@
         <div class="text-center mt-8 sm:mt-12">
             <a href="{{ route('about') }}" 
                class="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-primary text-white font-semibold rounded-full hover:bg-primary-600 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
-                Lihat Semua Unit Usaha
+                {{ $settings['about_cta_text'] ?? 'Lihat Semua Unit Usaha' }}
                 <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                 </svg>
@@ -185,7 +190,7 @@
             </div>
             <a href="{{ route('news.index') }}" 
                class="hidden sm:inline-flex items-center text-primary font-semibold hover:text-primary-600 transition-colors duration-200 whitespace-nowrap">
-                Lihat Semua
+                {{ $settings['news_cta_text'] ?? 'Lihat Semua Berita' }}
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                 </svg>
@@ -258,7 +263,7 @@
         <div class="text-center mt-8 sm:mt-12 sm:hidden">
             <a href="{{ route('news.index') }}" 
                class="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-primary text-white font-semibold rounded-full hover:bg-primary-600 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
-                Lihat Semua Berita
+                {{ $settings['news_cta_text'] ?? 'Lihat Semua Berita' }}
                 <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                 </svg>
@@ -281,7 +286,7 @@
             </div>
             <a href="{{ route('reports.index') }}" 
                class="hidden sm:inline-flex items-center text-primary font-semibold hover:text-primary-600 transition-colors duration-200 whitespace-nowrap">
-                Lihat Semua
+                {{ $settings['reports_cta_text'] ?? 'Lihat Semua Laporan' }}
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                 </svg>
@@ -342,7 +347,7 @@
         <div class="text-center mt-8 sm:mt-12">
             <a href="{{ route('reports.index') }}" 
                class="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-sage text-white font-semibold rounded-full hover:bg-sage-600 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
-                Lihat Semua Laporan
+                {{ $settings['reports_cta_text'] ?? 'Lihat Semua Laporan' }}
                 <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                 </svg>
@@ -366,7 +371,7 @@
             </div>
             <a href="{{ route('catalogs.index') }}" 
                class="hidden sm:inline-flex items-center text-primary font-semibold hover:text-primary-600 transition-colors duration-200 whitespace-nowrap">
-                Lihat Semua
+                {{ $settings['catalog_cta_text'] ?? 'Lihat Semua Produk' }}
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
@@ -465,7 +470,7 @@
         <div class="text-center mt-8 sm:mt-12 sm:hidden">
             <a href="{{ route('catalogs.index') }}" 
                class="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-primary text-white font-semibold rounded-full hover:bg-primary-600 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
-                Lihat Semua Produk
+                {{ $settings['catalog_cta_text'] ?? 'Lihat Semua Produk' }}
                 <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
@@ -485,16 +490,16 @@
             {{ $settings['cta_description'] ?? 'Bergabunglah dengan kami dalam membangun ekonomi nagari' }}
         </p>
         <div class="flex flex-col xs:flex-row flex-wrap justify-center gap-3 sm:gap-4">
-            <a href="{{ route('home') }}#kontak" 
+            <a href="{{ $settings['cta_primary_link'] ?? route('home') . '#kontak' }}" 
                class="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 bg-white text-primary font-semibold rounded-full hover:bg-gray-50 transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-1 text-sm sm:text-base">
-                Hubungi Kami
+                {{ $settings['cta_primary_text'] ?? 'Hubungi Kami' }}
                 <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                 </svg>
             </a>
-            <a href="{{ route('about') }}" 
+            <a href="{{ $settings['cta_secondary_link'] ?? route('about') }}" 
                class="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 bg-secondary text-white font-semibold rounded-full hover:bg-secondary-600 transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-1 text-sm sm:text-base">
-                Pelajari Lebih Lanjut
+                {{ $settings['cta_secondary_text'] ?? 'Pelajari Lebih Lanjut' }}
             </a>
         </div>
     </div>
