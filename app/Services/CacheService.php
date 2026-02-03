@@ -262,6 +262,27 @@ class CacheService
             'cta_primary_link' => $settings['cta_primary_link'] ?? '#kontak',
             'cta_secondary_text' => $settings['cta_secondary_text'] ?? 'Pelajari Lebih Lanjut',
             'cta_secondary_link' => $settings['cta_secondary_link'] ?? '/tentang',
+            
+            // About Page
+            'about_page_title' => $settings['about_page_title'] ?? 'Tentang Kami',
+            'about_page_subtitle' => $settings['about_page_subtitle'] ?? 'Mengenal BUMNag Lubas Mandiri',
+            'about_page_description' => $settings['about_page_description'] ?? 'BUMNag Lubas Mandiri adalah...',
+            'about_vision_title' => $settings['about_vision_title'] ?? 'Visi Kami',
+            'about_vision_content' => $settings['about_vision_content'] ?? 'Menjadi BUMNag terdepan...',
+            'about_mission_title' => $settings['about_mission_title'] ?? 'Misi Kami',
+            'about_mission_content' => $settings['about_mission_content'] ?? '',
+            'about_values_title' => $settings['about_values_title'] ?? 'Nilai-Nilai Kami',
+            'about_values_content' => $settings['about_values_content'] ?? 'Integritas, Transparansi...',
+            'about_team_title' => $settings['about_team_title'] ?? 'Tim Pengembang Website',
+            'about_team_description' => $settings['about_team_description'] ?? 'Website ini dikembangkan oleh...',
+            'about_team_logo_1' => $settings['about_team_logo_1'] ?? '',
+            'about_team_name_1' => $settings['about_team_name_1'] ?? 'KKN UNP',
+            'about_team_logo_2' => $settings['about_team_logo_2'] ?? '',
+            'about_team_name_2' => $settings['about_team_name_2'] ?? 'BUMNag Lubas Mandiri',
+            'about_team_logo_3' => $settings['about_team_logo_3'] ?? '',
+            'about_team_name_3' => $settings['about_team_name_3'] ?? 'Nagari Lubuk Basung',
+            'about_team_logo_4' => $settings['about_team_logo_4'] ?? '',
+            'about_team_name_4' => $settings['about_team_name_4'] ?? 'Kabupaten Agam',
         ];
     }
 

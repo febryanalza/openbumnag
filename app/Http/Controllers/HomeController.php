@@ -51,7 +51,9 @@ class HomeController extends Controller
             ->orderBy('name', 'asc')
             ->get();
         
-        return view('about', compact('bumnagProfiles'));
+        $settings = CacheService::getHomepageSettings();
+        
+        return view('about', compact('bumnagProfiles', 'settings'));
     }
 
     /**
