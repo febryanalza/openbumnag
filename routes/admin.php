@@ -30,7 +30,7 @@ Route::middleware(['web', 'guest'])->prefix('admin')->name('admin.')->group(func
 });
 
 // Authenticated admin routes
-Route::middleware(['web', 'auth', 'admin.access'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['web', 'admin.access'])->prefix('admin')->name('admin.')->group(function () {
     // Logout
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     
