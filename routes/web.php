@@ -3,11 +3,16 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/tentang', [HomeController::class, 'about'])->name('about');
+
+// Contact Routes
+Route::get('/kontak', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/kontak', [ContactController::class, 'store'])->name('contact.store');
 
 // Gallery Routes
 Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery');
