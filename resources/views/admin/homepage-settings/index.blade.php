@@ -157,7 +157,7 @@
                 </div>
 
                 {{-- Settings Form --}}
-                <form method="POST" action="{{ route('admin.homepage-settings.update') }}" class="p-6">
+                <form method="POST" action="{{ route('admin.homepage-settings.update') }}" class="p-6" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="section" value="{{ $currentSection }}">
@@ -169,7 +169,34 @@
                                     {{ $config['label'] }}
                                 </label>
                                 
-                                @if($config['type'] === 'textarea')
+                                @if($config['type'] === 'image')
+                                    {{-- Image Upload Field --}}
+                                    <div class="space-y-3">
+                                        @if(!empty($settings[$key]))
+                                            <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                                <div class="w-16 h-16 flex-shrink-0">
+                                                    <img src="{{ Storage::url($settings[$key]) }}" 
+                                                         alt="{{ $config['label'] }}"
+                                                         class="w-full h-full object-contain rounded">
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <p class="text-sm font-medium text-gray-900 truncate">Logo saat ini</p>
+                                                    <p class="text-xs text-gray-500 truncate">{{ $settings[$key] }}</p>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        
+                                        <div class="flex items-center gap-3">
+                                            <input 
+                                                type="file" 
+                                                id="{{ $key }}" 
+                                                name="settings[{{ $key }}]"
+                                                accept="image/png,image/jpeg,image/jpg,image/svg+xml,image/webp"
+                                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 cursor-pointer border border-gray-300 rounded-lg">
+                                        </div>
+                                        <p class="text-xs text-gray-500">Format: PNG, JPG, SVG, WebP. Max: 2MB</p>
+                                    </div>
+                                @elseif($config['type'] === 'textarea')
                                     <textarea 
                                         id="{{ $key }}" 
                                         name="settings[{{ $key }}]" 
@@ -195,7 +222,7 @@
                                         class="block w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                                 @endif
                                 
-                                @if(!empty($config['placeholder']))
+                                @if(!empty($config['placeholder']) && $config['type'] !== 'image')
                                     <p class="mt-1 text-xs text-gray-500">Default: {{ $config['placeholder'] }}</p>
                                 @endif
                             </div>

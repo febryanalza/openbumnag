@@ -414,7 +414,7 @@ class HomepageSettingSeeder extends Seeder
             ],
             [
                 'key' => 'about_team_logo_1',
-                'value' => 'team-logos/kkn-unp.svg',
+                'value' => '',
                 'type' => 'image',
                 'group' => 'homepage',
                 'description' => 'Logo KKN UNP',
@@ -430,7 +430,7 @@ class HomepageSettingSeeder extends Seeder
             ],
             [
                 'key' => 'about_team_logo_2',
-                'value' => 'team-logos/bumnag-lubas.svg',
+                'value' => '',
                 'type' => 'image',
                 'group' => 'homepage',
                 'description' => 'Logo BUMNag Lubas',
@@ -446,7 +446,7 @@ class HomepageSettingSeeder extends Seeder
             ],
             [
                 'key' => 'about_team_logo_3',
-                'value' => 'team-logos/nagari-lubuk-basung.svg',
+                'value' => '',
                 'type' => 'image',
                 'group' => 'homepage',
                 'description' => 'Logo Nagari Lubuk Basung',
@@ -462,7 +462,7 @@ class HomepageSettingSeeder extends Seeder
             ],
             [
                 'key' => 'about_team_logo_4',
-                'value' => 'team-logos/kabupaten-agam.svg',
+                'value' => '',
                 'type' => 'image',
                 'group' => 'homepage',
                 'description' => 'Logo Kabupaten Agam',

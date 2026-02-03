@@ -169,10 +169,41 @@ class HomepageSettingController extends Controller
         $sectionSettings = $this->sections[$section]['settings'];
         
         foreach ($sectionSettings as $key => $config) {
+            // Handle file uploads for image type
+            if ($config['type'] === 'image' && $request->hasFile("settings.{$key}")) {
+                $file = $request->file("settings.{$key}");
+                
+                // Delete old image if exists
+                $oldSetting = Setting::where('key', $key)->first();
+                if ($oldSetting && $oldSetting->value && Storage::disk('public')->exists($oldSetting->value)) {
+                    Storage::disk('public')->delete($oldSetting->value);
+                }
+                
+                // Store new image
+                $path = $file->store('team-logos', 'public');
+                
+                Setting::updateOrCreate(
+                    ['key' => $key],
+                    [
+                        'value' => $path,
+                        'type' => 'image',
+                        'group' => 'homepage',
+                        'description' => $config['label'],
+                    ]
+                );
+                
+                continue;
+            }
+            
             $value = $request->input("settings.{$key}");
             
-            // Handle empty values
-            if ($value === null || $value === '') {
+            // Handle empty values - skip image types (they're uploaded, not text input)
+            if (($value === null || $value === '') && $config['type'] !== 'image') {
+                continue;
+            }
+            
+            // Skip if no value and it's not an image upload
+            if ($value === null && $config['type'] === 'image') {
                 continue;
             }
 
@@ -180,6 +211,7 @@ class HomepageSettingController extends Controller
             $type = match($config['type']) {
                 'number' => 'number',
                 'textarea' => 'textarea',
+                'image' => 'image',
                 default => 'text',
             };
 
