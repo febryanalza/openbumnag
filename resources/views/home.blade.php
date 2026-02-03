@@ -13,9 +13,14 @@
              :style="`transform: translateX(-${currentSlide * 100}%); transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);`">
             @foreach($heroImages as $index => $image)
             @php
-                // Support both object and array format
-                $imagePath = is_object($image) ? $image->file_path : ($image['path'] ?? $image);
-                $imageTitle = is_object($image) ? $image->title : ($image['title'] ?? 'Hero Slide ' . ($index + 1));
+                // Support both object (from CacheService) and array format
+                if (is_object($image)) {
+                    $imagePath = $image->file_path ?? '';
+                    $imageTitle = $image->title ?? 'Hero Slide ' . ($index + 1);
+                } else {
+                    $imagePath = $image['path'] ?? (is_string($image) ? $image : '');
+                    $imageTitle = $image['title'] ?? 'Hero Slide ' . ($index + 1);
+                }
             @endphp
             <div class="relative min-w-full h-full">
                 <img src="{{ Storage::url($imagePath) }}" 

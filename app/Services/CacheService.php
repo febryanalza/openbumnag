@@ -128,10 +128,15 @@ class CacheService
             $reportsLimit = (int) ($settings['reports_homepage_limit'] ?? 6);
             
             // Process hero images
-            $heroImagesData = $settings['hero_images'] ?? '[]';
-            $heroImagesPaths = is_string($heroImagesData) 
-                ? (json_decode($heroImagesData, true) ?? []) 
-                : (is_array($heroImagesData) ? $heroImagesData : []);
+            $heroImagesData = $settings['hero_images'] ?? [];
+            
+            // Handle both string (JSON) and array formats
+            if (is_string($heroImagesData)) {
+                $heroImagesPaths = json_decode($heroImagesData, true) ?? [];
+            } else {
+                $heroImagesPaths = is_array($heroImagesData) ? $heroImagesData : [];
+            }
+            
             $heroImagesPaths = array_slice($heroImagesPaths, 0, $heroMaxSlides);
             
             // Get hero images
@@ -142,11 +147,23 @@ class CacheService
                     ->take($heroMaxSlides)
                     ->get(['id', 'title', 'file_path']);
             } else {
-                $heroImages = collect($heroImagesPaths)->map(function($path, $index) {
+                // Convert to objects for consistent access in views
+                $heroImages = collect($heroImagesPaths)->map(function($image, $index) {
+                    // Handle both array format ['path' => '...', 'title' => '...'] and plain string
+                    if (is_array($image)) {
+                        return (object)[
+                            'id' => $index,
+                            'title' => $image['title'] ?? 'Hero Slide ' . ($index + 1),
+                            'file_path' => $image['path'] ?? '',
+                            'order' => $image['order'] ?? $index,
+                        ];
+                    }
+                    // Fallback for plain string (just path)
                     return (object)[
                         'id' => $index,
                         'title' => 'Hero Slide ' . ($index + 1),
-                        'file_path' => $path
+                        'file_path' => $image,
+                        'order' => $index,
                     ];
                 });
             }
