@@ -69,7 +69,7 @@
                 <div class="relative">
                     <input type="text" name="search" value="{{ request('search') }}" 
                         placeholder="Cari laporan..." 
-                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
@@ -77,7 +77,7 @@
             </div>
 
             <!-- Status Filter -->
-            <select name="status" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="status" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="all">Semua Status</option>
                 @foreach($statuses as $key => $label)
                     <option value="{{ $key }}" {{ request('status') === $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -85,7 +85,7 @@
             </select>
 
             <!-- Type Filter -->
-            <select name="type" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="type" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="all">Semua Tipe</option>
                 @foreach($reportTypes as $key => $label)
                     <option value="{{ $key }}" {{ request('type') === $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -93,7 +93,7 @@
             </select>
 
             <!-- Year Filter -->
-            <select name="year" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="year" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="all">Semua Tahun</option>
                 @foreach($years as $year)
                     <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
@@ -101,7 +101,7 @@
             </select>
 
             <!-- Trashed Filter -->
-            <select name="trashed" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="trashed" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="">Aktif</option>
                 <option value="only" {{ request('trashed') === 'only' ? 'selected' : '' }}>Sampah</option>
             </select>
@@ -146,7 +146,7 @@
             </form>
         </div>
         <a href="{{ route('admin.reports.create') }}" 
-            class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition shadow-sm">
+            class="inline-flex items-center px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition shadow-sm">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
@@ -161,7 +161,7 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-4 py-3 text-left">
-                            <input type="checkbox" id="selectAll" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" onchange="toggleSelectAll()">
+                            <input type="checkbox" id="selectAll" class="rounded border-gray-300 text-amber-600 focus:ring-amber-500" onchange="toggleSelectAll()">
                         </th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Laporan</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tipe</th>
@@ -176,7 +176,7 @@
                     @forelse($reports as $report)
                         <tr class="hover:bg-gray-50 transition {{ $report->trashed() ? 'bg-red-50/50' : '' }}">
                             <td class="px-4 py-4">
-                                <input type="checkbox" class="report-checkbox rounded border-gray-300 text-primary-600 focus:ring-primary-500" 
+                                <input type="checkbox" class="report-checkbox rounded border-gray-300 text-amber-600 focus:ring-amber-500" 
                                     value="{{ $report->id }}" onchange="updateBulkActions()">
                             </td>
                             <td class="px-4 py-4">
@@ -193,7 +193,7 @@
                                         </div>
                                     @endif
                                     <div class="min-w-0">
-                                        <a href="{{ route('admin.reports.show', $report) }}" class="font-medium text-gray-900 hover:text-primary-600 transition block truncate max-w-xs">
+                                        <a href="{{ route('admin.reports.show', $report) }}" class="font-medium text-gray-900 hover:text-amber-600 transition block truncate max-w-xs">
                                             {{ $report->title }}
                                         </a>
                                         @if($report->category)
@@ -304,7 +304,7 @@
                                 </svg>
                                 <h3 class="text-lg font-medium text-gray-900 mb-1">Belum ada laporan</h3>
                                 <p class="text-gray-500 mb-4">Mulai tambahkan laporan untuk organisasi Anda.</p>
-                                <a href="{{ route('admin.reports.create') }}" class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">
+                                <a href="{{ route('admin.reports.create') }}" class="inline-flex items-center px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                     </svg>
@@ -352,3 +352,4 @@
 </script>
 @endpush
 @endsection
+

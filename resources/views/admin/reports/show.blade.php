@@ -119,7 +119,7 @@
                     <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-gray-900">File Laporan</h3>
                         <a href="{{ route('admin.reports.download', $report) }}" 
-                            class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm">
+                            class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition text-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                             </svg>
@@ -299,3 +299,4 @@
     </div>
 </div>
 @endsection
+

@@ -9,6 +9,44 @@
     <!-- Tailwind CSS CDN (temporary - will be replaced with compiled assets) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#BB3E00',
+                            50: '#FFF5F0',
+                            100: '#FFE8DC',
+                            200: '#FFCBB3',
+                            300: '#FFAE8A',
+                            400: '#FF8551',
+                            500: '#BB3E00',
+                            600: '#A03500',
+                            700: '#852C00',
+                            800: '#6A2300',
+                            900: '#4F1A00',
+                        },
+                        secondary: {
+                            DEFAULT: '#F7AD45',
+                            50: '#FFF9ED',
+                            100: '#FFF2D9',
+                            200: '#FFE5B3',
+                            300: '#FFD88D',
+                            400: '#FFCB67',
+                            500: '#F7AD45',
+                            600: '#E89A1F',
+                            700: '#C27E0A',
+                            800: '#8F5C07',
+                            900: '#5C3A05',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
         [x-cloak] { display: none !important; }
     </style>

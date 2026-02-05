@@ -28,15 +28,16 @@
                     @enderror
                 </div>
 
-                <!-- Slug -->
+                <!-- Slug (Auto-generated, display only) -->
                 <div>
-                    <label for="slug" class="block text-sm font-medium text-gray-700 mb-2">
-                        Slug
-                    </label>
-                    <input type="text" name="slug" id="slug" value="{{ old('slug') }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 @error('slug') border-red-500 @enderror"
-                        placeholder="Kosongkan untuk generate otomatis">
-                    <p class="mt-1 text-xs text-gray-500">URL-friendly identifier. Biarkan kosong untuk menggunakan nama.</p>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Slug URL</label>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-600 text-sm">
+                            <span id="slugDisplay">slug-akan-muncul-disini</span>
+                        </div>
+                    </div>
+                    <input type="hidden" name="slug" id="slug" value="{{ old('slug') }}">
+                    <p class="mt-1 text-xs text-gray-500">Slug akan dibuat otomatis dari nama kategori</p>
                     @error('slug')
                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
@@ -190,21 +191,29 @@
         }
     });
 
-    // Auto generate slug from name
-    const nameInput = document.getElementById('name');
-    const slugInput = document.getElementById('slug');
-    
-    nameInput.addEventListener('input', function() {
-        if (!slugInput.dataset.manual) {
-            slugInput.value = this.value
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, '');
-        }
-    });
+    // Generate slug from name
+    function generateSlug(title) {
+        return title
+            .toLowerCase()
+            .trim()
+            .replace(/[àáâãäå]/g, 'a')
+            .replace(/[èéêë]/g, 'e')
+            .replace(/[ìíîï]/g, 'i')
+            .replace(/[òóôõö]/g, 'o')
+            .replace(/[ùúûü]/g, 'u')
+            .replace(/[ñ]/g, 'n')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+    }
 
-    slugInput.addEventListener('input', function() {
-        this.dataset.manual = this.value.length > 0;
+    // Live slug update
+    document.getElementById('name').addEventListener('input', function() {
+        const slug = generateSlug(this.value);
+        document.getElementById('slugDisplay').textContent = slug || 'slug-akan-muncul-disini';
+        document.getElementById('slug').value = slug;
     });
 </script>
 @endpush

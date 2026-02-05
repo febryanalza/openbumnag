@@ -67,7 +67,7 @@
                 <div>
                     <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Judul <span class="text-red-500">*</span></label>
                     <input type="text" name="title" id="title" value="{{ old('title', $gallery->title) }}" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('title') border-red-500 @enderror">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 @error('title') border-red-500 @enderror">
                     @error('title')
                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
@@ -77,7 +77,7 @@
                 <div>
                     <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
                     <textarea name="description" id="description" rows="3"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('description') border-red-500 @enderror">{{ old('description', $gallery->description) }}</textarea>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 @error('description') border-red-500 @enderror">{{ old('description', $gallery->description) }}</textarea>
                     @error('description')
                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
@@ -88,7 +88,7 @@
                     <div>
                         <label for="file_type" class="block text-sm font-medium text-gray-700 mb-1">Tipe File <span class="text-red-500">*</span></label>
                         <select name="file_type" id="file_type" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                             @foreach($fileTypes as $key => $label)
                                 <option value="{{ $key }}" {{ old('file_type', $gallery->file_type) === $key ? 'selected' : '' }}>{{ $label }}</option>
                             @endforeach
@@ -97,7 +97,7 @@
                     <div>
                         <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Kategori <span class="text-red-500">*</span></label>
                         <select name="type" id="type" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                             @foreach($galleryTypes as $key => $label)
                                 <option value="{{ $key }}" {{ old('type', $gallery->type) === $key ? 'selected' : '' }}>{{ $label }}</option>
                             @endforeach
@@ -115,13 +115,13 @@
             <div class="p-6">
                 <div>
                     <label for="file" class="block text-sm font-medium text-gray-700 mb-1">Upload File Baru</label>
-                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-primary-400 transition">
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-amber-400 transition">
                         <div class="space-y-1 text-center">
                             <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                             <div class="flex text-sm text-gray-600">
-                                <label for="file" class="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500">
+                                <label for="file" class="relative cursor-pointer bg-white rounded-md font-medium text-amber-600 hover:text-amber-500">
                                     <span>Upload file baru</span>
                                     <input id="file" name="file" type="file" class="sr-only" accept="image/*,video/*" onchange="previewFile(this)">
                                 </label>
@@ -160,7 +160,7 @@
                     <div>
                         <label for="album" class="block text-sm font-medium text-gray-700 mb-1">Pilih Album</label>
                         <select name="album" id="album"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                             <option value="">-- Tanpa Album --</option>
                             @foreach($albums as $album)
                                 <option value="{{ $album }}" {{ old('album', $gallery->album) === $album ? 'selected' : '' }}>{{ $album }}</option>
@@ -170,7 +170,7 @@
                     <div>
                         <label for="new_album" class="block text-sm font-medium text-gray-700 mb-1">Atau Buat Album Baru</label>
                         <input type="text" name="new_album" id="new_album" value="{{ old('new_album') }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                             placeholder="Nama album baru">
                     </div>
                 </div>
@@ -180,12 +180,12 @@
                     <div>
                         <label for="photographer" class="block text-sm font-medium text-gray-700 mb-1">Fotografer</label>
                         <input type="text" name="photographer" id="photographer" value="{{ old('photographer', $gallery->photographer) }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     </div>
                     <div>
                         <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Lokasi</label>
                         <input type="text" name="location" id="location" value="{{ old('location', $gallery->location) }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     </div>
                 </div>
 
@@ -194,19 +194,19 @@
                     <div>
                         <label for="taken_date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Pengambilan</label>
                         <input type="date" name="taken_date" id="taken_date" value="{{ old('taken_date', $gallery->taken_date?->format('Y-m-d')) }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     </div>
                     <div>
                         <label for="order" class="block text-sm font-medium text-gray-700 mb-1">Urutan</label>
                         <input type="number" name="order" id="order" value="{{ old('order', $gallery->order) }}" min="0"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     </div>
                 </div>
 
                 <!-- Featured -->
                 <div class="flex items-center gap-3">
                     <input type="checkbox" name="is_featured" id="is_featured" value="1" {{ old('is_featured', $gallery->is_featured) ? 'checked' : '' }}
-                        class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                        class="w-5 h-5 rounded border-gray-300 text-amber-600 focus:ring-amber-500">
                     <label for="is_featured" class="text-sm font-medium text-gray-700">
                         Tandai sebagai unggulan
                     </label>
@@ -224,7 +224,7 @@
                     class="px-4 py-2 text-red-600 hover:text-red-700 border border-red-300 rounded-lg hover:bg-red-50 transition">
                     Hapus
                 </button>
-                <button type="submit" class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition shadow-sm">
+                <button type="submit" class="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition shadow-sm">
                     Simpan Perubahan
                 </button>
             </div>
@@ -314,3 +314,4 @@
 </script>
 @endpush
 @endsection
+

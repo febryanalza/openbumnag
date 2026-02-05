@@ -69,7 +69,7 @@
                 <div class="relative">
                     <input type="text" name="search" value="{{ request('search') }}" 
                         placeholder="Cari galeri..." 
-                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
@@ -77,7 +77,7 @@
             </div>
 
             <!-- File Type Filter -->
-            <select name="file_type" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="file_type" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="all">Semua Tipe File</option>
                 @foreach($fileTypes as $key => $label)
                     <option value="{{ $key }}" {{ request('file_type') === $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -85,7 +85,7 @@
             </select>
 
             <!-- Type Filter -->
-            <select name="type" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="type" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="all">Semua Kategori</option>
                 @foreach($galleryTypes as $key => $label)
                     <option value="{{ $key }}" {{ request('type') === $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -93,7 +93,7 @@
             </select>
 
             <!-- Album Filter -->
-            <select name="album" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="album" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="all">Semua Album</option>
                 @foreach($albums as $album)
                     <option value="{{ $album }}" {{ request('album') === $album ? 'selected' : '' }}>{{ $album }}</option>
@@ -101,7 +101,7 @@
             </select>
 
             <!-- Trashed Filter -->
-            <select name="trashed" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="trashed" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="">Aktif</option>
                 <option value="only" {{ request('trashed') === 'only' ? 'selected' : '' }}>Sampah</option>
             </select>
@@ -146,7 +146,7 @@
             </form>
         </div>
         <a href="{{ route('admin.galleries.create') }}" 
-            class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition shadow-sm">
+            class="inline-flex items-center px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition shadow-sm">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
@@ -160,7 +160,7 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden group relative">
                 <!-- Checkbox -->
                 <div class="absolute top-2 left-2 z-10">
-                    <input type="checkbox" class="gallery-checkbox w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500" 
+                    <input type="checkbox" class="gallery-checkbox w-5 h-5 rounded border-gray-300 text-amber-600 focus:ring-amber-500" 
                         value="{{ $gallery->id }}" onchange="updateBulkActions()">
                 </div>
 
@@ -271,7 +271,7 @@
                     </svg>
                     <h3 class="text-lg font-medium text-gray-900 mb-1">Belum ada media</h3>
                     <p class="text-gray-500 mb-4">Mulai tambahkan gambar atau video ke galeri Anda.</p>
-                    <a href="{{ route('admin.galleries.create') }}" class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">
+                    <a href="{{ route('admin.galleries.create') }}" class="inline-flex items-center px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
@@ -322,3 +322,4 @@
 </script>
 @endpush
 @endsection
+

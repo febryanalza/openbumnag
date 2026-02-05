@@ -8,9 +8,9 @@
     <!-- Breadcrumb -->
     <nav class="mb-6">
         <ol class="flex items-center space-x-2 text-sm text-gray-500">
-            <li><a href="{{ route('admin.dashboard') }}" class="hover:text-primary-600">Dashboard</a></li>
+            <li><a href="{{ route('admin.dashboard') }}" class="hover:text-amber-600">Dashboard</a></li>
             <li><span class="mx-2">/</span></li>
-            <li><a href="{{ route('admin.news.index') }}" class="hover:text-primary-600">Berita</a></li>
+            <li><a href="{{ route('admin.news.index') }}" class="hover:text-amber-600">Berita</a></li>
             <li><span class="mx-2">/</span></li>
             <li class="text-gray-900 font-medium">Detail</li>
         </ol>
@@ -187,7 +187,7 @@
                     @endif
                     <div>
                         <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Slug/URL</label>
-                        <p class="text-sm text-primary-600 break-all">{{ $news->slug }}</p>
+                        <p class="text-sm text-amber-600 break-all">{{ $news->slug }}</p>
                     </div>
                 </div>
             </div>
@@ -256,3 +256,4 @@
     </div>
 </div>
 @endsection
+

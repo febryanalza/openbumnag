@@ -8,9 +8,9 @@
     <!-- Breadcrumb -->
     <nav class="mb-6">
         <ol class="flex items-center space-x-2 text-sm text-gray-500">
-            <li><a href="{{ route('admin.dashboard') }}" class="hover:text-primary-600">Dashboard</a></li>
+            <li><a href="{{ route('admin.dashboard') }}" class="hover:text-amber-600">Dashboard</a></li>
             <li><span class="mx-2">/</span></li>
-            <li><a href="{{ route('admin.promotions.index') }}" class="hover:text-primary-600">Promosi</a></li>
+            <li><a href="{{ route('admin.promotions.index') }}" class="hover:text-amber-600">Promosi</a></li>
             <li><span class="mx-2">/</span></li>
             <li class="text-gray-900 font-medium">Edit</li>
         </ol>
@@ -75,24 +75,29 @@
                 <div class="md:col-span-2">
                     <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Judul Promosi <span class="text-red-500">*</span></label>
                     <input type="text" name="title" id="title" value="{{ old('title', $promotion->title) }}" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('title') border-red-500 @enderror">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 @error('title') border-red-500 @enderror">
                     @error('title')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <!-- Slug -->
+                <!-- Slug (Auto-generated, display only) -->
                 <div class="md:col-span-2">
-                    <label for="slug" class="block text-sm font-medium text-gray-700 mb-1">Slug</label>
-                    <input type="text" name="slug" id="slug" value="{{ old('slug', $promotion->slug) }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Slug URL</label>
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500 text-sm">/promosi/</span>
+                        <div class="flex-1 px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-600 text-sm">
+                            <span id="slugDisplay">{{ old('slug', $promotion->slug) }}</span>
+                        </div>
+                    </div>
+                    <input type="hidden" name="slug" id="slug" value="{{ old('slug', $promotion->slug) }}">
                 </div>
 
                 <!-- Category -->
                 <div>
                     <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
                     <select name="category_id" id="category_id"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                         <option value="">Pilih Kategori</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}" {{ old('category_id', $promotion->category_id) == $category->id ? 'selected' : '' }}>
@@ -106,7 +111,7 @@
                 <div>
                     <label for="promotion_type" class="block text-sm font-medium text-gray-700 mb-1">Tipe Promosi <span class="text-red-500">*</span></label>
                     <select name="promotion_type" id="promotion_type" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                         @foreach($promotionTypes as $key => $label)
                             <option value="{{ $key }}" {{ old('promotion_type', $promotion->promotion_type) === $key ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
@@ -117,14 +122,14 @@
                 <div class="md:col-span-2">
                     <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-1">Ringkasan</label>
                     <textarea name="excerpt" id="excerpt" rows="2"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">{{ old('excerpt', $promotion->excerpt) }}</textarea>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">{{ old('excerpt', $promotion->excerpt) }}</textarea>
                 </div>
 
                 <!-- Description -->
                 <div class="md:col-span-2">
                     <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi <span class="text-red-500">*</span></label>
                     <textarea name="description" id="description" rows="6" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('description') border-red-500 @enderror">{{ old('description', $promotion->description) }}</textarea>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 @error('description') border-red-500 @enderror">{{ old('description', $promotion->description) }}</textarea>
                     @error('description')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -143,7 +148,7 @@
                     <div class="relative">
                         <span class="absolute left-4 top-2 text-gray-500">Rp</span>
                         <input type="number" name="original_price" id="original_price" value="{{ old('original_price', $promotion->original_price) }}" step="0.01" min="0"
-                            class="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     </div>
                 </div>
 
@@ -153,7 +158,7 @@
                     <div class="relative">
                         <span class="absolute left-4 top-2 text-gray-500">Rp</span>
                         <input type="number" name="discount_price" id="discount_price" value="{{ old('discount_price', $promotion->discount_price) }}" step="0.01" min="0"
-                            class="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     </div>
                 </div>
 
@@ -162,7 +167,7 @@
                     <label for="discount_percentage" class="block text-sm font-medium text-gray-700 mb-1">Persentase Diskon</label>
                     <div class="relative">
                         <input type="number" name="discount_percentage" id="discount_percentage" value="{{ old('discount_percentage', $promotion->discount_percentage) }}" min="0" max="100"
-                            class="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                         <span class="absolute right-4 top-2 text-gray-500">%</span>
                     </div>
                 </div>
@@ -191,7 +196,7 @@
                     </div>
                 @endif
                 
-                <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-primary-500 transition-colors">
+                <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-amber-500 transition-colors">
                     <div class="space-y-1 text-center">
                         <div id="imagePreview" class="hidden mb-4">
                             <img id="previewImg" src="" alt="Preview" class="mx-auto h-32 object-cover rounded-lg">
@@ -200,7 +205,7 @@
                             <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                         <div class="flex text-sm text-gray-600 justify-center">
-                            <label for="featured_image" class="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500">
+                            <label for="featured_image" class="relative cursor-pointer bg-white rounded-md font-medium text-amber-600 hover:text-amber-500">
                                 <span>{{ $promotion->featured_image ? 'Ganti gambar' : 'Upload gambar' }}</span>
                                 <input id="featured_image" name="featured_image" type="file" class="sr-only" accept="image/*" onchange="previewImage(this)">
                             </label>
@@ -221,7 +226,7 @@
                     <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
                     <input type="datetime-local" name="start_date" id="start_date" 
                         value="{{ old('start_date', $promotion->start_date ? $promotion->start_date->format('Y-m-d\TH:i') : '') }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 </div>
 
                 <!-- End Date -->
@@ -229,7 +234,7 @@
                     <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Berakhir</label>
                     <input type="datetime-local" name="end_date" id="end_date" 
                         value="{{ old('end_date', $promotion->end_date ? $promotion->end_date->format('Y-m-d\TH:i') : '') }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     @error('end_date')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -246,28 +251,28 @@
                 <div>
                     <label for="contact_person" class="block text-sm font-medium text-gray-700 mb-1">Nama Kontak</label>
                     <input type="text" name="contact_person" id="contact_person" value="{{ old('contact_person', $promotion->contact_person) }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 </div>
 
                 <!-- Contact Phone -->
                 <div>
                     <label for="contact_phone" class="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon</label>
                     <input type="text" name="contact_phone" id="contact_phone" value="{{ old('contact_phone', $promotion->contact_phone) }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 </div>
 
                 <!-- Contact Email -->
                 <div>
                     <label for="contact_email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                     <input type="email" name="contact_email" id="contact_email" value="{{ old('contact_email', $promotion->contact_email) }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 </div>
 
                 <!-- Location -->
                 <div class="md:col-span-3">
                     <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Lokasi</label>
                     <input type="text" name="location" id="location" value="{{ old('location', $promotion->location) }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 </div>
             </div>
         </div>
@@ -281,7 +286,7 @@
                 <div>
                     <label for="terms_conditions" class="block text-sm font-medium text-gray-700 mb-1">Syarat & Ketentuan</label>
                     <textarea name="terms_conditions" id="terms_conditions" rows="4"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">{{ old('terms_conditions', $promotion->terms_conditions) }}</textarea>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">{{ old('terms_conditions', $promotion->terms_conditions) }}</textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -289,7 +294,7 @@
                     <div>
                         <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
                         <select name="status" id="status" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                             @foreach($statuses as $key => $label)
                                 <option value="{{ $key }}" {{ old('status', $promotion->status) === $key ? 'selected' : '' }}>{{ $label }}</option>
                             @endforeach
@@ -300,7 +305,7 @@
                     <div class="flex items-center">
                         <label class="flex items-center gap-3 mt-6">
                             <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $promotion->is_featured) ? 'checked' : '' }}
-                                class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                                class="w-5 h-5 rounded border-gray-300 text-amber-600 focus:ring-amber-500">
                             <div>
                                 <span class="text-sm font-medium text-gray-700">Promosi Unggulan</span>
                                 <p class="text-sm text-gray-500">Tampilkan di bagian utama</p>
@@ -321,7 +326,7 @@
                 <a href="{{ route('admin.promotions.index') }}" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
                     Batal
                 </a>
-                <button type="submit" class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                <button type="submit" class="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors">
                     Simpan Perubahan
                 </button>
             </div>
@@ -372,6 +377,33 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    // Generate slug from title
+    function generateSlug(title) {
+        return title
+            .toLowerCase()
+            .trim()
+            .replace(/[àáâãäå]/g, 'a')
+            .replace(/[èéêë]/g, 'e')
+            .replace(/[ìíîï]/g, 'i')
+            .replace(/[òóôõö]/g, 'o')
+            .replace(/[ùúûü]/g, 'u')
+            .replace(/[ñ]/g, 'n')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+    }
+
+    // Live slug update
+    document.getElementById('title').addEventListener('input', function() {
+        const slug = generateSlug(this.value);
+        document.getElementById('slugDisplay').textContent = slug || 'slug-akan-muncul-disini';
+        document.getElementById('slug').value = slug;
+    });
+    }
 </script>
 @endpush
 @endsection
+

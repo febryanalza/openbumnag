@@ -70,7 +70,7 @@
                 <div>
                     <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Judul Laporan <span class="text-red-500">*</span></label>
                     <input type="text" name="title" id="title" value="{{ old('title', $report->title) }}" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('title') border-red-500 @enderror">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 @error('title') border-red-500 @enderror">
                     @error('title')
                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
@@ -79,14 +79,19 @@
                 <!-- Slug & Category -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label for="slug" class="block text-sm font-medium text-gray-700 mb-1">Slug URL</label>
-                        <input type="text" name="slug" id="slug" value="{{ old('slug', $report->slug) }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Slug URL</label>
+                        <div class="flex items-center gap-2">
+                            <span class="text-gray-500 text-sm">/laporan/</span>
+                            <div class="flex-1 px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-600 text-sm">
+                                <span id="slugDisplay">{{ old('slug', $report->slug) }}</span>
+                            </div>
+                        </div>
+                        <input type="hidden" name="slug" id="slug" value="{{ old('slug', $report->slug) }}">
                     </div>
                     <div>
                         <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
                         <select name="category_id" id="category_id"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                             <option value="">-- Pilih Kategori --</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" {{ old('category_id', $report->category_id) == $category->id ? 'selected' : '' }}>
@@ -101,7 +106,7 @@
                 <div>
                     <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
                     <textarea name="description" id="description" rows="3"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">{{ old('description', $report->description) }}</textarea>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">{{ old('description', $report->description) }}</textarea>
                 </div>
             </div>
         </div>
@@ -119,7 +124,7 @@
                         @foreach($reportTypes as $key => $label)
                             <label class="relative cursor-pointer">
                                 <input type="radio" name="type" value="{{ $key }}" class="peer sr-only" {{ old('type', $report->type) === $key ? 'checked' : '' }}>
-                                <div class="flex items-center justify-center gap-2 px-4 py-3 border-2 rounded-lg peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:bg-gray-50 transition">
+                                <div class="flex items-center justify-center gap-2 px-4 py-3 border-2 rounded-lg peer-checked:border-amber-500 peer-checked:bg-amber-50 hover:bg-gray-50 transition">
                                     @if($key === 'financial')
                                         <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -149,7 +154,7 @@
                     <div>
                         <label for="year" class="block text-sm font-medium text-gray-700 mb-1">Tahun <span class="text-red-500">*</span></label>
                         <select name="year" id="year" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                             @foreach($years as $year)
                                 <option value="{{ $year }}" {{ old('year', $report->year) == $year ? 'selected' : '' }}>{{ $year }}</option>
                             @endforeach
@@ -158,7 +163,7 @@
                     <div>
                         <label for="month" class="block text-sm font-medium text-gray-700 mb-1">Bulan</label>
                         <select name="month" id="month"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                             <option value="">-- Pilih Bulan --</option>
                             @foreach($months as $key => $label)
                                 <option value="{{ $key }}" {{ old('month', $report->month) == $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -168,7 +173,7 @@
                     <div>
                         <label for="quarter" class="block text-sm font-medium text-gray-700 mb-1">Kuartal</label>
                         <select name="quarter" id="quarter"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                             <option value="">-- Pilih Kuartal --</option>
                             @foreach($quarters as $key => $label)
                                 <option value="{{ $key }}" {{ old('quarter', $report->quarter) == $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -216,7 +221,7 @@
                 <div>
                     <label for="file" class="block text-sm font-medium text-gray-700 mb-1">{{ $report->file_path ? 'Ganti File' : 'Upload File' }}</label>
                     <input type="file" name="file" id="file" accept=".pdf,.doc,.docx,.xls,.xlsx" onchange="showFileName(this, 'fileNameDisplay')"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     <p id="fileNameDisplay" class="mt-2 text-sm text-gray-600 hidden"></p>
                     <p class="mt-1 text-xs text-gray-500">PDF, DOC, DOCX, XLS, XLSX hingga 20MB</p>
                 </div>
@@ -241,7 +246,7 @@
                 <div>
                     <label for="cover_image" class="block text-sm font-medium text-gray-700 mb-1">{{ $report->cover_image ? 'Ganti Cover Image' : 'Cover Image' }}</label>
                     <input type="file" name="cover_image" id="cover_image" accept="image/*" onchange="previewImage(this, 'coverPreview')"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     <div id="coverPreview" class="mt-2 hidden">
                         <img src="" alt="Preview" class="max-h-32 rounded-lg">
                     </div>
@@ -258,7 +263,7 @@
                 <div>
                     <label for="content" class="block text-sm font-medium text-gray-700 mb-1">Konten / Ringkasan</label>
                     <textarea name="content" id="content" rows="6"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">{{ old('content', $report->content) }}</textarea>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">{{ old('content', $report->content) }}</textarea>
                 </div>
             </div>
         </div>
@@ -273,7 +278,7 @@
                     <div>
                         <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
                         <select name="status" id="status" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                             @foreach($statuses as $key => $label)
                                 <option value="{{ $key }}" {{ old('status', $report->status) === $key ? 'selected' : '' }}>{{ $label }}</option>
                             @endforeach
@@ -283,7 +288,7 @@
                         <label for="published_at" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Publikasi</label>
                         <input type="datetime-local" name="published_at" id="published_at" 
                             value="{{ old('published_at', $report->published_at?->format('Y-m-d\TH:i')) }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     </div>
                 </div>
             </div>
@@ -299,7 +304,7 @@
                     class="px-4 py-2 text-red-600 hover:text-red-700 border border-red-300 rounded-lg hover:bg-red-50 transition">
                     Hapus
                 </button>
-                <button type="submit" class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition shadow-sm">
+                <button type="submit" class="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition shadow-sm">
                     Simpan Perubahan
                 </button>
             </div>
@@ -367,6 +372,33 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    // Generate slug from title
+    function generateSlug(title) {
+        return title
+            .toLowerCase()
+            .trim()
+            .replace(/[àáâãäå]/g, 'a')
+            .replace(/[èéêë]/g, 'e')
+            .replace(/[ìíîï]/g, 'i')
+            .replace(/[òóôõö]/g, 'o')
+            .replace(/[ùúûü]/g, 'u')
+            .replace(/[ñ]/g, 'n')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+    }
+
+    // Live slug update
+    document.getElementById('title').addEventListener('input', function() {
+        const slug = generateSlug(this.value);
+        document.getElementById('slugDisplay').textContent = slug || 'slug-akan-muncul-disini';
+        document.getElementById('slug').value = slug;
+    });
+    }
 </script>
 @endpush
 @endsection
+

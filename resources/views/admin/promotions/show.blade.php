@@ -8,9 +8,9 @@
     <!-- Breadcrumb -->
     <nav class="mb-6">
         <ol class="flex items-center space-x-2 text-sm text-gray-500">
-            <li><a href="{{ route('admin.dashboard') }}" class="hover:text-primary-600">Dashboard</a></li>
+            <li><a href="{{ route('admin.dashboard') }}" class="hover:text-amber-600">Dashboard</a></li>
             <li><span class="mx-2">/</span></li>
-            <li><a href="{{ route('admin.promotions.index') }}" class="hover:text-primary-600">Promosi</a></li>
+            <li><a href="{{ route('admin.promotions.index') }}" class="hover:text-amber-600">Promosi</a></li>
             <li><span class="mx-2">/</span></li>
             <li class="text-gray-900 font-medium">Detail</li>
         </ol>
@@ -231,7 +231,7 @@
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-500">Telepon</p>
-                                    <a href="tel:{{ $promotion->contact_phone }}" class="text-sm font-medium text-primary-600 hover:text-primary-700">
+                                    <a href="tel:{{ $promotion->contact_phone }}" class="text-sm font-medium text-amber-600 hover:text-amber-700">
                                         {{ $promotion->contact_phone }}
                                     </a>
                                 </div>
@@ -246,7 +246,7 @@
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-500">Email</p>
-                                    <a href="mailto:{{ $promotion->contact_email }}" class="text-sm font-medium text-primary-600 hover:text-primary-700 break-all">
+                                    <a href="mailto:{{ $promotion->contact_email }}" class="text-sm font-medium text-amber-600 hover:text-amber-700 break-all">
                                         {{ $promotion->contact_email }}
                                     </a>
                                 </div>
@@ -350,3 +350,4 @@
     </div>
 </div>
 @endsection
+

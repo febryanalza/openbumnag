@@ -69,7 +69,7 @@
                 <div class="relative">
                     <input type="text" name="search" value="{{ request('search') }}" 
                         placeholder="Cari berita..." 
-                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
@@ -77,7 +77,7 @@
             </div>
 
             <!-- Status Filter -->
-            <select name="status" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="status" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="all">Semua Status</option>
                 @foreach($statuses as $key => $label)
                     <option value="{{ $key }}" {{ request('status') === $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -85,7 +85,7 @@
             </select>
 
             <!-- Category Filter -->
-            <select name="category" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="category" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="all">Semua Kategori</option>
                 @foreach($categories as $category)
                     <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
@@ -93,7 +93,7 @@
             </select>
 
             <!-- Trashed Filter -->
-            <select name="trashed" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="trashed" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="">Aktif</option>
                 <option value="only" {{ request('trashed') === 'only' ? 'selected' : '' }}>Sampah</option>
             </select>
@@ -112,7 +112,7 @@
         <div class="flex items-center gap-2">
             <form id="bulkForm" method="POST" action="{{ route('admin.news.bulk-action') }}" class="flex items-center gap-2">
                 @csrf
-                <select name="action" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500">
+                <select name="action" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500">
                     <option value="">Aksi Massal</option>
                     @if(request('trashed') === 'only')
                         <option value="restore">Pulihkan</option>
@@ -130,7 +130,7 @@
                 </button>
             </form>
         </div>
-        <a href="{{ route('admin.news.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+        <a href="{{ route('admin.news.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
@@ -145,7 +145,7 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-4 py-3 text-left">
-                            <input type="checkbox" id="selectAll" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                            <input type="checkbox" id="selectAll" class="rounded border-gray-300 text-amber-600 focus:ring-amber-500">
                         </th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Berita</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
@@ -178,7 +178,7 @@
                     @forelse($news as $item)
                         <tr class="hover:bg-gray-50">
                             <td class="px-4 py-4">
-                                <input type="checkbox" name="ids[]" value="{{ $item->id }}" form="bulkForm" class="bulk-checkbox rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                                <input type="checkbox" name="ids[]" value="{{ $item->id }}" form="bulkForm" class="bulk-checkbox rounded border-gray-300 text-amber-600 focus:ring-amber-500">
                             </td>
                             <td class="px-4 py-4">
                                 <div class="flex items-center gap-3">
@@ -192,7 +192,7 @@
                                         </div>
                                     @endif
                                     <div class="min-w-0">
-                                        <a href="{{ route('admin.news.show', $item) }}" class="text-sm font-medium text-gray-900 hover:text-primary-600 truncate block max-w-xs">
+                                        <a href="{{ route('admin.news.show', $item) }}" class="text-sm font-medium text-gray-900 hover:text-amber-600 truncate block max-w-xs">
                                             {{ $item->title }}
                                         </a>
                                         @if($item->is_featured)
@@ -294,7 +294,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
                                     </svg>
                                     <p class="text-gray-500">Tidak ada berita ditemukan</p>
-                                    <a href="{{ route('admin.news.create') }}" class="mt-2 text-primary-600 hover:text-primary-700">Tambah berita baru</a>
+                                    <a href="{{ route('admin.news.create') }}" class="mt-2 text-amber-600 hover:text-amber-700">Tambah berita baru</a>
                                 </div>
                             </td>
                         </tr>
@@ -320,3 +320,4 @@
 </script>
 @endpush
 @endsection
+

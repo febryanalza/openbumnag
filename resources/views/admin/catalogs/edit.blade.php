@@ -62,9 +62,14 @@
                 </div>
 
                 <div>
-                    <label for="slug" class="block text-sm font-medium text-gray-700 mb-1">Slug</label>
-                    <input type="text" name="slug" id="slug" value="{{ old('slug', $catalog->slug) }}" class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-amber-500 focus:border-amber-500 bg-gray-50">
-                    <p class="mt-1 text-xs text-gray-500">Kosongkan untuk generate otomatis</p>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Slug URL</label>
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500 text-sm">/kodai/</span>
+                        <div class="flex-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-600 text-sm">
+                            <span id="slugDisplay">{{ old('slug', $catalog->slug) }}</span>
+                        </div>
+                    </div>
+                    <input type="hidden" name="slug" id="slug" value="{{ old('slug', $catalog->slug) }}">
                 </div>
 
                 <div>
@@ -219,4 +224,33 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    // Generate slug from name
+    function generateSlug(title) {
+        return title
+            .toLowerCase()
+            .trim()
+            .replace(/[àáâãäå]/g, 'a')
+            .replace(/[èéêë]/g, 'e')
+            .replace(/[ìíîï]/g, 'i')
+            .replace(/[òóôõö]/g, 'o')
+            .replace(/[ùúûü]/g, 'u')
+            .replace(/[ñ]/g, 'n')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+    }
+
+    // Live slug update from name field
+    document.getElementById('name').addEventListener('input', function() {
+        const slug = generateSlug(this.value);
+        document.getElementById('slugDisplay').textContent = slug || 'slug-akan-muncul-disini';
+        document.getElementById('slug').value = slug;
+    });
+</script>
+@endpush
 @endsection

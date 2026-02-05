@@ -69,7 +69,7 @@
                 <div class="relative">
                     <input type="text" name="search" value="{{ request('search') }}" 
                         placeholder="Cari promosi..." 
-                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                     <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
@@ -77,7 +77,7 @@
             </div>
 
             <!-- Status Filter -->
-            <select name="status" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="status" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="all">Semua Status</option>
                 @foreach($statuses as $key => $label)
                     <option value="{{ $key }}" {{ request('status') === $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -85,7 +85,7 @@
             </select>
 
             <!-- Type Filter -->
-            <select name="type" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="type" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="all">Semua Tipe</option>
                 @foreach($promotionTypes as $key => $label)
                     <option value="{{ $key }}" {{ request('type') === $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -93,7 +93,7 @@
             </select>
 
             <!-- Category Filter -->
-            <select name="category" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="category" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="all">Semua Kategori</option>
                 @foreach($categories as $category)
                     <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
@@ -101,7 +101,7 @@
             </select>
 
             <!-- Trashed Filter -->
-            <select name="trashed" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+            <select name="trashed" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                 <option value="">Aktif</option>
                 <option value="only" {{ request('trashed') === 'only' ? 'selected' : '' }}>Sampah</option>
             </select>
@@ -120,7 +120,7 @@
         <div class="flex items-center gap-2">
             <form id="bulkForm" method="POST" action="{{ route('admin.promotions.bulk-action') }}" class="flex items-center gap-2">
                 @csrf
-                <select name="action" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500">
+                <select name="action" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500">
                     <option value="">Aksi Massal</option>
                     @if(request('trashed') === 'only')
                         <option value="restore">Pulihkan</option>
@@ -139,7 +139,7 @@
                 </button>
             </form>
         </div>
-        <a href="{{ route('admin.promotions.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+        <a href="{{ route('admin.promotions.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
@@ -154,7 +154,7 @@
                 <!-- Checkbox -->
                 <div class="absolute top-3 left-3 z-10">
                     <input type="checkbox" name="ids[]" value="{{ $promo->id }}" form="bulkForm" 
-                        class="bulk-checkbox rounded border-gray-300 text-primary-600 focus:ring-primary-500 bg-white">
+                        class="bulk-checkbox rounded border-gray-300 text-amber-600 focus:ring-amber-500 bg-white">
                 </div>
 
                 <!-- Image -->
@@ -213,7 +213,7 @@
                     </div>
 
                     <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">
-                        <a href="{{ route('admin.promotions.show', $promo) }}" class="hover:text-primary-600">
+                        <a href="{{ route('admin.promotions.show', $promo) }}" class="hover:text-amber-600">
                             {{ $promo->title }}
                         </a>
                     </h3>
@@ -222,7 +222,7 @@
                     @if($promo->discount_price || $promo->original_price)
                         <div class="flex items-center gap-2 mb-3">
                             @if($promo->discount_price)
-                                <span class="text-lg font-bold text-primary-600">Rp {{ number_format($promo->discount_price, 0, ',', '.') }}</span>
+                                <span class="text-lg font-bold text-amber-600">Rp {{ number_format($promo->discount_price, 0, ',', '.') }}</span>
                                 @if($promo->original_price)
                                     <span class="text-sm text-gray-400 line-through">Rp {{ number_format($promo->original_price, 0, ',', '.') }}</span>
                                 @endif
@@ -314,7 +314,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
                     </svg>
                     <p class="text-gray-500 mb-2">Tidak ada promosi ditemukan</p>
-                    <a href="{{ route('admin.promotions.create') }}" class="text-primary-600 hover:text-primary-700">Tambah promosi baru</a>
+                    <a href="{{ route('admin.promotions.create') }}" class="text-amber-600 hover:text-amber-700">Tambah promosi baru</a>
                 </div>
             </div>
         @endforelse
@@ -336,3 +336,4 @@
 </script>
 @endpush
 @endsection
+
