@@ -181,6 +181,131 @@
     </div>
 </section>
 
+<!-- Promosi Section -->
+@if($promotions->count() > 0)
+<section class="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-amber-50 to-orange-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-8 sm:mb-12 gap-4">
+            <div>
+                <h2 class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2 sm:mb-4">
+                    {{ $settings['promotion_title'] ?? 'Promo Spesial' }}
+                </h2>
+                <p class="text-base sm:text-lg md:text-xl text-gray-600">
+                    {{ $settings['promotion_description'] ?? 'Penawaran menarik dari unit usaha kami' }}
+                </p>
+            </div>
+            <a href="{{ route('promotions.index') }}" 
+               class="hidden sm:inline-flex items-center text-primary font-semibold hover:text-primary-600 transition-colors duration-200 whitespace-nowrap">
+                {{ $settings['promotion_cta_text'] ?? 'Lihat Semua Promo' }}
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </a>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            @foreach($promotions as $promotion)
+            <article class="bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group hover:-translate-y-2 border-2 border-amber-200">
+                <a href="{{ route('promotions.show', $promotion->slug) }}" class="block relative">
+                    @if($promotion->featured_image)
+                    <div class="h-40 sm:h-48 lg:h-56 overflow-hidden relative">
+                        <img src="{{ Storage::url($promotion->featured_image) }}" 
+                             alt="{{ $promotion->title }}" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             loading="lazy">
+                        <!-- Overlay gradient for better text readability -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                    </div>
+                    @else
+                    <div class="h-40 sm:h-48 lg:h-56 bg-gradient-to-br from-amber-400 via-orange-400 to-red-400 flex items-center justify-center">
+                        <svg class="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
+                        </svg>
+                    </div>
+                    @endif
+                    
+                    <!-- Promo Badge -->
+                    <div class="absolute top-2 right-2 sm:top-4 sm:right-4 bg-red-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg animate-pulse">
+                        <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        PROMO
+                    </div>
+                    
+                    <!-- Discount Badge (if applicable) -->
+                    @if($promotion->discount_percentage)
+                    <div class="absolute top-2 left-2 sm:top-4 sm:left-4 bg-gradient-to-r from-red-600 to-pink-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-sm sm:text-base font-bold shadow-lg">
+                        {{ $promotion->discount_percentage }}% OFF
+                    </div>
+                    @endif
+                </a>
+                
+                <div class="p-4 sm:p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2 sm:mb-3">
+                        @if($promotion->bumnagProfile)
+                        <span class="inline-block px-2 sm:px-3 py-1 bg-amber-100 text-amber-800 text-xs font-semibold rounded-full truncate max-w-[140px] sm:max-w-none">
+                            {{ $promotion->bumnagProfile->name }}
+                        </span>
+                        @endif
+                        
+                        <!-- Validity Period -->
+                        @if($promotion->valid_until)
+                        <span class="flex items-center text-xs text-gray-500">
+                            <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            s/d {{ $promotion->valid_until->format('d M Y') }}
+                        </span>
+                        @endif
+                    </div>
+                    
+                    <h3 class="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-2 sm:mb-3 line-clamp-2 group-hover:text-primary transition-colors duration-200">
+                        <a href="{{ route('promotions.show', $promotion->slug) }}">
+                            {{ $promotion->title }}
+                        </a>
+                    </h3>
+                    
+                    @if($promotion->description)
+                    <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3">
+                        {{ Str::limit(strip_tags($promotion->description), 100) }}
+                    </p>
+                    @endif
+                    
+                    <div class="flex items-center justify-between pt-3 sm:pt-4 border-t border-gray-100">
+                        <!-- Terms & Conditions hint -->
+                        <div class="text-xs text-gray-500 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            S&K berlaku
+                        </div>
+                        
+                        <a href="{{ route('promotions.show', $promotion->slug) }}" 
+                           class="inline-flex items-center px-3 sm:px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs sm:text-sm font-semibold rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-200 shadow-md hover:shadow-lg touch-target">
+                            <span class="hidden xs:inline">Lihat </span>Detail
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+            @endforeach
+        </div>
+        
+        <div class="text-center mt-8 sm:mt-12">
+            <a href="{{ route('promotions.index') }}" 
+               class="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold rounded-full hover:from-amber-700 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
+                {{ $settings['promotion_cta_text'] ?? 'Lihat Semua Promo' }}
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+@endif
+
 <!-- Berita Section -->
 <section class="py-12 sm:py-16 lg:py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
