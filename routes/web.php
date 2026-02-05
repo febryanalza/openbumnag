@@ -33,8 +33,8 @@ Route::get('/laporan/{slug}', [HomeController::class, 'reportDetail'])->name('re
 Route::get('/laporan-preview/{slug}', [HomeController::class, 'reportPreview'])->name('reports.preview');
 
 // Catalog Routes
-Route::get('/kodai', [CatalogController::class, 'index'])->name('catalogs.index');
-Route::get('/kodai/{slug}', [CatalogController::class, 'show'])->name('catalogs.show');
+Route::get('/katalog', [CatalogController::class, 'index'])->name('catalogs.index');
+Route::get('/katalog/{slug}', [CatalogController::class, 'show'])->name('catalogs.show');
 
 // Promotion Routes
 Route::get('/promo', [PromotionController::class, 'index'])->name('promotions.index');
