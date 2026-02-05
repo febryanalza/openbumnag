@@ -396,8 +396,86 @@
 <!-- TinyMCE 6 CDN -->
 <script src="https://cdn.tiny.cloud/1/{{ config('tinymce.api_key') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
-    // Initialize TinyMCE
-    tinymce.init({
+    // ============================================
+    // FORM SUBMIT HANDLER - MUST BE FIRST
+    // This runs regardless of TinyMCE loading status
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+        const newsForm = document.getElementById('newsForm');
+        
+        if (newsForm) {
+            newsForm.addEventListener('submit', function(e) {
+                console.log('Form submit triggered');
+                
+                // Trigger TinyMCE to save content to textarea (if loaded)
+                if (typeof tinymce !== 'undefined' && tinymce.get('content')) {
+                    tinymce.triggerSave();
+                    console.log('TinyMCE content synced');
+                }
+                
+                // Generate slug if empty
+                const slugField = document.getElementById('slug');
+                const titleField = document.getElementById('title');
+                if (slugField && titleField && (!slugField.value || slugField.value === '')) {
+                    slugField.value = generateSlugValue(titleField.value);
+                }
+                
+                // Get the content value after sync
+                const contentField = document.getElementById('content');
+                console.log('Content field value length:', contentField ? contentField.value.length : 0);
+                
+                // Validate required fields
+                if (!titleField || !titleField.value.trim()) {
+                    e.preventDefault();
+                    alert('Judul berita wajib diisi!');
+                    if (titleField) titleField.focus();
+                    return false;
+                }
+                
+                // Check if content is empty
+                const contentValue = contentField ? contentField.value.trim() : '';
+                if (!contentValue || contentValue === '<p></p>' || contentValue === '<p><br></p>') {
+                    e.preventDefault();
+                    alert('Konten berita wajib diisi!');
+                    if (typeof tinymce !== 'undefined' && tinymce.get('content')) {
+                        tinymce.get('content').focus();
+                    }
+                    return false;
+                }
+                
+                console.log('Form validation passed, submitting...');
+                return true;
+            });
+            
+            console.log('Form submit handler attached successfully');
+        } else {
+            console.error('Form with id "newsForm" not found!');
+        }
+    });
+
+    // Generate slug value function (global, used by form handler)
+    function generateSlugValue(title) {
+        return title
+            .toLowerCase()
+            .trim()
+            .replace(/[àáâãäå]/g, 'a')
+            .replace(/[èéêë]/g, 'e')
+            .replace(/[ìíîï]/g, 'i')
+            .replace(/[òóôõö]/g, 'o')
+            .replace(/[ùúûü]/g, 'u')
+            .replace(/[ñ]/g, 'n')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+    }
+
+    // ============================================
+    // TINYMCE INITIALIZATION
+    // ============================================
+    if (typeof tinymce !== 'undefined') {
+        tinymce.init({
         selector: '.tinymce-editor',
         height: 500,
         menubar: true,
@@ -538,6 +616,9 @@
         automatic_uploads: true,
         relative_urls: false
     });
+    } else {
+        console.warn('TinyMCE not loaded. Form will still work but without rich text editing.');
+    }
 
     function previewImage(input) {
         if (input.files && input.files[0]) {
@@ -649,62 +730,6 @@
             closePreviewModal();
         }
     });
-
-    // CRITICAL: Sync TinyMCE content before form submit
-    document.getElementById('newsForm').addEventListener('submit', function(e) {
-        // Trigger TinyMCE to save content to textarea
-        if (typeof tinymce !== 'undefined') {
-            tinymce.triggerSave();
-        }
-        
-        // Generate slug if empty
-        const slugField = document.getElementById('slug');
-        const titleField = document.getElementById('title');
-        if (slugField && titleField && (!slugField.value || slugField.value === '')) {
-            slugField.value = generateSlugValue(titleField.value);
-        }
-        
-        // Get the content value after sync
-        const contentField = document.getElementById('content');
-        console.log('Form submitting with content length:', contentField ? contentField.value.length : 0);
-        
-        // Validate required fields
-        if (!titleField.value.trim()) {
-            e.preventDefault();
-            alert('Judul berita wajib diisi!');
-            titleField.focus();
-            return false;
-        }
-        
-        if (!contentField.value.trim() || contentField.value.trim() === '<p></p>' || contentField.value.trim() === '') {
-            e.preventDefault();
-            alert('Konten berita wajib diisi!');
-            if (tinymce.get('content')) {
-                tinymce.get('content').focus();
-            }
-            return false;
-        }
-        
-        return true;
-    });
-
-    // Generate slug value function
-    function generateSlugValue(title) {
-        return title
-            .toLowerCase()
-            .trim()
-            .replace(/[àáâãäå]/g, 'a')
-            .replace(/[èéêë]/g, 'e')
-            .replace(/[ìíîï]/g, 'i')
-            .replace(/[òóôõö]/g, 'o')
-            .replace(/[ùúûü]/g, 'u')
-            .replace(/[ñ]/g, 'n')
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .replace(/^-+/, '')
-            .replace(/-+$/, '');
-    }
 </script>
 @endpush
 @endsection
