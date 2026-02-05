@@ -313,8 +313,8 @@
 </div>
 
 @push('scripts')
-<!-- TinyMCE 6 CDN -->
-<script src="https://cdn.tiny.cloud/1/{{ config('tinymce.api_key') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<!-- TinyMCE 6 Self-Hosted (Free, no API key required) -->
+<script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
 <script>
     // ============================================
     // FORM SUBMIT HANDLER - MUST BE FIRST
