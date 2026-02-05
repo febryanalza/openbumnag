@@ -112,10 +112,17 @@
                 <!-- Content -->
                 <div>
                     <label for="content" class="block text-sm font-medium text-gray-700 mb-1">Konten <span class="text-red-500">*</span></label>
-                    <textarea name="content" id="content" rows="12" required
-                        class="tinymce-editor w-full @error('content') border-red-500 @enderror">{{ old('content') }}</textarea>
+                    <x-quill-editor 
+                        name="content" 
+                        id="content" 
+                        :value="old('content', '')" 
+                        placeholder="Tulis konten berita di sini..."
+                        height="450px"
+                        :required="true"
+                        :error="$errors->has('content')" 
+                    />
                     <p class="mt-2 text-sm text-gray-500">
-                        <span class="font-medium">Tips:</span> Gunakan toolbar untuk format teks, sisipkan gambar, tabel, dan media lainnya.
+                        <span class="font-medium">Tips:</span> Gunakan toolbar untuk format teks, sisipkan gambar, dan media lainnya.
                     </p>
                     @error('content')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -313,12 +320,9 @@
 </div>
 
 @push('scripts')
-<!-- TinyMCE 6 Self-Hosted (Free, no API key required) -->
-<script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
 <script>
     // ============================================
-    // FORM SUBMIT HANDLER - MUST BE FIRST
-    // This runs regardless of TinyMCE loading status
+    // FORM SUBMIT HANDLER
     // ============================================
     document.addEventListener('DOMContentLoaded', function() {
         const newsForm = document.getElementById('newsForm');
@@ -327,12 +331,6 @@
             newsForm.addEventListener('submit', function(e) {
                 console.log('Form submit triggered');
                 
-                // Trigger TinyMCE to save content to textarea (if loaded)
-                if (typeof tinymce !== 'undefined' && tinymce.get('content')) {
-                    tinymce.triggerSave();
-                    console.log('TinyMCE content synced');
-                }
-                
                 // Generate slug if empty
                 const slugField = document.getElementById('slug');
                 const titleField = document.getElementById('title');
@@ -340,7 +338,7 @@
                     slugField.value = generateSlugValue(titleField.value);
                 }
                 
-                // Get the content value after sync
+                // Get the content value (already synced by Quill component)
                 const contentField = document.getElementById('content');
                 console.log('Content field value length:', contentField ? contentField.value.length : 0);
                 
@@ -357,8 +355,10 @@
                 if (!contentValue || contentValue === '<p></p>' || contentValue === '<p><br></p>') {
                     e.preventDefault();
                     alert('Konten berita wajib diisi!');
-                    if (typeof tinymce !== 'undefined' && tinymce.get('content')) {
-                        tinymce.get('content').focus();
+                    // Focus on Quill editor
+                    const quillEditor = window.quillEditors && window.quillEditors['content'];
+                    if (quillEditor) {
+                        quillEditor.focus();
                     }
                     return false;
                 }
@@ -389,225 +389,6 @@
             .replace(/-+/g, '-')
             .replace(/^-+/, '')
             .replace(/-+$/, '');
-    }
-
-    // ============================================
-    // TINYMCE INITIALIZATION
-    // ============================================
-    if (typeof tinymce !== 'undefined') {
-        tinymce.init({
-        selector: '.tinymce-editor',
-        height: 500,
-        menubar: true,
-        language: 'id',
-        plugins: [
-            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons',
-            'codesample', 'quickbars', 'pagebreak', 'nonbreaking', 'visualchars'
-        ],
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | ' +
-                 'forecolor backcolor | alignleft aligncenter alignright alignjustify | ' +
-                 'bullist numlist outdent indent | link image media table | ' +
-                 'emoticons charmap | removeformat | code fullscreen preview | help',
-        toolbar_mode: 'sliding',
-        quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote',
-        quickbars_insert_toolbar: 'quickimage quicktable',
-        contextmenu: 'link image table',
-        content_style: `
-            body { 
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
-                font-size: 16px; 
-                line-height: 1.6;
-                color: #374151;
-                max-width: 100%;
-                padding: 1rem;
-            }
-            img { 
-                max-width: 100%; 
-                height: auto; 
-                border-radius: 8px;
-                margin: 1rem 0;
-            }
-            p { margin: 0 0 1rem 0; }
-            h1, h2, h3, h4, h5, h6 { 
-                margin: 1.5rem 0 0.75rem 0; 
-                font-weight: 600;
-                line-height: 1.3;
-            }
-            h1 { font-size: 2rem; }
-            h2 { font-size: 1.5rem; }
-            h3 { font-size: 1.25rem; }
-            blockquote {
-                border-left: 4px solid #f59e0b;
-                margin: 1rem 0;
-                padding: 0.5rem 1rem;
-                background: #fef3c7;
-                border-radius: 0 8px 8px 0;
-            }
-            table {
-                border-collapse: collapse;
-                width: 100%;
-                margin: 1rem 0;
-            }
-            table th, table td {
-                border: 1px solid #e5e7eb;
-                padding: 0.75rem;
-                text-align: left;
-            }
-            table th {
-                background: #f9fafb;
-                font-weight: 600;
-            }
-            pre {
-                background: #1f2937;
-                color: #f9fafb;
-                padding: 1rem;
-                border-radius: 8px;
-                overflow-x: auto;
-            }
-            a { color: #2563eb; }
-            hr { border: none; border-top: 2px solid #e5e7eb; margin: 2rem 0; }
-        `,
-        // Image upload configuration
-        images_upload_url: '{{ route("admin.news.upload-image") }}',
-        images_upload_handler: function (blobInfo, progress) {
-            return new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.withCredentials = false;
-                xhr.open('POST', '{{ route("admin.news.upload-image") }}');
-                
-                xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
-                
-                xhr.upload.onprogress = function (e) {
-                    progress(e.loaded / e.total * 100);
-                };
-                
-                xhr.onload = function() {
-                    if (xhr.status === 403) {
-                        reject({ message: 'HTTP Error: ' + xhr.status, remove: true });
-                        return;
-                    }
-                    
-                    if (xhr.status < 200 || xhr.status >= 300) {
-                        reject('HTTP Error: ' + xhr.status);
-                        return;
-                    }
-                    
-                    const json = JSON.parse(xhr.responseText);
-                    
-                    if (!json || typeof json.location != 'string') {
-                        reject('Invalid JSON: ' + xhr.responseText);
-                        return;
-                    }
-                    
-                    resolve(json.location);
-                };
-                
-                xhr.onerror = function () {
-                    reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
-                };
-                
-                const formData = new FormData();
-                formData.append('file', blobInfo.blob(), blobInfo.filename());
-                
-                xhr.send(formData);
-            });
-        },
-        // File picker for browsing images
-        file_picker_types: 'image media',
-        file_picker_callback: function(callback, value, meta) {
-            const input = document.createElement('input');
-            input.setAttribute('type', 'file');
-            
-            if (meta.filetype === 'image') {
-                input.setAttribute('accept', 'image/*');
-            } else if (meta.filetype === 'media') {
-                input.setAttribute('accept', 'video/*,audio/*');
-            }
-            
-            input.onchange = function() {
-                const file = this.files[0];
-                const reader = new FileReader();
-                
-                reader.onload = function() {
-                    // Upload the file
-                    const formData = new FormData();
-                    formData.append('file', file);
-                    
-                    fetch('{{ route("admin.news.upload-image") }}', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        callback(data.location, { title: file.name });
-                    })
-                    .catch(error => {
-                        console.error('Upload error:', error);
-                        alert('Gagal mengupload file');
-                    });
-                };
-                reader.readAsDataURL(file);
-            };
-            
-            input.click();
-        },
-        // Templates for common content patterns
-        templates: [
-            {
-                title: 'Dua Kolom Teks-Gambar',
-                description: 'Layout dengan teks di kiri dan gambar di kanan',
-                content: '<div style="display: flex; gap: 1rem;"><div style="flex: 1;"><p>Tulis konten di sini...</p></div><div style="flex: 1;"><img src="https://via.placeholder.com/400x300" alt="Gambar" /></div></div>'
-            },
-            {
-                title: 'Gambar dengan Caption',
-                description: 'Gambar dengan keterangan di bawahnya',
-                content: '<figure style="text-align: center;"><img src="https://via.placeholder.com/600x400" alt="Gambar" style="max-width: 100%;" /><figcaption style="color: #6b7280; font-size: 0.875rem; margin-top: 0.5rem;"><em>Keterangan gambar</em></figcaption></figure>'
-            },
-            {
-                title: 'Kutipan/Quote',
-                description: 'Blok kutipan untuk highlight',
-                content: '<blockquote><p>"Tulis kutipan penting di sini"</p><cite>— Nama Sumber</cite></blockquote>'
-            }
-        ],
-        // Auto-save
-        autosave_interval: '30s',
-        autosave_prefix: 'tinymce-autosave-news-{path}{query}',
-        autosave_restore_when_empty: true,
-        // Other settings
-        promotion: false,
-        branding: false,
-        resize: true,
-        elementpath: true,
-        statusbar: true,
-        paste_data_images: true,
-        automatic_uploads: true,
-        relative_urls: false,
-        remove_script_host: false,
-        convert_urls: true,
-        setup: function(editor) {
-            // Custom button for inserting image gallery
-            editor.ui.registry.addButton('imagegallery', {
-                icon: 'gallery',
-                tooltip: 'Sisipkan Galeri Gambar',
-                onAction: function() {
-                    editor.insertContent('<div class="image-gallery" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1rem 0;"><img src="https://via.placeholder.com/300x200" alt="Gambar 1" /><img src="https://via.placeholder.com/300x200" alt="Gambar 2" /><img src="https://via.placeholder.com/300x200" alt="Gambar 3" /></div>');
-                }
-            });
-            
-            // Word count update
-            editor.on('keyup', function() {
-                const wordCount = editor.plugins.wordcount.getCount();
-                console.log('Word count:', wordCount);
-            });
-        }
-    });
-    } else {
-        console.warn('TinyMCE not loaded - editor will not be initialized');
     }
 
     // ============================================
@@ -653,8 +434,9 @@
         const categoryText = categorySelect.options[categorySelect.selectedIndex]?.text || 'Kategori';
         const excerpt = document.getElementById('excerpt').value || '';
         
-        // Get TinyMCE content
-        const content = tinymce.get('content') ? tinymce.get('content').getContent() : '';
+        // Get Quill content from hidden input
+        const contentField = document.getElementById('content');
+        const content = contentField ? contentField.value : '';
         
         // Get featured image
         const imageInput = document.getElementById('featured_image');
