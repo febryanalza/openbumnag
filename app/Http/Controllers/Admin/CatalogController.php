@@ -130,6 +130,8 @@ class CatalogController extends Controller
             'sku' => ['nullable', 'string', 'max:100', 'unique:catalogs,sku'],
             'category' => ['nullable', 'string', 'max:100'],
             'featured_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'images' => ['nullable', 'array', 'max:10'],
+            'images.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'is_available' => ['boolean'],
             'is_featured' => ['boolean'],
             'specifications' => ['nullable', 'string'],
@@ -139,11 +141,23 @@ class CatalogController extends Controller
             'stock.required' => 'Stok wajib diisi.',
             'featured_image.image' => 'File harus berupa gambar.',
             'featured_image.max' => 'Ukuran gambar maksimal 2MB.',
+            'images.max' => 'Maksimal 10 gambar galeri.',
+            'images.*.image' => 'Semua file harus berupa gambar.',
+            'images.*.max' => 'Ukuran setiap gambar maksimal 2MB.',
         ]);
 
         // Handle featured image upload
         if ($request->hasFile('featured_image')) {
             $validated['featured_image'] = $request->file('featured_image')->store('catalogs', 'public');
+        }
+
+        // Handle multiple gallery images
+        if ($request->hasFile('images')) {
+            $uploadedImages = [];
+            foreach ($request->file('images') as $image) {
+                $uploadedImages[] = $image->store('catalogs/gallery', 'public');
+            }
+            $validated['images'] = $uploadedImages;
         }
 
         $validated['is_available'] = $request->boolean('is_available');
@@ -204,6 +218,10 @@ class CatalogController extends Controller
             'sku' => ['nullable', 'string', 'max:100', Rule::unique('catalogs')->ignore($catalog->id)],
             'category' => ['nullable', 'string', 'max:100'],
             'featured_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'images' => ['nullable', 'array', 'max:10'],
+            'images.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'remove_gallery_images' => ['nullable', 'array'],
+            'remove_gallery_images.*' => ['string'],
             'is_available' => ['boolean'],
             'is_featured' => ['boolean'],
             'specifications' => ['nullable', 'string'],
@@ -223,9 +241,30 @@ class CatalogController extends Controller
             unset($validated['featured_image']);
         }
 
+        // Handle gallery images removal
+        $currentImages = $catalog->images ?? [];
+        $imagesToRemove = $request->input('remove_gallery_images', []);
+        
+        if (!empty($imagesToRemove)) {
+            foreach ($imagesToRemove as $imagePath) {
+                Storage::disk('public')->delete($imagePath);
+                $currentImages = array_filter($currentImages, fn($img) => $img !== $imagePath);
+            }
+        }
+
+        // Handle new gallery images upload
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $currentImages[] = $image->store('catalogs/gallery', 'public');
+            }
+        }
+
+        $validated['images'] = array_values($currentImages); // Re-index array
+
         $validated['is_available'] = $request->boolean('is_available');
         $validated['is_featured'] = $request->boolean('is_featured');
         unset($validated['remove_image']);
+        unset($validated['remove_gallery_images']);
 
         // Parse specifications if JSON
         if (!empty($validated['specifications'])) {

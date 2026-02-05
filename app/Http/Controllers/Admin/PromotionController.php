@@ -123,6 +123,8 @@ class PromotionController extends Controller
             'excerpt' => 'nullable|string|max:500',
             'description' => 'required|string',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'images' => 'nullable|array|max:10',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'original_price' => 'nullable|numeric|min:0',
             'discount_price' => 'nullable|numeric|min:0',
             'discount_percentage' => 'nullable|integer|min:0|max:100',
@@ -141,6 +143,15 @@ class PromotionController extends Controller
         // Handle featured image upload
         if ($request->hasFile('featured_image')) {
             $validated['featured_image'] = $request->file('featured_image')->store('promotions', 'public');
+        }
+
+        // Handle multiple gallery images
+        if ($request->hasFile('images')) {
+            $uploadedImages = [];
+            foreach ($request->file('images') as $image) {
+                $uploadedImages[] = $image->store('promotions/gallery', 'public');
+            }
+            $validated['images'] = $uploadedImages;
         }
 
         // Set defaults
@@ -199,6 +210,10 @@ class PromotionController extends Controller
             'excerpt' => 'nullable|string|max:500',
             'description' => 'required|string',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'images' => 'nullable|array|max:10',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'remove_gallery_images' => 'nullable|array',
+            'remove_gallery_images.*' => 'string',
             'original_price' => 'nullable|numeric|min:0',
             'discount_price' => 'nullable|numeric|min:0',
             'discount_percentage' => 'nullable|integer|min:0|max:100',
@@ -227,6 +242,27 @@ class PromotionController extends Controller
             }
             $validated['featured_image'] = null;
         }
+
+        // Handle gallery images removal
+        $currentImages = $promotion->images ?? [];
+        $imagesToRemove = $request->input('remove_gallery_images', []);
+        
+        if (!empty($imagesToRemove)) {
+            foreach ($imagesToRemove as $imagePath) {
+                Storage::disk('public')->delete($imagePath);
+                $currentImages = array_filter($currentImages, fn($img) => $img !== $imagePath);
+            }
+        }
+
+        // Handle new gallery images upload
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $currentImages[] = $image->store('promotions/gallery', 'public');
+            }
+        }
+
+        $validated['images'] = array_values($currentImages); // Re-index array
+        unset($validated['remove_gallery_images']);
 
         $validated['is_featured'] = $request->boolean('is_featured');
 

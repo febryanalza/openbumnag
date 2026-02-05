@@ -102,14 +102,26 @@
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
                 <h3 class="text-lg font-semibold text-gray-900">Gambar Produk</h3>
-                <p class="text-sm text-gray-500">Foto utama produk</p>
+                <p class="text-sm text-gray-500">Foto utama dan galeri produk</p>
             </div>
-            <div class="p-6">
-                <div id="imagePreviewContainer" class="mb-4 hidden">
-                    <img id="imagePreview" src="" alt="Preview" class="w-40 h-40 object-cover rounded-xl border border-gray-200">
+            <div class="p-6 space-y-6">
+                {{-- Featured Image --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Utama</label>
+                    <div id="imagePreviewContainer" class="mb-4 hidden">
+                        <img id="imagePreview" src="" alt="Preview" class="w-40 h-40 object-cover rounded-xl border border-gray-200">
+                    </div>
+                    <input type="file" name="featured_image" id="featured_image" accept="image/*" onchange="previewImage(this)" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100">
+                    <p class="mt-1 text-xs text-gray-500">Maksimal 2MB (JPG, PNG, WebP)</p>
                 </div>
-                <input type="file" name="featured_image" id="featured_image" accept="image/*" onchange="previewImage(this)" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100">
-                <p class="mt-1 text-xs text-gray-500">Maksimal 2MB (JPG, PNG, WebP)</p>
+
+                {{-- Gallery Images --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Galeri Gambar (Opsional)</label>
+                    <div id="galleryPreviewContainer" class="mb-4 grid grid-cols-4 sm:grid-cols-6 gap-3 hidden"></div>
+                    <input type="file" name="images[]" id="gallery_images" accept="image/*" multiple onchange="previewGalleryImages(this)" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    <p class="mt-1 text-xs text-gray-500">Maksimal 10 gambar, masing-masing 2MB (JPG, PNG, WebP)</p>
+                </div>
             </div>
         </div>
 
@@ -175,6 +187,33 @@
                 container.classList.remove('hidden');
             }
             reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function previewGalleryImages(input) {
+        const container = document.getElementById('galleryPreviewContainer');
+        container.innerHTML = '';
+        
+        if (input.files && input.files.length > 0) {
+            container.classList.remove('hidden');
+            
+            Array.from(input.files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const div = document.createElement('div');
+                    div.className = 'relative group';
+                    div.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview ${index + 1}" class="w-full h-20 object-cover rounded-lg border border-gray-200">
+                        <div class="absolute inset-0 bg-black bg-opacity-40 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="text-white text-xs font-medium">${index + 1}</span>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                }
+                reader.readAsDataURL(file);
+            });
+        } else {
+            container.classList.add('hidden');
         }
     }
 </script>

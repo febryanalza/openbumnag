@@ -139,23 +139,46 @@
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Media</h2>
             
-            <div>
-                <label for="featured_image" class="block text-sm font-medium text-gray-700 mb-1">Gambar Utama</label>
-                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-amber-500 transition-colors">
-                    <div class="space-y-1 text-center">
-                        <div id="imagePreview" class="hidden mb-4">
-                            <img id="previewImg" src="" alt="Preview" class="mx-auto h-48 object-cover rounded-lg">
+            <div class="space-y-6">
+                {{-- Featured Image --}}
+                <div>
+                    <label for="featured_image" class="block text-sm font-medium text-gray-700 mb-1">Gambar Utama</label>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-amber-500 transition-colors">
+                        <div class="space-y-1 text-center">
+                            <div id="imagePreview" class="hidden mb-4">
+                                <img id="previewImg" src="" alt="Preview" class="mx-auto h-48 object-cover rounded-lg">
+                            </div>
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="flex text-sm text-gray-600 justify-center">
+                                <label for="featured_image" class="relative cursor-pointer bg-white rounded-md font-medium text-amber-600 hover:text-amber-500">
+                                    <span>Upload gambar</span>
+                                    <input id="featured_image" name="featured_image" type="file" class="sr-only" accept="image/*" onchange="previewImage(this)">
+                                </label>
+                            </div>
+                            <p class="text-xs text-gray-500">PNG, JPG, GIF, WebP maks. 2MB</p>
                         </div>
-                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                        <div class="flex text-sm text-gray-600 justify-center">
-                            <label for="featured_image" class="relative cursor-pointer bg-white rounded-md font-medium text-amber-600 hover:text-amber-500">
-                                <span>Upload gambar</span>
-                                <input id="featured_image" name="featured_image" type="file" class="sr-only" accept="image/*" onchange="previewImage(this)">
-                            </label>
+                    </div>
+                </div>
+
+                {{-- Gallery Images --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Galeri Gambar (Opsional)</label>
+                    <div id="galleryPreviewContainer" class="mb-4 grid grid-cols-4 sm:grid-cols-6 gap-3 hidden"></div>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-blue-300 border-dashed rounded-lg hover:border-blue-500 transition-colors bg-blue-50/50">
+                        <div class="space-y-1 text-center">
+                            <svg class="mx-auto h-10 w-10 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <div class="flex text-sm text-gray-600 justify-center">
+                                <label class="relative cursor-pointer bg-transparent rounded-md font-medium text-blue-600 hover:text-blue-500">
+                                    <span>Upload beberapa gambar</span>
+                                    <input type="file" name="images[]" class="sr-only" accept="image/*" multiple onchange="previewGalleryImages(this)">
+                                </label>
+                            </div>
+                            <p class="text-xs text-gray-500">Maks. 10 gambar, masing-masing 2MB</p>
                         </div>
-                        <p class="text-xs text-gray-500">PNG, JPG, GIF, WebP maks. 2MB</p>
                     </div>
                 </div>
             </div>
@@ -288,6 +311,34 @@
                 document.getElementById('imagePreview').classList.remove('hidden');
             };
             reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Preview gallery images
+    function previewGalleryImages(input) {
+        const container = document.getElementById('galleryPreviewContainer');
+        container.innerHTML = '';
+        
+        if (input.files && input.files.length > 0) {
+            container.classList.remove('hidden');
+            
+            Array.from(input.files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const div = document.createElement('div');
+                    div.className = 'relative group';
+                    div.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview ${index + 1}" class="w-full h-20 object-cover rounded-lg border border-gray-200">
+                        <div class="absolute inset-0 bg-black bg-opacity-40 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="text-white text-xs font-medium">${index + 1}</span>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                }
+                reader.readAsDataURL(file);
+            });
+        } else {
+            container.classList.add('hidden');
         }
     }
 

@@ -20,35 +20,39 @@
 <!-- Product Detail -->
 <section class="py-8 sm:py-10 lg:py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12" x-data="{ currentImage: '{{ $catalog->featured_image ? Storage::url($catalog->featured_image) : '/images/placeholder.jpg' }}' }">
             <!-- Product Images -->
             <div>
                 <!-- Main Image -->
-                <div class="mb-3 sm:mb-4 rounded-xl sm:rounded-2xl overflow-hidden bg-gray-100" x-data="{ currentImage: '{{ $catalog->featured_image ? Storage::url($catalog->featured_image) : '' }}' }">
-                    <img :src="currentImage || '/images/placeholder.jpg'" 
+                <div class="mb-3 sm:mb-4 rounded-xl sm:rounded-2xl overflow-hidden bg-gray-100">
+                    <img :src="currentImage" 
                          alt="{{ $catalog->name }}" 
                          class="w-full h-64 sm:h-80 lg:h-96 object-cover">
                 </div>
                 
                 <!-- Image Thumbnails -->
-                @if($catalog->images && is_array($catalog->images) && count($catalog->images) > 0)
-                <div class="grid grid-cols-4 gap-2 sm:gap-3" x-data>
+                @if(($catalog->images && is_array($catalog->images) && count($catalog->images) > 0) || $catalog->featured_image)
+                <div class="grid grid-cols-4 gap-2 sm:gap-3">
                     @if($catalog->featured_image)
                     <button @click="currentImage = '{{ Storage::url($catalog->featured_image) }}'"
-                            class="rounded-lg overflow-hidden border-2 hover:border-primary transition-colors">
+                            class="rounded-lg overflow-hidden border-2 transition-colors"
+                            :class="currentImage === '{{ Storage::url($catalog->featured_image) }}' ? 'border-primary' : 'border-gray-200 hover:border-primary'">
                         <img src="{{ Storage::url($catalog->featured_image) }}" 
                              alt="{{ $catalog->name }}" 
                              class="w-full h-16 sm:h-20 lg:h-24 object-cover">
                     </button>
                     @endif
+                    @if($catalog->images && is_array($catalog->images))
                     @foreach($catalog->images as $image)
                     <button @click="currentImage = '{{ Storage::url($image) }}'"
-                            class="rounded-lg overflow-hidden border-2 hover:border-primary transition-colors">
+                            class="rounded-lg overflow-hidden border-2 transition-colors"
+                            :class="currentImage === '{{ Storage::url($image) }}' ? 'border-primary' : 'border-gray-200 hover:border-primary'">
                         <img src="{{ Storage::url($image) }}" 
                              alt="{{ $catalog->name }}" 
                              class="w-full h-16 sm:h-20 lg:h-24 object-cover">
                     </button>
                     @endforeach
+                    @endif
                 </div>
                 @endif
             </div>

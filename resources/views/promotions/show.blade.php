@@ -20,13 +20,13 @@
 <!-- Promotion Detail -->
 <section class="py-8 sm:py-10 lg:py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12" x-data="{ currentImage: '{{ $promotion->featured_image ? Storage::url($promotion->featured_image) : '/images/placeholder.jpg' }}' }">
             <!-- Promotion Images -->
             <div>
                 <!-- Main Image -->
-                <div class="mb-3 sm:mb-4 rounded-xl sm:rounded-2xl overflow-hidden bg-gradient-to-br from-amber-100 to-orange-100 shadow-xl" x-data="{ currentImage: '{{ $promotion->featured_image ? Storage::url($promotion->featured_image) : '' }}' }">
+                <div class="mb-3 sm:mb-4 rounded-xl sm:rounded-2xl overflow-hidden bg-gradient-to-br from-amber-100 to-orange-100 shadow-xl">
                     <div class="relative">
-                        <img :src="currentImage || '/images/placeholder.jpg'" 
+                        <img :src="currentImage" 
                              alt="{{ $promotion->title }}" 
                              class="w-full h-64 sm:h-80 lg:h-96 object-cover">
                         
@@ -59,24 +59,28 @@
                 </div>
                 
                 <!-- Image Thumbnails -->
-                @if($promotion->images && is_array($promotion->images) && count($promotion->images) > 0)
-                <div class="grid grid-cols-4 gap-2 sm:gap-3" x-data>
+                @if(($promotion->images && is_array($promotion->images) && count($promotion->images) > 0) || $promotion->featured_image)
+                <div class="grid grid-cols-4 gap-2 sm:gap-3">
                     @if($promotion->featured_image)
                     <button @click="currentImage = '{{ Storage::url($promotion->featured_image) }}'"
-                            class="rounded-lg overflow-hidden border-2 hover:border-amber-500 transition-colors">
+                            class="rounded-lg overflow-hidden border-2 transition-colors"
+                            :class="currentImage === '{{ Storage::url($promotion->featured_image) }}' ? 'border-amber-500' : 'border-gray-200 hover:border-amber-500'">
                         <img src="{{ Storage::url($promotion->featured_image) }}" 
                              alt="{{ $promotion->title }}" 
                              class="w-full h-16 sm:h-20 lg:h-24 object-cover">
                     </button>
                     @endif
+                    @if($promotion->images && is_array($promotion->images))
                     @foreach($promotion->images as $image)
                     <button @click="currentImage = '{{ Storage::url($image) }}'"
-                            class="rounded-lg overflow-hidden border-2 hover:border-amber-500 transition-colors">
+                            class="rounded-lg overflow-hidden border-2 transition-colors"
+                            :class="currentImage === '{{ Storage::url($image) }}' ? 'border-amber-500' : 'border-gray-200 hover:border-amber-500'">
                         <img src="{{ Storage::url($image) }}" 
                              alt="{{ $promotion->title }}" 
                              class="w-full h-16 sm:h-20 lg:h-24 object-cover">
                     </button>
                     @endforeach
+                    @endif
                 </div>
                 @endif
             </div>

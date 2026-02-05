@@ -128,19 +128,47 @@
             <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
                 <h3 class="text-lg font-semibold text-gray-900">Gambar Produk</h3>
             </div>
-            <div class="p-6 space-y-4">
-                @if($catalog->featured_image)
-                    <div class="flex items-start gap-4">
-                        <img src="{{ Storage::url($catalog->featured_image) }}" alt="{{ $catalog->name }}" class="w-32 h-32 object-cover rounded-xl border border-gray-200">
-                        <label class="flex items-center gap-2 text-sm text-red-600 cursor-pointer">
-                            <input type="checkbox" name="remove_image" value="1" class="rounded border-gray-300 text-red-500 focus:ring-red-500">
-                            Hapus gambar
-                        </label>
-                    </div>
-                @endif
+            <div class="p-6 space-y-6">
+                {{-- Featured Image --}}
                 <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Utama</label>
+                    @if($catalog->featured_image)
+                        <div class="flex items-start gap-4 mb-4">
+                            <img src="{{ Storage::url($catalog->featured_image) }}" alt="{{ $catalog->name }}" class="w-32 h-32 object-cover rounded-xl border border-gray-200">
+                            <label class="flex items-center gap-2 text-sm text-red-600 cursor-pointer">
+                                <input type="checkbox" name="remove_image" value="1" class="rounded border-gray-300 text-red-500 focus:ring-red-500">
+                                Hapus gambar
+                            </label>
+                        </div>
+                    @endif
                     <input type="file" name="featured_image" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100">
                     <p class="mt-1 text-xs text-gray-500">Maksimal 2MB (JPG, PNG, WebP)</p>
+                </div>
+
+                {{-- Gallery Images --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Galeri Gambar</label>
+                    @if($catalog->images && count($catalog->images) > 0)
+                        <div class="grid grid-cols-4 sm:grid-cols-6 gap-3 mb-4">
+                            @foreach($catalog->images as $image)
+                                <div class="relative group">
+                                    <img src="{{ Storage::url($image) }}" alt="Gallery" class="w-full h-20 object-cover rounded-lg border border-gray-200">
+                                    <label class="absolute top-1 right-1 cursor-pointer">
+                                        <input type="checkbox" name="remove_gallery_images[]" value="{{ $image }}" class="sr-only peer">
+                                        <span class="w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 peer-checked:opacity-100 peer-checked:bg-red-700 transition-all" title="Hapus">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                        </span>
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                        <p class="text-xs text-gray-500 mb-3">Centang gambar yang ingin dihapus</p>
+                    @endif
+                    <div id="newGalleryPreview" class="grid grid-cols-4 sm:grid-cols-6 gap-3 mb-4 hidden"></div>
+                    <input type="file" name="images[]" accept="image/*" multiple onchange="previewNewGallery(this)" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    <p class="mt-1 text-xs text-gray-500">Tambah gambar baru (maks. 10 total, 2MB per file)</p>
                 </div>
             </div>
         </div>
@@ -251,6 +279,34 @@
         document.getElementById('slugDisplay').textContent = slug || 'slug-akan-muncul-disini';
         document.getElementById('slug').value = slug;
     });
+
+    // Preview new gallery images
+    function previewNewGallery(input) {
+        const container = document.getElementById('newGalleryPreview');
+        container.innerHTML = '';
+        
+        if (input.files && input.files.length > 0) {
+            container.classList.remove('hidden');
+            
+            Array.from(input.files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const div = document.createElement('div');
+                    div.className = 'relative group';
+                    div.innerHTML = `
+                        <img src="${e.target.result}" alt="New ${index + 1}" class="w-full h-20 object-cover rounded-lg border-2 border-green-300">
+                        <div class="absolute inset-0 bg-green-500 bg-opacity-40 rounded-lg flex items-center justify-center">
+                            <span class="text-white text-xs font-medium">Baru</span>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                }
+                reader.readAsDataURL(file);
+            });
+        } else {
+            container.classList.add('hidden');
+        }
+    }
 </script>
 @endpush
 @endsection
