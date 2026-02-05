@@ -98,9 +98,11 @@
         </div>
     </div>
 
-    <form method="POST" action="{{ route('admin.news.update', $news) }}" enctype="multipart/form-data" class="space-y-6">
+    <form method="POST" action="{{ route('admin.news.update', $news) }}" enctype="multipart/form-data" class="space-y-6" id="newsForm">
         @csrf
         @method('PUT')
+        <!-- Hidden field for slug -->
+        <input type="hidden" name="slug" id="slug" value="{{ old('slug', $news->slug) }}">
 
         <!-- Main Content Section -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -392,7 +394,7 @@
 
 @push('scripts')
 <!-- TinyMCE 6 CDN -->
-<script src="https://cdn.tiny.cloud/1/ylbsulndv6mfl8xnudiga1ug958igkugns2l4s4vann3ivam/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.tiny.cloud/1/{{ config('tinymce.api_key') }}/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
     // Initialize TinyMCE
     tinymce.init({
@@ -566,6 +568,7 @@
             .replace(/-+$/, '');
         
         document.getElementById('slugText').textContent = slug || '{{ $news->slug }}';
+        document.getElementById('slug').value = slug || '{{ $news->slug }}';
     }
 
     // Preview Modal Functions
@@ -646,6 +649,62 @@
             closePreviewModal();
         }
     });
+
+    // CRITICAL: Sync TinyMCE content before form submit
+    document.getElementById('newsForm').addEventListener('submit', function(e) {
+        // Trigger TinyMCE to save content to textarea
+        if (typeof tinymce !== 'undefined') {
+            tinymce.triggerSave();
+        }
+        
+        // Generate slug if empty
+        const slugField = document.getElementById('slug');
+        const titleField = document.getElementById('title');
+        if (slugField && titleField && (!slugField.value || slugField.value === '')) {
+            slugField.value = generateSlugValue(titleField.value);
+        }
+        
+        // Get the content value after sync
+        const contentField = document.getElementById('content');
+        console.log('Form submitting with content length:', contentField ? contentField.value.length : 0);
+        
+        // Validate required fields
+        if (!titleField.value.trim()) {
+            e.preventDefault();
+            alert('Judul berita wajib diisi!');
+            titleField.focus();
+            return false;
+        }
+        
+        if (!contentField.value.trim() || contentField.value.trim() === '<p></p>' || contentField.value.trim() === '') {
+            e.preventDefault();
+            alert('Konten berita wajib diisi!');
+            if (tinymce.get('content')) {
+                tinymce.get('content').focus();
+            }
+            return false;
+        }
+        
+        return true;
+    });
+
+    // Generate slug value function
+    function generateSlugValue(title) {
+        return title
+            .toLowerCase()
+            .trim()
+            .replace(/[àáâãäå]/g, 'a')
+            .replace(/[èéêë]/g, 'e')
+            .replace(/[ìíîï]/g, 'i')
+            .replace(/[òóôõö]/g, 'o')
+            .replace(/[ùúûü]/g, 'u')
+            .replace(/[ñ]/g, 'n')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+    }
 </script>
 @endpush
 @endsection
