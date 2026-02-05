@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TeamMemberController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\DatabaseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -233,6 +234,19 @@ Route::middleware(['web', 'admin.access'])->prefix('admin')->name('admin.')->gro
         Route::post('/bulk-action', [RoleController::class, 'bulkAction'])->name('bulk-action');
         Route::post('/{role}/assign-users', [RoleController::class, 'assignUsers'])->name('assign-users');
         Route::get('/{role}/clone', [RoleController::class, 'clone'])->name('clone');
+    });
+
+    // Database Management (super admin only)
+    Route::middleware(['check.role:super_admin'])->prefix('database')->name('database.')->group(function () {
+        Route::get('/', [DatabaseController::class, 'index'])->name('index');
+        Route::post('/export', [DatabaseController::class, 'export'])->name('export');
+        Route::post('/import', [DatabaseController::class, 'import'])->name('import');
+        Route::post('/upload', [DatabaseController::class, 'upload'])->name('upload');
+        Route::get('/download/{filename}', [DatabaseController::class, 'download'])->name('download')->where('filename', '.*');
+        Route::delete('/delete/{filename}', [DatabaseController::class, 'delete'])->name('delete')->where('filename', '.*');
+        Route::post('/migrate', [DatabaseController::class, 'migrate'])->name('migrate');
+        Route::post('/clear-cache', [DatabaseController::class, 'clearCache'])->name('clear-cache');
+        Route::post('/optimize', [DatabaseController::class, 'optimize'])->name('optimize');
     });
 });
 

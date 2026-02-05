@@ -118,6 +118,17 @@ class RolePermissionSeeder extends Seeder
             'user.delete',
         ];
 
+        // Database Management Permissions (Super Admin Only)
+        $databasePermissions = [
+            'database.view',
+            'database.export',
+            'database.import',
+            'database.delete-backup',
+            'database.optimize',
+            'database.clear-cache',
+            'database.migrate',
+        ];
+
         // Merge all permissions
         $allPermissions = array_merge(
             $newsPermissions,
@@ -130,7 +141,8 @@ class RolePermissionSeeder extends Seeder
             $contactPermissions,
             $settingPermissions,
             $catalogPermissions,
-            $userPermissions
+            $userPermissions,
+            $databasePermissions
         );
 
         // Create all permissions

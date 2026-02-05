@@ -125,12 +125,12 @@
                 <div>
                     <label for="discount_percentage" class="block text-sm font-medium text-gray-700 mb-1">Persentase Diskon</label>
                     <div class="relative">
-                        <input type="number" name="discount_percentage" id="discount_percentage" value="{{ old('discount_percentage') }}" min="0" max="100"
-                            class="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                        <input type="number" name="discount_percentage" id="discount_percentage" value="{{ old('discount_percentage') }}" min="0" max="100" readonly
+                            class="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
                             placeholder="0">
                         <span class="absolute right-4 top-2 text-gray-500">%</span>
                     </div>
-                    <p class="mt-1 text-sm text-gray-500">Akan dihitung otomatis jika kosong</p>
+                    <p class="mt-1 text-sm text-green-600">✓ Dihitung otomatis berdasarkan harga</p>
                 </div>
             </div>
         </div>
@@ -315,6 +315,24 @@
         document.getElementById('slugDisplay').textContent = slug || 'slug-akan-muncul-disini';
         document.getElementById('slug').value = slug;
     });
+
+    // Auto-calculate discount percentage
+    function calculateDiscountPercentage() {
+        const originalPrice = parseFloat(document.getElementById('original_price').value) || 0;
+        const discountPrice = parseFloat(document.getElementById('discount_price').value) || 0;
+        const discountPercentageField = document.getElementById('discount_percentage');
+        
+        if (originalPrice > 0 && discountPrice >= 0) {
+            const percentage = Math.round(((originalPrice - discountPrice) / originalPrice) * 100);
+            discountPercentageField.value = percentage;
+        } else {
+            discountPercentageField.value = '';
+        }
+    }
+
+    // Listen to price changes
+    document.getElementById('original_price').addEventListener('input', calculateDiscountPercentage);
+    document.getElementById('discount_price').addEventListener('input', calculateDiscountPercentage);
 </script>
 @endpush
 @endsection

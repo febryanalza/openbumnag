@@ -152,9 +152,11 @@ class PromotionController extends Controller
             $validated['slug'] = Str::slug($validated['title']);
         }
 
-        // Calculate discount percentage if prices provided
-        if (!empty($validated['original_price']) && !empty($validated['discount_price']) && empty($validated['discount_percentage'])) {
+        // Auto-calculate discount percentage if both prices provided
+        if (!empty($validated['original_price']) && !empty($validated['discount_price']) && $validated['original_price'] > 0) {
             $validated['discount_percentage'] = round((($validated['original_price'] - $validated['discount_price']) / $validated['original_price']) * 100);
+        } else {
+            $validated['discount_percentage'] = null;
         }
 
         Promotion::create($validated);
@@ -228,9 +230,11 @@ class PromotionController extends Controller
 
         $validated['is_featured'] = $request->boolean('is_featured');
 
-        // Calculate discount percentage if prices provided
-        if (!empty($validated['original_price']) && !empty($validated['discount_price']) && empty($validated['discount_percentage'])) {
+        // Auto-calculate discount percentage if both prices provided
+        if (!empty($validated['original_price']) && !empty($validated['discount_price']) && $validated['original_price'] > 0) {
             $validated['discount_percentage'] = round((($validated['original_price'] - $validated['discount_price']) / $validated['original_price']) * 100);
+        } else {
+            $validated['discount_percentage'] = null;
         }
 
         $promotion->update($validated);

@@ -191,7 +191,7 @@ class CacheService
                     ->with(['category:id,name'])
                     ->orderBy('created_at', 'desc')
                     ->take(6)
-                    ->get(['id', 'title', 'slug', 'excerpt', 'description', 'featured_image', 'discount_percentage', 'start_date', 'end_date']),
+                    ->get(['id', 'title', 'slug', 'excerpt', 'description', 'featured_image', 'discount_percentage', 'start_date', 'end_date', 'category_id']),
                 
                 'featuredCatalogs' => Catalog::with('bumnagProfile:id,name,slug')
                     ->where('is_available', true)
