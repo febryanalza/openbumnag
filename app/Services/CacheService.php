@@ -187,15 +187,11 @@ class CacheService
                     ->take($reportsLimit)
                     ->get(['id', 'title', 'slug', 'description', 'file_path', 'published_at', 'type', 'year']),
                 
-                'promotions' => Promotion::where('status', 'active')
-                    ->where('start_date', '<=', now())
-                    ->where(function ($query) {
-                        $query->whereNull('end_date')
-                            ->orWhere('end_date', '>=', now());
-                    })
+                'promotions' => Promotion::active()
+                    ->with(['category:id,name'])
                     ->orderBy('created_at', 'desc')
-                    ->take(3)
-                    ->get(['id', 'title', 'slug', 'excerpt', 'featured_image', 'discount_percentage']),
+                    ->take(6)
+                    ->get(['id', 'title', 'slug', 'excerpt', 'description', 'featured_image', 'discount_percentage', 'start_date', 'end_date']),
                 
                 'featuredCatalogs' => Catalog::with('bumnagProfile:id,name,slug')
                     ->where('is_available', true)
