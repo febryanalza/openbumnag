@@ -5,9 +5,25 @@
             <!-- About Section -->
             <div>
                 <div class="flex items-center space-x-3 mb-4">
-                    <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-                        <span class="text-white font-bold text-xl">{{ strtoupper(substr($globalSettings['site_name'] ?? 'LM', 0, 2)) }}</span>
-                    </div>
+                    @if(!empty($globalSettings['site_logo']))
+                        <!-- Logo from settings -->
+                        <div class="w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center bg-white/10">
+                            @if(!empty($globalSettings['site_logo_white']))
+                                <img src="{{ Storage::url($globalSettings['site_logo_white']) }}" 
+                                     alt="{{ $globalSettings['site_name'] ?? 'Logo' }}" 
+                                     class="w-full h-full object-contain">
+                            @else
+                                <img src="{{ Storage::url($globalSettings['site_logo']) }}" 
+                                     alt="{{ $globalSettings['site_name'] ?? 'Logo' }}" 
+                                     class="w-full h-full object-contain">
+                            @endif
+                        </div>
+                    @else
+                        <!-- Default text logo -->
+                        <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">{{ strtoupper(substr($globalSettings['site_name'] ?? 'LM', 0, 2)) }}</span>
+                        </div>
+                    @endif
                     <div>
                         <h3 class="text-lg font-bold">{{ $globalSettings['site_name'] ?? 'Lubas Mandiri' }}</h3>
                         <p class="text-sm text-mint-200">{{ $globalSettings['site_tagline'] ?? 'BUMNag Desa Lubas' }}</p>
@@ -30,6 +46,16 @@
                     <li>
                         <a href="{{ route('about') }}" class="text-mint-200 hover:text-secondary transition-colors duration-200">
                             Tentang Kami
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('catalogs.index') }}" class="text-mint-200 hover:text-secondary transition-colors duration-200">
+                            Kadai
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('promotions.index') }}" class="text-mint-200 hover:text-secondary transition-colors duration-200">
+                            Promo
                         </a>
                     </li>
                     <li>

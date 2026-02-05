@@ -8,9 +8,19 @@
             <!-- Logo -->
             <div class="flex-shrink-0 flex items-center">
                 <a href="{{ route('home') }}" class="flex items-center space-x-3">
-                    <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-                        <span class="text-white font-bold text-xl">{{ strtoupper(substr($globalSettings['site_name'] ?? 'LM', 0, 2)) }}</span>
-                    </div>
+                    @if(!empty($globalSettings['site_logo']))
+                        <!-- Logo from settings -->
+                        <div class="w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center bg-white/10">
+                            <img src="{{ Storage::url($globalSettings['site_logo']) }}" 
+                                 alt="{{ $globalSettings['site_name'] ?? 'Logo' }}" 
+                                 class="w-full h-full object-contain">
+                        </div>
+                    @else
+                        <!-- Default text logo -->
+                        <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">{{ strtoupper(substr($globalSettings['site_name'] ?? 'LM', 0, 2)) }}</span>
+                        </div>
+                    @endif
                     <div class="hidden md:block">
                         <h1 class="text-xl font-bold" 
                             :class="scrolled ? 'text-primary' : 'text-white'">
@@ -40,6 +50,11 @@
                    class="font-medium transition-colors duration-200 hover:text-primary"
                    :class="scrolled ? 'text-gray-700' : 'text-white'">
                     Kadai
+                </a>
+                <a href="{{ route('promotions.index') }}" 
+                   class="font-medium transition-colors duration-200 hover:text-primary"
+                   :class="scrolled ? 'text-gray-700' : 'text-white'">
+                    Promo
                 </a>
                 <a href="{{ route('news.index') }}" 
                    class="font-medium transition-colors duration-200 hover:text-primary"
@@ -99,6 +114,10 @@
             <a href="{{ route('catalogs.index') }}" 
                class="block px-4 py-3 rounded-lg text-gray-700 font-medium hover:bg-primary-50 hover:text-primary transition-colors duration-200">
                 Kadai
+            </a>
+            <a href="{{ route('promotions.index') }}" 
+               class="block px-4 py-3 rounded-lg text-gray-700 font-medium hover:bg-primary-50 hover:text-primary transition-colors duration-200">
+                Promo
             </a>
             <a href="{{ route('news.index') }}" 
                class="block px-4 py-3 rounded-lg text-gray-700 font-medium hover:bg-primary-50 hover:text-primary transition-colors duration-200">

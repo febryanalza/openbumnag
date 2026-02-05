@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
@@ -34,3 +35,7 @@ Route::get('/laporan-preview/{slug}', [HomeController::class, 'reportPreview'])-
 // Catalog Routes
 Route::get('/kodai', [CatalogController::class, 'index'])->name('catalogs.index');
 Route::get('/kodai/{slug}', [CatalogController::class, 'show'])->name('catalogs.show');
+
+// Promotion Routes
+Route::get('/promo', [PromotionController::class, 'index'])->name('promotions.index');
+Route::get('/promo/{slug}', [PromotionController::class, 'show'])->name('promotions.show');

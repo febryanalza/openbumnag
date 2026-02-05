@@ -117,6 +117,9 @@ class HomepageSettingController extends Controller
             'label' => 'Pengaturan Umum',
             'icon' => 'cog-6-tooth',
             'settings' => [
+                'site_logo' => ['label' => 'Logo Website', 'type' => 'image', 'placeholder' => 'Upload logo website (PNG/JPG, maks 2MB)'],
+                'site_logo_white' => ['label' => 'Logo Website (Versi Putih)', 'type' => 'image', 'placeholder' => 'Logo untuk background gelap (opsional)'],
+                'site_favicon' => ['label' => 'Favicon', 'type' => 'image', 'placeholder' => 'Icon untuk tab browser (maks 512x512px)'],
                 'site_name' => ['label' => 'Nama Website', 'type' => 'text', 'placeholder' => 'Lubas Mandiri'],
                 'site_tagline' => ['label' => 'Tagline', 'type' => 'text', 'placeholder' => 'Badan Usaha Milik Nagari'],
                 'site_description' => ['label' => 'Deskripsi Website', 'type' => 'textarea', 'placeholder' => 'BUMNag Lubas Mandiri'],
@@ -179,8 +182,16 @@ class HomepageSettingController extends Controller
                     Storage::disk('public')->delete($oldSetting->value);
                 }
                 
+                // Determine storage folder based on setting key
+                $folder = match(true) {
+                    str_starts_with($key, 'site_logo') => 'site-logos',
+                    str_starts_with($key, 'site_favicon') => 'site-logos',
+                    str_starts_with($key, 'about_team_logo') => 'team-logos',
+                    default => 'settings',
+                };
+                
                 // Store new image
-                $path = $file->store('team-logos', 'public');
+                $path = $file->store($folder, 'public');
                 
                 Setting::updateOrCreate(
                     ['key' => $key],
