@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BumnagProfile;
+use App\Models\Category;
 use App\Models\Promotion;
 use App\Services\CacheService;
 use Illuminate\Http\Request;
@@ -15,8 +15,8 @@ class PromotionController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Promotion::where('is_active', true)
-            ->with(['bumnagProfile:id,name,slug']);
+        $query = Promotion::where('status', 'active')
+            ->with(['category:id,name']);
 
         // Search
         if ($request->has('search') && !empty($request->input('search'))) {
@@ -27,9 +27,9 @@ class PromotionController extends Controller
             });
         }
 
-        // Filter by unit usaha
-        if ($request->has('unit_usaha') && !empty($request->input('unit_usaha'))) {
-            $query->where('bumnag_profile_id', $request->input('unit_usaha'));
+        // Filter by category
+        if ($request->has('category') && !empty($request->input('category'))) {
+            $query->where('category_id', $request->input('category'));
         }
 
         // Filter by status (active/expired)
@@ -37,36 +37,30 @@ class PromotionController extends Controller
             $status = $request->input('status');
             if ($status === 'active') {
                 $query->where(function ($q) {
-                    $q->whereNull('valid_until')
-                      ->orWhere('valid_until', '>=', now());
+                    $q->whereNull('end_date')
+                      ->orWhere('end_date', '>=', now());
                 });
             } elseif ($status === 'expired') {
-                $query->where('valid_until', '<', now());
+                $query->where('end_date', '<', now());
             }
         }
 
         // Order by validity and creation
-        $promotions = $query->orderByRaw('CASE WHEN valid_until IS NULL OR valid_until >= NOW() THEN 0 ELSE 1 END')
+        $promotions = $query->orderByRaw('CASE WHEN end_date IS NULL OR end_date >= NOW() THEN 0 ELSE 1 END')
             ->orderBy('created_at', 'desc')
             ->paginate(12)
             ->withQueryString();
 
-        // Get BUMNag profiles for filter
-        $bumnagProfiles = BumnagProfile::where('is_active', true)
-            ->orderBy('name')
-            ->get(['id', 'name']);
+        // Get categories for filter
+        $categories = Category::orderBy('name')->get(['id', 'name']);
 
         // Get settings
         $settings = CacheService::getHomepageSettings();
 
-        // Get global settings for contact info
-        $globalSettings = CacheService::getGlobalSettings();
-
         return view('promotions.index', compact(
             'promotions',
-            'bumnagProfiles',
-            'settings',
-            'globalSettings'
+            'categories',
+            'settings'
         ));
     }
 
@@ -76,33 +70,33 @@ class PromotionController extends Controller
     public function show(string $slug): View
     {
         $promotion = Promotion::where('slug', $slug)
-            ->where('is_active', true)
-            ->with(['bumnagProfile:id,name,slug'])
+            ->where('status', 'active')
+            ->with(['category:id,name'])
             ->firstOrFail();
 
-        // Get related promotions from same BUMNag
-        $relatedPromotions = Promotion::where('is_active', true)
+        // Get related promotions from same category
+        $relatedPromotions = Promotion::where('status', 'active')
             ->where('id', '!=', $promotion->id)
             ->where(function ($q) use ($promotion) {
-                if ($promotion->bumnag_profile_id) {
-                    $q->where('bumnag_profile_id', $promotion->bumnag_profile_id);
+                if ($promotion->category_id) {
+                    $q->where('category_id', $promotion->category_id);
                 }
             })
             ->where(function ($q) {
-                $q->whereNull('valid_until')
-                  ->orWhere('valid_until', '>=', now());
+                $q->whereNull('end_date')
+                  ->orWhere('end_date', '>=', now());
             })
             ->orderBy('created_at', 'desc')
             ->limit(4)
             ->get();
 
-        // Get global settings for contact info
-        $globalSettings = CacheService::getGlobalSettings();
+        // Get settings
+        $settings = CacheService::getHomepageSettings();
 
         return view('promotions.show', compact(
             'promotion',
             'relatedPromotions',
-            'globalSettings'
+            'settings'
         ));
     }
 }

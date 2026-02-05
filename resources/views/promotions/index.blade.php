@@ -48,14 +48,14 @@
                     </div>
                 </div>
                 
-                <!-- Unit Usaha Filter -->
+                <!-- Category Filter -->
                 <div class="w-full sm:w-48 md:w-56">
-                    <select name="unit_usaha" 
+                    <select name="category" 
                             class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm sm:text-base">
-                        <option value="">Semua Unit Usaha</option>
-                        @foreach($bumnagProfiles as $profile)
-                        <option value="{{ $profile->id }}" {{ request('unit_usaha') == $profile->id ? 'selected' : '' }}>
-                            {{ $profile->name }}
+                        <option value="">Semua Kategori</option>
+                        @foreach($categories as $category)
+                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
                         </option>
                         @endforeach
                     </select>
@@ -79,7 +79,7 @@
                     Filter
                 </button>
                 
-                @if(request('search') || request('unit_usaha') || request('status'))
+                @if(request('search') || request('category') || request('status'))
                 <a href="{{ route('promotions.index') }}" 
                    class="flex-1 xs:flex-none px-5 sm:px-6 py-2.5 sm:py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors duration-200 text-center text-sm sm:text-base touch-target">
                     Reset
@@ -148,7 +148,7 @@
                         @endif
 
                         <!-- Expired Badge -->
-                        @if($promotion->valid_until && $promotion->valid_until->isPast())
+                        @if($promotion->end_date && \Carbon\Carbon::parse($promotion->end_date)->isPast())
                         <div class="absolute inset-0 bg-black/60 flex items-center justify-center">
                             <div class="bg-gray-800 text-white px-4 py-2 rounded-lg font-bold">
                                 Promo Berakhir
@@ -161,18 +161,18 @@
                     <div class="p-4 sm:p-5">
                         <!-- Unit Usaha & Date -->
                         <div class="flex flex-wrap items-center justify-between gap-2 mb-2 sm:mb-3">
-                            @if($promotion->bumnagProfile)
+                            @if($promotion->category)
                             <span class="inline-block px-2 sm:px-3 py-1 bg-amber-100 text-amber-800 text-xs font-semibold rounded-full truncate max-w-[140px] sm:max-w-none">
-                                {{ $promotion->bumnagProfile->name }}
+                                {{ $promotion->category->name }}
                             </span>
                             @endif
                             
-                            @if($promotion->valid_until)
+                            @if($promotion->end_date)
                             <span class="flex items-center text-xs text-gray-500">
                                 <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                s/d {{ $promotion->valid_until->format('d M Y') }}
+                                s/d {{ \Carbon\Carbon::parse($promotion->end_date)->format('d M Y') }}
                             </span>
                             @endif
                         </div>
@@ -226,7 +226,7 @@
                 </svg>
                 <h3 class="text-xl sm:text-2xl font-bold text-gray-700 mb-2">Promo Tidak Ditemukan</h3>
                 <p class="text-sm sm:text-base text-gray-500 mb-6 sm:mb-8 px-4">
-                    @if(request('search') || request('unit_usaha') || request('status'))
+                    @if(request('search') || request('category') || request('status'))
                         Tidak ada promo yang sesuai dengan filter Anda. Coba ubah filter atau
                         <a href="{{ route('promotions.index') }}" class="text-amber-600 hover:underline font-semibold">reset pencarian</a>
                     @else

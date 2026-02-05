@@ -242,19 +242,19 @@
                 
                 <div class="p-4 sm:p-6">
                     <div class="flex flex-wrap items-center justify-between gap-2 mb-2 sm:mb-3">
-                        @if($promotion->bumnagProfile)
+                        @if($promotion->category)
                         <span class="inline-block px-2 sm:px-3 py-1 bg-amber-100 text-amber-800 text-xs font-semibold rounded-full truncate max-w-[140px] sm:max-w-none">
-                            {{ $promotion->bumnagProfile->name }}
+                            {{ $promotion->category->name }}
                         </span>
                         @endif
                         
                         <!-- Validity Period -->
-                        @if($promotion->valid_until)
+                        @if($promotion->end_date)
                         <span class="flex items-center text-xs text-gray-500">
                             <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            s/d {{ $promotion->valid_until->format('d M Y') }}
+                            s/d {{ \Carbon\Carbon::parse($promotion->end_date)->format('d M Y') }}
                         </span>
                         @endif
                     </div>

@@ -45,13 +45,13 @@
                         @endif
 
                         <!-- Expired Overlay -->
-                        @if($promotion->valid_until && $promotion->valid_until->isPast())
+                        @if($promotion->end_date && \Carbon\Carbon::parse($promotion->end_date)->isPast())
                         <div class="absolute inset-0 bg-black/70 flex items-center justify-center">
                             <div class="text-center">
                                 <div class="bg-gray-800 text-white px-6 py-3 rounded-xl font-bold text-xl mb-2">
                                     Promo Telah Berakhir
                                 </div>
-                                <p class="text-white text-sm">Berakhir pada {{ $promotion->valid_until->format('d F Y') }}</p>
+                                <p class="text-white text-sm">Berakhir pada {{ \Carbon\Carbon::parse($promotion->end_date)->format('d F Y') }}</p>
                             </div>
                         </div>
                         @endif
@@ -83,11 +83,11 @@
             
             <!-- Promotion Info -->
             <div>
-                <!-- Unit Usaha Badge -->
-                @if($promotion->bumnagProfile)
-                <a href="{{ route('promotions.index', ['unit_usaha' => $promotion->bumnagProfile->id]) }}" 
+                <!-- Category Badge -->
+                @if($promotion->category)
+                <a href="{{ route('promotions.index', ['category' => $promotion->category->id]) }}" 
                    class="inline-block px-3 sm:px-4 py-1.5 sm:py-2 bg-amber-100 text-amber-800 text-xs sm:text-sm font-semibold rounded-full hover:bg-amber-200 transition-colors mb-3 sm:mb-4">
-                    {{ $promotion->bumnagProfile->name }}
+                    {{ $promotion->category->name }}
                 </a>
                 @endif
                 
@@ -97,7 +97,7 @@
                 </h1>
                 
                 <!-- Validity Period -->
-                @if($promotion->valid_from || $promotion->valid_until)
+                @if($promotion->start_date || $promotion->end_date)
                 <div class="mb-4 sm:mb-6 p-4 sm:p-5 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border-2 border-amber-200">
                     <h3 class="font-semibold text-gray-900 mb-2 flex items-center gap-2">
                         <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,19 +106,19 @@
                         Periode Promo
                     </h3>
                     <div class="text-sm sm:text-base text-gray-700">
-                        @if($promotion->valid_from)
-                        <p>Mulai: <span class="font-semibold">{{ $promotion->valid_from->format('d F Y') }}</span></p>
+                        @if($promotion->start_date)
+                        <p>Mulai: <span class="font-semibold">{{ \Carbon\Carbon::parse($promotion->start_date)->format('d F Y') }}</span></p>
                         @endif
-                        @if($promotion->valid_until)
-                        <p>Berakhir: <span class="font-semibold">{{ $promotion->valid_until->format('d F Y') }}</span></p>
+                        @if($promotion->end_date)
+                        <p>Berakhir: <span class="font-semibold">{{ \Carbon\Carbon::parse($promotion->end_date)->format('d F Y') }}</span></p>
                         @endif
                         
-                        @if($promotion->valid_until && !$promotion->valid_until->isPast())
+                        @if($promotion->end_date && !\Carbon\Carbon::parse($promotion->end_date)->isPast())
                         <div class="mt-2 text-amber-700 font-semibold flex items-center gap-1">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
                             </svg>
-                            Tersisa {{ $promotion->valid_until->diffForHumans() }}
+                            Tersisa {{ \Carbon\Carbon::parse($promotion->end_date)->diffForHumans() }}
                         </div>
                         @endif
                     </div>
@@ -170,7 +170,7 @@
                 @endif
                 
                 <!-- Contact Buttons -->
-                @if(!$promotion->valid_until || !$promotion->valid_until->isPast())
+                @if(!$promotion->end_date || !\Carbon\Carbon::parse($promotion->end_date)->isPast())
                 <div class="space-y-2 sm:space-y-3">
                     <a href="https://wa.me/{{ $globalSettings['contact_whatsapp'] ?? '62812345678' }}?text=Halo, saya tertarik dengan promo {{ $promotion->title }}" 
                        target="_blank"
@@ -234,7 +234,7 @@
 <section class="py-10 sm:py-12 lg:py-16 bg-gradient-to-br from-amber-50 to-orange-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">
-            Promo Lainnya @if($promotion->bumnagProfile) dari {{ $promotion->bumnagProfile->name }} @endif
+            Promo Lainnya @if($promotion->category) dari {{ $promotion->category->name }} @endif
         </h2>
         
         <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
@@ -267,12 +267,12 @@
                     <h3 class="font-bold text-gray-900 text-sm sm:text-base mb-1 sm:mb-2 line-clamp-2 group-hover:text-amber-600 transition-colors">
                         <a href="{{ route('promotions.show', $relatedPromo->slug) }}">{{ $relatedPromo->title }}</a>
                     </h3>
-                    @if($relatedPromo->valid_until)
+                    @if($relatedPromo->end_date)
                     <div class="text-xs text-gray-500 flex items-center">
                         <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        s/d {{ $relatedPromo->valid_until->format('d M Y') }}
+                        s/d {{ \Carbon\Carbon::parse($relatedPromo->end_date)->format('d M Y') }}
                     </div>
                     @endif
                 </div>
