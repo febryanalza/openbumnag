@@ -181,6 +181,102 @@
     </div>
 </section>
 
+<!-- Berita Section -->
+<section class="py-12 sm:py-16 lg:py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-8 sm:mb-12 gap-4">
+            <div>
+                <h2 class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2 sm:mb-4">
+                    {{ $settings['news_title'] ?? 'Berita Terbaru' }}
+                </h2>
+                <p class="text-base sm:text-lg md:text-xl text-gray-600">
+                    {{ $settings['news_description'] ?? 'Informasi dan update terkini' }}
+                </p>
+            </div>
+            <a href="{{ route('news.index') }}" 
+               class="hidden sm:inline-flex items-center text-primary font-semibold hover:text-primary-600 transition-colors duration-200 whitespace-nowrap">
+                {{ $settings['news_cta_text'] ?? 'Lihat Semua Berita' }}
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </a>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            @foreach($latestNews as $news)
+            <article class="bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group hover:-translate-y-2">
+                @if($news->featured_image)
+                <div class="h-40 sm:h-48 lg:h-56 overflow-hidden">
+                    <img src="{{ Storage::url($news->featured_image) }}" 
+                         alt="{{ $news->title }}" 
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                         loading="lazy">
+                </div>
+                @else
+                <div class="h-40 sm:h-48 lg:h-56 bg-gradient-to-br from-sage to-mint flex items-center justify-center">
+                    <svg class="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                    </svg>
+                </div>
+                @endif
+                
+                <div class="p-4 sm:p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2 sm:mb-3">
+                        @if($news->category)
+                        <span class="inline-block px-2 sm:px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                            {{ $news->category->name }}
+                        </span>
+                        @endif
+                        <span class="text-xs sm:text-sm text-gray-500">
+                            {{ $news->published_at->format('d M Y') }}
+                        </span>
+                    </div>
+                    
+                    <h3 class="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-2 sm:mb-3 line-clamp-2 group-hover:text-primary transition-colors duration-200">
+                        {{ $news->title }}
+                    </h3>
+                    
+                    <!-- Excerpt -->
+                    @if($news->excerpt)
+                    <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3">
+                        {{ $news->excerpt }}
+                    </p>
+                    @endif
+                    
+                    <div class="flex items-center justify-between pt-3 sm:pt-4 border-t border-gray-100">
+                        <a href="{{ route('news.show', $news->slug) }}" 
+                           class="inline-flex items-center text-primary font-semibold hover:text-primary-600 transition-colors duration-200 text-sm sm:text-base">
+                            Baca<span class="hidden xs:inline ml-1">Selengkapnya</span>
+                            <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                        
+                        <div class="flex items-center text-xs sm:text-sm text-gray-500">
+                            <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            {{ number_format($news->views ?? 0) }}
+                        </div>
+                    </div>
+                </div>
+            </article>
+            @endforeach
+        </div>
+        
+        <div class="text-center mt-8 sm:mt-12 sm:hidden">
+            <a href="{{ route('news.index') }}" 
+               class="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-primary text-white font-semibold rounded-full hover:bg-primary-600 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
+                {{ $settings['news_cta_text'] ?? 'Lihat Semua Berita' }}
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+
 <!-- Promosi Section -->
 @if($promotions->count() > 0)
 <section class="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-amber-50 to-orange-50">
@@ -306,102 +402,6 @@
 </section>
 @endif
 
-<!-- Berita Section -->
-<section class="py-12 sm:py-16 lg:py-20 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-8 sm:mb-12 gap-4">
-            <div>
-                <h2 class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2 sm:mb-4">
-                    {{ $settings['news_title'] ?? 'Berita Terbaru' }}
-                </h2>
-                <p class="text-base sm:text-lg md:text-xl text-gray-600">
-                    {{ $settings['news_description'] ?? 'Informasi dan update terkini' }}
-                </p>
-            </div>
-            <a href="{{ route('news.index') }}" 
-               class="hidden sm:inline-flex items-center text-primary font-semibold hover:text-primary-600 transition-colors duration-200 whitespace-nowrap">
-                {{ $settings['news_cta_text'] ?? 'Lihat Semua Berita' }}
-                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                </svg>
-            </a>
-        </div>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-            @foreach($latestNews as $news)
-            <article class="bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group hover:-translate-y-2">
-                @if($news->featured_image)
-                <div class="h-40 sm:h-48 lg:h-56 overflow-hidden">
-                    <img src="{{ Storage::url($news->featured_image) }}" 
-                         alt="{{ $news->title }}" 
-                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                         loading="lazy">
-                </div>
-                @else
-                <div class="h-40 sm:h-48 lg:h-56 bg-gradient-to-br from-sage to-mint flex items-center justify-center">
-                    <svg class="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
-                    </svg>
-                </div>
-                @endif
-                
-                <div class="p-4 sm:p-6">
-                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2 sm:mb-3">
-                        @if($news->category)
-                        <span class="inline-block px-2 sm:px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
-                            {{ $news->category->name }}
-                        </span>
-                        @endif
-                        <span class="text-xs sm:text-sm text-gray-500">
-                            {{ $news->published_at->format('d M Y') }}
-                        </span>
-                    </div>
-                    
-                    <h3 class="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-2 sm:mb-3 line-clamp-2 group-hover:text-primary transition-colors duration-200">
-                        {{ $news->title }}
-                    </h3>
-                    
-                    <!-- Excerpt -->
-                    @if($news->excerpt)
-                    <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3">
-                        {{ $news->excerpt }}
-                    </p>
-                    @endif
-                    
-                    <div class="flex items-center justify-between pt-3 sm:pt-4 border-t border-gray-100">
-                        <a href="{{ route('news.show', $news->slug) }}" 
-                           class="inline-flex items-center text-primary font-semibold hover:text-primary-600 transition-colors duration-200 text-sm sm:text-base">
-                            Baca<span class="hidden xs:inline ml-1">Selengkapnya</span>
-                            <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </a>
-                        
-                        <div class="flex items-center text-xs sm:text-sm text-gray-500">
-                            <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                            </svg>
-                            {{ number_format($news->views ?? 0) }}
-                        </div>
-                    </div>
-                </div>
-            </article>
-            @endforeach
-        </div>
-        
-        <div class="text-center mt-8 sm:mt-12 sm:hidden">
-            <a href="{{ route('news.index') }}" 
-               class="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-primary text-white font-semibold rounded-full hover:bg-primary-600 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
-                {{ $settings['news_cta_text'] ?? 'Lihat Semua Berita' }}
-                <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                </svg>
-            </a>
-        </div>
-    </div>
-</section>
-
 <!-- Laporan Section -->
 <section class="py-12 sm:py-16 lg:py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -486,7 +486,7 @@
     </div>
 </section>
 
-<!-- Kodai (Katalog Produk) Section -->
+<!-- Kadai (Katalog Produk) Section -->
 @if($featuredCatalogs->count() > 0)
 <section class="py-12 sm:py-16 lg:py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
