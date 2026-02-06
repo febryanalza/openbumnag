@@ -31,6 +31,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // TEMPORARILY DISABLED - will re-enable after migration
+        /*
         // Register Setting Observer
         Setting::observe(SettingObserver::class);
         
@@ -64,5 +66,6 @@ class AppServiceProvider extends ServiceProvider
                 'social_youtube' => $settings['social_youtube'] ?? '#',
             ]);
         });
+        */
     }
 }
