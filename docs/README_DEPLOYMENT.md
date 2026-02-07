@@ -414,14 +414,85 @@ grep -i error storage/logs/laravel.log
 
 ---
 
-## 📞 Support
+## �️ Fix Storage Images (Shared Hosting Issue)
+
+**Problem:** Gambar yang diupload tidak tampil setelah deploy ke shared hosting.
+
+**Root Cause:**
+1. ❌ `APP_URL=http://localhost` di `.env` production
+2. ❌ Symlink `public/storage` tidak berfungsi di cPanel/shared hosting
+
+**Quick Fix (Automated):**
+```bash
+chmod +x fix-storage-images.sh
+./fix-storage-images.sh
+```
+
+**Then update `.env`:**
+```bash
+nano .env
+# Change:
+APP_URL=https://your-domain.com  # Production URL!
+```
+
+**Clear cache:**
+```bash
+php artisan config:cache
+php artisan optimize
+```
+
+**After uploading new images via admin panel:**
+```bash
+./sync-storage.sh
+```
+
+**Manual Fix (Step-by-Step):**
+```bash
+# 1. Remove symlink
+rm -f public/storage
+
+# 2. Create physical directory
+mkdir -p public/storage
+
+# 3. Copy files
+rsync -av storage/app/public/ public/storage/
+
+# 4. Set permissions
+chmod -R 755 public/storage
+chmod -R 775 storage/app/public
+
+# 5. Update .env APP_URL
+nano .env
+
+# 6. Clear caches
+php artisan config:cache
+```
+
+**Verify:**
+```bash
+# Check files copied
+ls -la public/storage/
+
+# Test image URL
+curl -I https://your-domain.com/storage/test.jpg
+# Should return: HTTP/1.1 200 OK
+```
+
+**📖 For complete troubleshooting guide, see: [FIX_STORAGE_IMAGES.md](FIX_STORAGE_IMAGES.md)**
+
+---
+
+## �📞 Support
 
 Jika mengalami masalah:
 
 1. Jalankan `./check-requirements.sh` untuk diagnosa
 2. Periksa logs di `storage/logs/laravel.log`
-3. Baca dokumentasi lengkap di `INSTALASI_PHP_8.1.md`
-4. Check web server error logs:
+3. **Gambar tidak tampil?** → [FIX_STORAGE_IMAGES.md](FIX_STORAGE_IMAGES.md)
+4. **Buat admin user?** → [CREATE_USER_GUIDE.md](CREATE_USER_GUIDE.md)
+5. **502 Bad Gateway?** → [FIX_502_ERROR.md](FIX_502_ERROR.md)
+6. Baca dokumentasi lengkap di [INSTALASI_PHP_8.1.md](INSTALASI_PHP_8.1.md)
+7. Check web server error logs:
    - Apache: `/var/log/apache2/error.log`
    - Nginx: `/var/log/nginx/error.log`
 
