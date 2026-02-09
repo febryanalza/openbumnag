@@ -176,7 +176,11 @@
                 <!-- Contact Buttons -->
                 @if(!$promotion->end_date || !\Carbon\Carbon::parse($promotion->end_date)->isPast())
                 <div class="space-y-2 sm:space-y-3">
-                    <a href="https://wa.me/{{ $globalSettings['contact_whatsapp'] ?? '62812345678' }}?text=Halo, saya tertarik dengan promo {{ $promotion->title }}" 
+                    @php
+                        $contactPhone = $promotion->contact_phone ?? $globalSettings['contact_whatsapp'] ?? null;
+                        $whatsappLink = wa_link($contactPhone, 'Halo, saya tertarik dengan promo ' . $promotion->title);
+                    @endphp
+                    <a href="{{ $whatsappLink }}" 
                        target="_blank"
                        class="w-full flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors duration-200 text-sm sm:text-base touch-target shadow-lg hover:shadow-xl">
                         <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -184,8 +188,8 @@
                         </svg>
                         Klaim Promo via WhatsApp
                     </a>
-                    @if($globalSettings['contact_phone'])
-                    <a href="tel:{{ $globalSettings['contact_phone'] }}" 
+                    @if($contactPhone)
+                    <a href="tel:{{ wa_number($contactPhone) }}" 
                        class="w-full flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold rounded-xl hover:from-amber-700 hover:to-orange-700 transition-all duration-200 text-sm sm:text-base touch-target shadow-lg hover:shadow-xl">
                         <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
