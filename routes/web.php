@@ -44,3 +44,28 @@ Route::get('/promo/{slug}', [PromotionController::class, 'show'])->name('promoti
 // Review Routes
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 Route::post('/reviews/{review}/helpful', [ReviewController::class, 'helpful'])->name('reviews.helpful');
+
+// Test Error Pages (only in local/development environment)
+if (app()->environment(['local', 'development'])) {
+    Route::prefix('test-errors')->group(function () {
+        Route::get('/404', function () {
+            abort(404);
+        })->name('test.error.404');
+        
+        Route::get('/403', function () {
+            abort(403);
+        })->name('test.error.403');
+        
+        Route::get('/419', function () {
+            abort(419);
+        })->name('test.error.419');
+        
+        Route::get('/500', function () {
+            abort(500);
+        })->name('test.error.500');
+        
+        Route::get('/503', function () {
+            abort(503);
+        })->name('test.error.503');
+    });
+}
