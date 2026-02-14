@@ -25,6 +25,7 @@ class PermissionController extends Controller
         'contact' => 'Kontak',
         'setting' => 'Pengaturan',
         'catalog' => 'Katalog',
+        'review' => 'Ulasan',
         'user' => 'Pengguna',
     ];
 
@@ -34,8 +35,12 @@ class PermissionController extends Controller
     protected array $permissionActions = [
         'create' => 'Buat',
         'read' => 'Lihat',
+        'view' => 'Lihat',
+        'view-any' => 'Lihat Semua',
         'update' => 'Edit',
         'delete' => 'Hapus',
+        'approve' => 'Setujui',
+        'reject' => 'Tolak',
         'publish' => 'Publikasi',
         'manage' => 'Kelola',
     ];
