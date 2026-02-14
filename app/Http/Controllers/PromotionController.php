@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Promotion;
+use App\Models\Review;
 use App\Services\CacheService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -16,7 +17,9 @@ class PromotionController extends Controller
     public function index(Request $request): View
     {
         $query = Promotion::where('status', 'active')
-            ->with(['category:id,name']);
+            ->with(['category:id,name'])
+            ->withCount(['approvedReviews as reviews_count'])
+            ->withAvg('approvedReviews as average_rating', 'rating');
 
         // Search
         if ($request->has('search') && !empty($request->input('search'))) {
@@ -93,10 +96,20 @@ class PromotionController extends Controller
         // Get settings
         $settings = CacheService::getHomepageSettings();
 
+        // Get reviews
+        $reviews = $promotion->approvedReviews()
+            ->latest()
+            ->paginate(10);
+
+        // Get rating stats
+        $reviewStats = $promotion->rating_stats;
+
         return view('promotions.show', compact(
             'promotion',
             'relatedPromotions',
-            'settings'
+            'settings',
+            'reviews',
+            'reviewStats'
         ));
     }
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TeamMemberController;
@@ -79,6 +80,17 @@ Route::middleware(['web', 'admin.access'])->prefix('admin')->name('admin.')->gro
         Route::delete('/{catalog}', [CatalogController::class, 'destroy'])->name('destroy');
         Route::post('/bulk-action', [CatalogController::class, 'bulkAction'])->name('bulk-action');
         Route::post('/{catalog}/update-stock', [CatalogController::class, 'updateStock'])->name('update-stock');
+    });
+    
+    // Reviews Management (requires permission)
+    Route::middleware(['check.permission:review.view-any'])->prefix('reviews')->name('reviews.')->group(function () {
+        Route::get('/', [ReviewController::class, 'index'])->name('index');
+        Route::get('/{review}', [ReviewController::class, 'show'])->name('show');
+        Route::post('/{review}/approve', [ReviewController::class, 'approve'])->name('approve');
+        Route::post('/{review}/reject', [ReviewController::class, 'reject'])->name('reject');
+        Route::delete('/{review}', [ReviewController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-approve', [ReviewController::class, 'bulkApprove'])->name('bulk-approve');
+        Route::post('/bulk-reject', [ReviewController::class, 'bulkReject'])->name('bulk-reject');
     });
     
     // BUMNag Profiles Management (requires permission)

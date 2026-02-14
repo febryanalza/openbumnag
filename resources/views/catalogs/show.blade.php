@@ -227,4 +227,16 @@
     </div>
 </section>
 @endif
+
+<!-- Reviews Section -->
+<section class="py-10 sm:py-12 lg:py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <x-review-section 
+            reviewable-type="catalog"
+            :reviewable-id="$catalog->id"
+            :reviews="$reviews"
+            :stats="$reviewStats"
+        />
+    </div>
+</section>
 @endsection

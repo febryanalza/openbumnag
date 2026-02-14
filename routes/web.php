@@ -5,6 +5,7 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -39,3 +40,7 @@ Route::get('/katalog/{slug}', [CatalogController::class, 'show'])->name('catalog
 // Promotion Routes
 Route::get('/promo', [PromotionController::class, 'index'])->name('promotions.index');
 Route::get('/promo/{slug}', [PromotionController::class, 'show'])->name('promotions.show');
+
+// Review Routes
+Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+Route::post('/reviews/{review}/helpful', [ReviewController::class, 'helpful'])->name('reviews.helpful');

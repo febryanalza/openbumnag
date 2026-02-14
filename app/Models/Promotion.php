@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -118,5 +119,45 @@ class Promotion extends Model
         if ($this->end_date && $this->end_date < $now) return false;
         
         return true;
+    }
+
+    /**
+     * Get all reviews for the promotion.
+     */
+    public function reviews(): MorphMany
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
+
+    /**
+     * Get approved reviews only.
+     */
+    public function approvedReviews(): MorphMany
+    {
+        return $this->reviews()->approved();
+    }
+
+    /**
+     * Get average rating.
+     */
+    public function getAverageRatingAttribute(): float
+    {
+        return round($this->approvedReviews()->avg('rating') ?? 0, 1);
+    }
+
+    /**
+     * Get total reviews count.
+     */
+    public function getTotalReviewsAttribute(): int
+    {
+        return $this->approvedReviews()->count();
+    }
+
+    /**
+     * Get rating statistics.
+     */
+    public function getRatingStatsAttribute(): array
+    {
+        return Review::getStatisticsFor(self::class, $this->id);
     }
 }
